@@ -2,23 +2,52 @@
 "@brief      for windows's gvim
 "@date       2012-12-30 11:01:30
 "@author     tracyone<tracyone@live.cn>
-"@lastchange 2013/5/3 0:10:22
+"@lastchange 
 """"""""""""""""""""""""""""""""""""""""""""""""""""
 
-"behave very Vi compatible (not advisable)
-set nocp 
 
-" Uncomment the following to have Vim load indentation rules and plugins
-" according to the detected filetype.
-filetype plugin indent on
+set nocp  "behave very Vi compatible (not advisable) 
 
+filetype plugin indent on  "Vim load indentation rules and plugins according to the detected filetype
+
+"{{{gui releate
+"list of flags that specify how the GUI works
+set rtp+=$VIM/.vim/bundle/Colour-Sampler-Pack/
+if(has("gui_running"))
+	if has("gui_gtk2")
+		set guifont=Monaco\ 14
+	else
+		set guifont=Dejavu_Sans_Mono:h11:cANSI
+		set gfw=Î¢ÈíÑÅºÚ:h11
+	endif
+	colorscheme wombat
+	set guioptions-=b
+	"set guioptions-=m "whether use menu
+	set guioptions-=r "whether show the rigth scroll bar
+	set guioptions-=l "whether show the left scroll bar
+	"set guioptions-=T "whether show toolbar or not
+	set guitablabel=%N\ %t  "do not show dir in tab
+endif
+"}}}
+"{{{encode
+set encoding=utf-8
+set fileencodings=utf-8,chinese,latin-1,cp936
+if has("win32")
+set fileencoding=utf-8
+else
+set fileencoding=utf-8
+endif
+source $VIMRUNTIME/delmenu.vim
+source $VIMRUNTIME/menu.vim
+language messages zh_CN.utf-8
+set ff=dos
+"}}}
 "{{{system check
 if (has("win32"))
 	let $HOME=$VIM
 	set filetype=dos
 	behave  xterm
-	"list of directory names used for file searching
-	set path=./,C:\Program\ Files\IAR\ Systems\Embedded\ Workbench\ 6.0\arm\inc\,C:\MinGW\include,C:\Program\ Files\IAR\ Systems\Embedded\ Workbench\ 6.0\arm\CMSIS\Include,,
+	set path=./,C:\Program\ Files\IAR\ Systems\Embedded\ Workbench\ 6.0\arm\inc\,C:\MinGW\include,C:\Program\ Files\IAR\ Systems\Embedded\ Workbench\ 6.0\arm\CMSIS\Include,,  "list of directory names used for file searching
 	au GUIEnter * simalt~x "maximize window
 	let $VIMFILES = $VIM.'/vimfiles'
 	let g:iswindows=1 "windows flags
@@ -30,33 +59,13 @@ elseif has("unix")
 	endif
 	set shell=bash
 	runtime! debian.vim
-	"list of directory names used for file searching
-	set path=./,/usr/include/,,
+	set path=./,/usr/include/,, "list of directory names used for file searching
 	au GUIEnter * call MaximizeWindow()
 	let $VIMFILES = $HOME.'/.vim'
 	let g:iswindows=0
 elseif has("mac")
 endif
 "}}}
-
-"{{{gui releate
-"list of flags that specify how the GUI works
-if(has("gui_running"))
-	if has("gui_gtk2")
-		set guifont=Monaco\ 14
-	else
-		set guifont=Monaco:h14:b:cANSI
-	endif
-	colorscheme desert256
-	set guioptions-=b
-	"set guioptions-=m "whether use menu
-	set guioptions-=r "whether show the rigth scroll bar
-	set guioptions-=l "whether show the left scroll bar
-	"set guioptions-=T "whether show toolbar or not
-	set guitablabel=%N\ %t  "do not show dir in tab
-endif
-"}}}
-
 "{{{fold setting
 "folding type: "manual", "indent", "expr", "marker" or "syntax"
 set foldenable                  " enable folding
@@ -103,15 +112,13 @@ autocmd FileType vim set foldmethod=marker
 autocmd FileType vim set foldlevel=0
 "set foldtext=foldtext()
 "}}}
-
 "{{{basic setting
 
 " If using a dark background within the editing area and syntax highlighting
 " turn on this option as well
 set background=dark
 
-"open syntax
-syntax on
+syntax on "open syntax
 
 "display unprintable characters by set list
 "set list
@@ -123,20 +130,16 @@ set listchars=tab:\|\ ,trail:-
 "au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 
 "{{{backup
-"generate a backupfile when open file
-set backup
+set backup "generate a backupfile when open file
 
-"backup file'a suffix
-set backupext=.bak
+set backupext=.bak  "backup file'a suffix
 
-"swp file's directory
-set directory=$HOME/vimbackup
+set directory=$HOME/vimbackup  "swp file's directory
 if !isdirectory(&directory)
 	call mkdir(&directory, "p")
 endif
 
-"backup file's directory
-set backupdir=$HOME/vimbackup
+set backupdir=$HOME/vimbackup  "backup file's directory
 if !isdirectory(&backupdir)
 	call mkdir(&backupdir, "p")
 endif
@@ -146,15 +149,12 @@ function! MaximizeWindow()
 	silent ! wmctrl-r:ACTIVE:-badd,maximized_vert,maximized_horz
 endfunction
 
-"Threshold for reporting number of lines changed
-set report=0
+set report=0  "Threshold for reporting number of lines changed
 
 "help doc dir
 "let helptags=$VIMFILES.'/doc'
-"choose help helplang
 
 set helplang=en,cn  "set helplang=en
-
 "autoread when a file is changed from the outside
 set autoread
 
@@ -167,7 +167,7 @@ set cmdheight=1
 "when inserting a bracket, briefly jump to its match
 set showmatch
 
-"name of the font to be used for :hardcopy,éŽµæ’³åµƒ
+"name of the font to be used for :hardcopy,æ‰“å°
 set printfont=yaheimono:h10:cGB2312
 
 "override 'ignorecase' when pattern has upper case characters
@@ -182,11 +182,10 @@ set mouse=a
 "start a dialog when a command fails
 set confirm
 
-"do clever autoindenting
-set smartindent
+set smartindent "do clever autoindenting
 
-"don't auto linefeed
-"set nowrap   
+
+"set nowrap   "don't auto linefeed
 
 "enable specific indenting for C code
 set cindent
@@ -215,7 +214,6 @@ set showmode
 "show cursor position below each window
 "set ruler
 
-
 ""old", "inclusive" or "exclusive"; how selecting text behaves
 set selection=inclusive
 
@@ -239,7 +237,21 @@ set clipboard+=unnamed
 set autochdir
 
 "alternate format to be used for a status line
-set statusline=%F%m%r%h%w\ [FORMAT=%{&ff}]\ [TYPE=%Y]\ [POS=%l,%v][%p%%]\ %{strftime(\"%d/%m/%y\ -\ %H:%M\")}
+set statusline+=%<%f%m%r%h%w%([%{Tlist_Get_Tagname_By_Line()}]%)
+set statusline+=%=[FORMAT=%{&ff}]\ [TYPE=%Y]\ [ASCII=\%03.3b]\ [HEX=\%02.2B]
+set statusline+=%{strftime(\"%d/%m/%y\ -\ %H:%M\")}
+"0, 1 or 2; when to use a status line for the last window
+set laststatus=2 "always show status
+"highlight StatusLine guifg=SlateBlue guibg=Yellow 
+
+"highlight StatusLineNC guifg=Gray guibg=White
+hi StatusLine guifg=Black guibg=White gui=none
+highlight StatusLineNC guifg=LightGrey guibg=LightSlateGrey	
+if version >= 700 
+au InsertEnter * hi StatusLine guibg=#818D29 guifg=#FCFCFC gui=none
+au InsertLeave * hi StatusLine guifg=Black guibg=White gui=none
+endif
+
 
 "0, 1 or 2; when to use a status line for the last window
 set laststatus=2 "always show status
@@ -253,7 +265,6 @@ au BufRead,BufNewFile *.bld set filetype=javascript
 "automatic recognition xdc file as javascript
 au BufRead,BufNewFile *.xdc set filetype=javascript
 "}}}
-
 "{{{key mapping
 
 ""no", "yes" or "menu"; how to use the ALT key
@@ -439,13 +450,11 @@ endfunction
 vnoremap <silent> > >gv
 vnoremap <silent> < <gv
 "}}}
-
 "{{{plugin setting
 
 "{{{tohtml
 let html_use_css=1
 "}}}
-
 "{{{fuzzyfinder
 "<CR>  (|g:fuf_keyOpen|)        - opens in a previous window.
 "<C-j> (|g:fuf_keyOpenSplit|)   - opens in a split window.
@@ -463,11 +472,9 @@ nmap <silent><leader>fd :FufDir<cr>
 nmap <silent><leader>fm :FufMruFile<cr>
 nmap <silent><leader>ft :FufTag<cr>
 "}}}
-
 "{{{ZenCoding
 let g:user_zen_expandabbr_key='<C-j>'
 "}}}
-
 "{{{tagbar
 nmap <silent><leader>tb :TagbarToggle<CR>
 if has("win32")
@@ -482,7 +489,6 @@ let g:tagbar_autofocus = 1
 let g:tagbar_compact = 1
 let g:tagbar_systemenc='cp936'
 "}}}
-
 "{{{tilst
 if (has("win32"))
 	let Tlist_Ctags_Cmd='c:/VimTools/ctags.exe'
@@ -517,10 +523,9 @@ let Tlist_Enable_Fold_Column =0
 let Tlist_Display_Prototype = 0
 map <silent> <leader>tl :TlistToggle<CR>
 "}}}
-
 "{{{cscope
-if filereadable("c:\VimTools\cscope.out")
-	cs add C:\VimTools\cscope.out
+if filereadable("cscope.out")
+	cs add cscope.out
 	if has("cscope")
 		" use both cscope and ctag for 'ctrl-]', ':ta', and 'vim -t'
 		set cscopetag
@@ -545,8 +550,7 @@ nmap  <Leader>g :cs find g <C-R>=expand("<cword>")<CR><CR>
 nmap  <Leader>c :cs find c <C-R>=expand("<cword>")<CR><CR>	
 nmap  <Leader>t :cs find t <C-R>=expand("<cword>")<CR><CR>	
 nmap  <Leader>e :cs find e <C-R>=expand("<cword>")<CR><CR>	
-"is not work in windows
-"nmap  <Leader>f :cs find f <C-R>=expand("<cfile>")<CR><CR>	
+nmap  <Leader>f :cs find f <C-R>=expand("<cfile>")<CR><CR>	
 nmap  <Leader>i :cs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
 nmap  <Leader>d :cs find d <C-R>=expand("<cword>")<CR><CR>	
 
@@ -555,8 +559,7 @@ nmap <C-\>g :cs find g
 nmap <C-\>c :cs find c 
 nmap <C-\>t :cs find t 
 nmap <C-\>e :cs find e 
-"is not work in windows
-"nmap <C-\>f :cs find f 
+nmap <C-\>f :cs find f 
 nmap <C-\>i :cs find i 
 nmap <C-\>d :cs find d 
 
@@ -567,8 +570,7 @@ nmap <C-@>g :scs find g <C-R>=expand("<cword>")<CR><CR>
 nmap <C-@>c :scs find c <C-R>=expand("<cword>")<CR><CR>	
 nmap <C-@>t :scs find t <C-R>=expand("<cword>")<CR><CR>	
 nmap <C-@>e :scs find e <C-R>=expand("<cword>")<CR><CR>	
-"is not work in windows
-"nmap <C-@>f :scs find f <C-R>=expand("<cfile>")<CR><CR>	
+nmap <C-@>f :scs find f <C-R>=expand("<cfile>")<CR><CR>	
 nmap <C-@>i :scs find i ^<C-R>=expand("<cfile>")<CR>$<CR>	
 nmap <C-@>d :scs find d <C-R>=expand("<cword>")<CR><CR>
 
@@ -579,8 +581,7 @@ nmap <C-@><C-@>g :vert scs find g <C-R>=expand("<cword>")<CR><CR>
 nmap <C-@><C-@>c :vert scs find c <C-R>=expand("<cword>")<CR><CR>
 nmap <C-@><C-@>t :vert scs find t <C-R>=expand("<cword>")<CR><CR>
 nmap <C-@><C-@>e :vert scs find e <C-R>=expand("<cword>")<CR><CR>
-"is not work in windows
-"nmap <C-@><C-@>f :vert scs find f <C-R>=expand("<cfile>")<CR><CR>	
+nmap <C-@><C-@>f :vert scs find f <C-R>=expand("<cfile>")<CR><CR>	
 nmap <C-@><C-@>i :vert scs find i ^<C-R>=expand("<cfile>")<CR>$<CR>	
 nmap <C-@><C-@>d :vert scs find d <C-R>=expand("<cword>")<CR><CR>
 ""key map timeouts
@@ -588,11 +589,33 @@ nmap <C-@><C-@>d :vert scs find d <C-R>=expand("<cword>")<CR><CR>
 "set timeoutlen=4000
 "set ttimeout
 "set ttimeoutlen=100
-nmap <leader>u :!create_cscope_tags.bat<cr>
-nmap <leader>a :cs add c:\VimTools\cscope.out<cr>
+nmap <leader>u :call CreateCscopeTags()<cr>
+nmap <leader>a :cs add cscope.out<cr>
 nmap <leader>k :cs kill -1<cr>
+function! CreateCscopeTags()
+	cs kill -1
+	if filereadable("cscope.files")
+		call delete("cscope.files")
+		call delete("cscope.out")
+		call delete("tags")
+		execute "echo \"Updating cscope.files...\r\"" 
+	else
+		execute "echo \"Creating cscope.files...\r\"" 
+	endif
+	if(g:iswindows==1)
+		call system("echo > cscope.files")
+		call system("set Path=c:\VimTools\;C:\MinGW\bin;")
+		call system("unix_find %~dp0 -name \"*.[chsS]\" > ./cscope.files")
+	else
+		call system("touch cscope.files")
+		call system("find $PWD -name \"*.[chsS]\" > ./cscope.files")
+	endif
+	call system("cscope -bkq -i cscope.files")
+	call system("ctags -R")
+	execute "echo \"finish!\"" 
+	cs add cscope.out
+endfunction
 "}}}
-
 "{{{srcexpl.vim
 " // The switch of the Source Explorer                                         
 nmap <F8> :SrcExplToggle<CR>
@@ -637,7 +660,6 @@ let g:SrcExpl_updateTagsKey = "<F3>"
 " Just_change_above_of_them_by_yourself:                                     
 "                                                                              
 "}}}
-
 "{{{neocomplcache
 " Use neocomplcache. 
 let g:neocomplcache_enable_at_startup = 1
@@ -741,7 +763,6 @@ inoremap <expr><BS> neocomplcache#smart_close_popup()."\<C-h>"
 inoremap <expr><C-y>  neocomplcache#close_popup()
 inoremap <expr><C-e>  neocomplcache#cancel_popup()
 "}}}
-
 "{{{unite.vim 
 
 nnoremap    [unite]   <Nop>
@@ -770,7 +791,6 @@ endfunction
 let g:unite_source_file_mru_limit = 200
 let g:unite_enable_split_vertically = 0 "vertical split
 "}}}
-
 "{{{matchit.vim
 "extend %
 runtime macros/matchit.vim "important 
@@ -779,7 +799,6 @@ let b:match_ignorecase=1
 set mps+=<:>
 set mps+=":"
 "}}}
-
 "{{{nerdtree 
 let NERDTreeShowLineNumbers=0	"don't show line number
 let NERDTreeWinPos='right'	"show nerdtree in the rigth side
@@ -790,7 +809,6 @@ map <F12> :NERDTreeToggle .<CR>
 map <2-LeftMouse>  *N
 imap <F12> <ESC> :NERDTreeToggle<CR>
 "}}}
-
 "{{{BufExplorer
 let g:bufExplorerDefaultHelp=1       " Do not show default help.
 let g:bufExplorerShowRelativePath=1  " Show relative paths.
@@ -799,7 +817,6 @@ let g:bufExplorerSplitRight=0        " Split left.
 let g:bufExplorerUseCurrentWindow=1  " Open in new window
 let g:bufExplorerShowDirectories=1   " Show directories.
 "}}}
-
 "{{{conqueterm.vim
 "ConqueTerm        <command>: open in current window<command> 
 "ConqueTermSplit    <command>:horizontal split window<command> 
@@ -819,7 +836,6 @@ else
 	map <A-space> :ConqueTermSplit bash<cr> 
 endif
 "}}}
-
 "{{{a.vim
 ":A switches to the header file corresponding to the current file being  edited (or vise versa)
 ":AS splits and switches
@@ -834,7 +850,6 @@ nmap <A-h> :IH<cr>
 nmap <A-t> :IHT<cr>
 ":IHN cycles through matches
 "}}}
-
 "{{{showmark 
 "The following mappings are setup by default:
 
@@ -847,24 +862,16 @@ let showmarks_enable = 0            " disable showmarks when vim startup
 let showmarks_include = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ" 
 let showmarks_ignore_type = "hqm"   " help, Quickfix, non-modifiable 
 "}}}
-"let g:loaded_indentLine=0
-"let g:indentLine_color_gui = '#A4E57E'
-"let g:indentLine_enabled = 1
-let g:fencview_autodetect=1
-let g:NERDMenuMode=0
-
 "{{{delimitMate
 au FileType verilog,c let b:delimitMate_matchpairs = "(:),[:],{:}"
 let delimitMate_nesting_quotes = ['"','`']
 let delimitMate_expand_cr = 1
 let delimitMate_expand_space = 1
 "}}}
-
-set t_Co=256
-set fillchars+=stl:\ ,stlnc:\
+"{{{vundle
 let s:justvundled = 0
 if has('win32')
-	cd $HOME
+	cd $VIM
     call system('dir .\.vim\bundle\vundle')
 else
     call system('ls ~/.vim/bundle/vundle')
@@ -881,20 +888,14 @@ if v:shell_error
         let s:justvundled = 1
     endif
 endif
-
 if has('win32')
     set rtp+=.\.vim\bundle\vundle
 else
     set rtp+=~/.vim/bundle/vundle/
 endif
-call vundle#rc()
-"{{{vundle
-"in window
-set rtp+=$HOME/.vim/bundle/vundle/
-call vundle#rc()
-"
 " let Vundle manage Vundle
 " required! 
+call vundle#rc()
 Bundle 'gmarik/vundle'
  
 " My Bundles here:
@@ -907,17 +908,16 @@ Bundle 'gmarik/vundle'
 " vim-scripts repos
 Bundle 'a.vim'
 Bundle 'Align'
-Bundle 'bufexplorer.zip'
 Bundle 'calendar.vim'
-Bundle 'Color-Sampler-Pack'
-Bundle 'Conque-Shell'
+Bundle 'Colour-Sampler-Pack'
+Bundle 'tracyone/ConqueShell'
 Bundle 'tracyone/c.vim'
 Bundle 'amiorin/ctrlp-z'
 Bundle 'ctrlp.vim'
 Bundle 'delimitMate.vim'
 Bundle 'FuzzyFinder'
 Bundle 'genutils'
-Bundle 'Shougo/neocomplcache'
+Bundle 'neocomplcache'
 Bundle 'The-NERD-Commenter'
 Bundle 'scrooloose/nerdtree'
 Bundle 'ShowMarks7'
@@ -934,8 +934,10 @@ Bundle 'matrix.vim--Yang'
 Bundle 'FencView.vim'
 Bundle 'Markdown'
 Bundle 'LaTeX-Suite-aka-Vim-LaTeX'
-Bundle 'textile.vim'
 Bundle 'DrawIt'
+Bundle 'altercation/vim-colors-solarized'
+Bundle 'mbbill/VimExplorer'
+Bundle 'renamer.vim'
  
 " non github reposo
 " Bundle 'git://git.wincent.com/command-t.git'
@@ -950,5 +952,12 @@ Bundle 'DrawIt'
 " see :h vundle for more details or wiki for FAQ
 " NOTE: comments after Bundle command are not allowed..
 "}}}
-"}}}
+"let g:loaded_indentLine=0
+"let g:indentLine_color_gui = '#A4E57E'
+"let g:indentLine_enabled = 1
+let g:fencview_autodetect=1
+let g:NERDMenuMode=0
+set t_Co=256
+set fillchars+=stl:\ ,stlnc:\
 
+"}}}
