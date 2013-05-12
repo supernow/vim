@@ -2,14 +2,30 @@
 "@brief      for windows's gvim
 "@date       2012-12-30 11:01:30
 "@author     tracyone<tracyone@live.cn>
-"@lastchange 
+"@lastchange 2013-5-12 23:26:22
+"@note		 only english allowed
 """"""""""""""""""""""""""""""""""""""""""""""""""""
-
 
 set nocp  "behave very Vi compatible (not advisable) 
 
 filetype plugin indent on  "Vim load indentation rules and plugins according to the detected filetype
 
+"{{{encode
+set encoding=utf-8
+if has("win32")
+	set fileencoding=utf-8
+else
+	set fileencoding=utf-8
+endif
+set fileencodings=ucs-bom,utf-8,cp936,gb1830,big5,euc-jp,euc-kr,latin1
+set termencoding=utf-8
+if v:lang=~? '^\(zh\)\|\(ja\)\|\(ko\)'
+	set ambiwidth=double
+endif
+source $VIMRUNTIME/delmenu.vim
+source $VIMRUNTIME/lang/menu_english_united_kingdom.ascii.vim "english menu
+lan mes en_US.UTF-8
+"}}}
 "{{{gui releate
 "list of flags that specify how the GUI works
 set rtp+=$VIM/.vim/bundle/Colour-Sampler-Pack/
@@ -17,8 +33,8 @@ if(has("gui_running"))
 	if has("gui_gtk2")
 		set guifont=Monaco\ 14
 	else
-		set guifont=Dejavu_Sans_Mono:h11:cANSI
-		set gfw=Î¢ÈíÑÅºÚ:h11
+		set guifont=Bitstream_Vera_Sans_Mono:h14:cANSI
+		set gfw=Yahei_Mono:h14.5:cGB2312
 	endif
 	colorscheme wombat
 	set guioptions-=b
@@ -27,20 +43,9 @@ if(has("gui_running"))
 	set guioptions-=l "whether show the left scroll bar
 	"set guioptions-=T "whether show toolbar or not
 	set guitablabel=%N\ %t  "do not show dir in tab
+	set t_Co=256
+	" Nice window title
 endif
-"}}}
-"{{{encode
-set encoding=utf-8
-set fileencodings=utf-8,chinese,latin-1,cp936
-if has("win32")
-set fileencoding=utf-8
-else
-set fileencoding=utf-8
-endif
-source $VIMRUNTIME/delmenu.vim
-source $VIMRUNTIME/menu.vim
-language messages zh_CN.utf-8
-set ff=dos
 "}}}
 "{{{system check
 if (has("win32"))
@@ -120,6 +125,16 @@ set background=dark
 
 syntax on "open syntax
 
+set ffs=dos,unix,mac
+
+nmap <F4> :call Dosunix()<cr>
+func! Dosunix()
+	if &ff == 'unix'
+		exec "se ff=dos"
+	else
+		exec "se ff=unix"
+	endif
+endfunc
 "display unprintable characters by set list
 "set list
 "Strings to use in 'list' mode and for the |:list| command
@@ -127,7 +142,7 @@ set listchars=tab:\|\ ,trail:-
 
 " Uncomment the following to have Vim jump to the last position when
 " reopening a file
-"au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 
 "{{{backup
 set backup "generate a backupfile when open file
@@ -167,8 +182,8 @@ set cmdheight=1
 "when inserting a bracket, briefly jump to its match
 set showmatch
 
-"name of the font to be used for :hardcopy,æ‰“å°
-set printfont=yaheimono:h10:cGB2312
+"name of the font to be used for :hardcopy
+set printfont=Yahei_Mono:h10:cGB2312
 
 "override 'ignorecase' when pattern has upper case characters
 set smartcase
@@ -238,8 +253,8 @@ set autochdir
 
 "alternate format to be used for a status line
 set statusline+=%<%f%m%r%h%w%([%{Tlist_Get_Tagname_By_Line()}]%)
-set statusline+=%=[FORMAT=%{&ff}]\ [TYPE=%Y]\ [ASCII=\%03.3b]\ [HEX=\%02.2B]
-set statusline+=%{strftime(\"%d/%m/%y\ -\ %H:%M\")}
+set statusline+=%=[FORMAT=%{(&fenc!=''?&fenc:&enc)}:%{&ff}]\ [ASCII=\%03.3b]\ [HEX=\%02.2B]
+set statusline+=%{strftime(\"%y/%m/%d\ -\ %H:%M\")}
 "0, 1 or 2; when to use a status line for the last window
 set laststatus=2 "always show status
 "highlight StatusLine guifg=SlateBlue guibg=Yellow 
@@ -252,10 +267,6 @@ au InsertEnter * hi StatusLine guibg=#818D29 guifg=#FCFCFC gui=none
 au InsertLeave * hi StatusLine guifg=Black guibg=White gui=none
 endif
 
-
-"0, 1 or 2; when to use a status line for the last window
-set laststatus=2 "always show status
-
 "automatic recognition vt file as verilog 
 au BufRead,BufNewFile *.vt set filetype=verilog
 
@@ -264,6 +275,9 @@ au BufRead,BufNewFile *.bld set filetype=javascript
 
 "automatic recognition xdc file as javascript
 au BufRead,BufNewFile *.xdc set filetype=javascript
+"set tabpagemax=20
+"autocmd VimEnter * tab all 
+"autocmd BufAdd * exec 'tablast | tabe "' . expand( "<afile") .'"'
 "}}}
 "{{{key mapping
 
@@ -276,7 +290,6 @@ let mapleader=","
 nmap <leader>vc :e $MYVIMRC<cr>
 "update the _vimrc
 map <leader>so :source $MYVIMRC<CR>:e<CR>
-
 " <Enter> always means inserting line.
 "nmap <Enter> o<ESC>
 
@@ -286,11 +299,14 @@ noremap <a-q> :nohls<CR>
 "save file
 nmap <c-s> <esc>:w<cr>
 imap <c-s> <esc>:w<cr>a
-
-"map! <2-LeftMouse> <c-o>*
+map <2-LeftMouse> *N
+au FileType qf call Unmap()
+func! Unmap()
+	unmap <2-LeftMouse>
+endfunc
 "autocmd CursorMoved * silent! exe printf('match Underlined /\<%s\>/', expand('<cword>'))
 "autocmd CursorHold * silent! exe printf('match Underlined /\<%s\>/', expand('<cword>'))
-set ut=1500
+"set ut=1500
 "select all
 nmap <m-a> <esc>ggVG
 
@@ -320,7 +336,7 @@ imap <A-j> <Down>
 imap <A-k> <Up>
 
 "replace
-nmap <c-h> :%s/<C-R>=expand('<cword>')<cr>
+nmap <c-h> :%s/<C-R>=expand("<cword>")<cr>/
 
 "{{{compile releate
 map <F1> :call Do_OneFileMake()<CR>
@@ -489,7 +505,7 @@ let g:tagbar_autofocus = 1
 let g:tagbar_compact = 1
 let g:tagbar_systemenc='cp936'
 "}}}
-"{{{tilst
+"{{{taglist
 if (has("win32"))
 	let Tlist_Ctags_Cmd='c:/VimTools/ctags.exe'
 else
@@ -589,7 +605,11 @@ nmap <C-@><C-@>d :vert scs find d <C-R>=expand("<cword>")<CR><CR>
 "set timeoutlen=4000
 "set ttimeout
 "set ttimeoutlen=100
-nmap <leader>u :call CreateCscopeTags()<cr>
+if g:iswindows==1 
+	nmap <leader>u :call Do_CsTag()<cr>
+else
+	nmap <leader>u :call CreateCscopeTags()<cr>
+endif
 nmap <leader>a :cs add cscope.out<cr>
 nmap <leader>k :cs kill -1<cr>
 function! CreateCscopeTags()
@@ -602,18 +622,69 @@ function! CreateCscopeTags()
 	else
 		execute "echo \"Creating cscope.files...\r\"" 
 	endif
-	if(g:iswindows==1)
-		call system("echo > cscope.files")
-		call system("set Path=c:\VimTools\;C:\MinGW\bin;")
-		call system("unix_find %~dp0 -name \"*.[chsS]\" > ./cscope.files")
-	else
-		call system("touch cscope.files")
-		call system("find $PWD -name \"*.[chsS]\" > ./cscope.files")
-	endif
+	call system("touch cscope.files")
+	call system("find $PWD -name \"*.[chsS]\" > ./cscope.files")
 	call system("cscope -bkq -i cscope.files")
 	call system("ctags -R")
 	execute "echo \"finish!\"" 
 	cs add cscope.out
+endfunction
+function! Do_CsTag()
+	let dir = getcwd()
+	if filereadable("tags")
+		if(g:iswindows==1)
+			let tagsdeleted=delete(dir."\\"."tags")
+		else
+			let tagsdeleted=delete("./"."tags")
+		endif
+		if(tagsdeleted!=0)
+			echohl WarningMsg | echo "Fail to do tags! I cannot delete the tags" | echohl None
+			return
+		endif
+	endif
+	if has("cscope")
+		silent! execute "cs kill -1"
+	endif
+	if filereadable("cscope.files")
+		if(g:iswindows==1)
+			let csfilesdeleted=delete(dir."\\"."cscope.files")
+		else
+			let csfilesdeleted=delete("./"."cscope.files")
+		endif
+		if(csfilesdeleted!=0)
+			echohl WarningMsg | echo "Fail to do cscope! I cannot delete the cscope.files" | echohl None
+			return
+		endif
+	endif
+	if filereadable("cscope.out")
+		if(g:iswindows==1)
+			let csoutdeleted=delete(dir."\\"."cscope.out")
+		else
+			let csoutdeleted=delete("./"."cscope.out")
+		endif
+		if(csoutdeleted!=0)
+			echohl WarningMsg | echo "Fail to do cscope! I cannot delete the cscope.out" | echohl None
+			return
+		endif
+	endif
+	if(executable('ctags'))
+		"silent! execute "!ctags -R --c-types=+p --fields=+S *"
+		silent! execute "!ctags -R --c++-kinds=+p --fields=+iaS --extra=+q ."
+	endif
+	if(executable('cscope') && has("cscope") )
+		if(g:iswindows!=1)
+			silent! execute "!unix_find . -name \"*.[chsS]\" > ./cscope.files"
+		else
+			silent! execute "!dir /s/b *.c,*.cpp,*.h,*.java,*.cs >> cscope.files"
+		endif
+		silent! execute "!cscope -bk -i cscope.files"
+		execute "normal :"
+		if filereadable("cscope.out")
+			execute "cs add cscope.out"
+		else
+			echohl WarningMsg | echo "No cscope.out" | echohl None
+		endif
+	endif
 endfunction
 "}}}
 "{{{srcexpl.vim
@@ -806,7 +877,7 @@ let NERDTreeWinPos='right'	"show nerdtree in the rigth side
 let NERDTreeShowBookmarks=1
 let NERDTreeChDirMode=2
 map <F12> :NERDTreeToggle .<CR> 
-map <2-LeftMouse>  *N
+"map <2-LeftMouse>  *N "double click highlight the current cursor word 
 imap <F12> <ESC> :NERDTreeToggle<CR>
 "}}}
 "{{{BufExplorer
@@ -835,6 +906,7 @@ if (has("win32"))
 else
 	map <A-space> :ConqueTermSplit bash<cr> 
 endif
+
 "}}}
 "{{{a.vim
 ":A switches to the header file corresponding to the current file being  edited (or vise versa)
@@ -867,6 +939,23 @@ au FileType verilog,c let b:delimitMate_matchpairs = "(:),[:],{:}"
 let delimitMate_nesting_quotes = ['"','`']
 let delimitMate_expand_cr = 1
 let delimitMate_expand_space = 1
+"}}}
+"{{{doxygen
+let g:load_doxygen_syntax=0
+let g:DoxygenToolkit_briefTag_pre = "@brief\t"
+let g:DoxygenToolkit_briefTag_funcName = "yes"
+let g:DoxygenToolkit_paramTag_pre="@param\t"
+let g:DoxygenToolkit_returnTag="@returns\t"
+let g:DoxygenToolkit_versionTag = "@version\t1.0"
+let g:DoxygenToolkit_authorName="tracyone,tracyone@live.cn"
+let s:licenseTag="Copyright(C)"
+let g:DoxygenToolkit_licenseTag = s:licenseTag
+let g:doxygen_enhanced_color=1
+let g:DoxygenToolkit_versionString="" 
+map <F3>a :DoxAuthor
+map <F3>f :Dox
+map <F3>b :DoxBlock
+map <F3>c O/** */<Left><Left>
 "}}}
 "{{{vundle
 let s:justvundled = 0
@@ -924,20 +1013,21 @@ Bundle 'ShowMarks7'
 Bundle 'SrcExpl'
 Bundle 'surround.vim'
 Bundle 'Tagbar'
-Bundle 'taglist.vim'
+Bundle 'tracyone/taglist'
 Bundle 'unite.vim'
 Bundle 'vimdoc'
 Bundle 'L9'
 Bundle 'ZenCoding.vim'
 Bundle 'vimwiki'
 Bundle 'matrix.vim--Yang'
-Bundle 'FencView.vim'
+Bundle 'adah1972/fencview'
 Bundle 'Markdown'
 Bundle 'LaTeX-Suite-aka-Vim-LaTeX'
 Bundle 'DrawIt'
 Bundle 'altercation/vim-colors-solarized'
 Bundle 'mbbill/VimExplorer'
 Bundle 'renamer.vim'
+Bundle 'tracyone/doxygen'
  
 " non github reposo
 " Bundle 'git://git.wincent.com/command-t.git'
@@ -955,9 +1045,11 @@ Bundle 'renamer.vim'
 "let g:loaded_indentLine=0
 "let g:indentLine_color_gui = '#A4E57E'
 "let g:indentLine_enabled = 1
-let g:fencview_autodetect=1
+let g:fencview_autodetect=0 "it is look like a conflict with c.vim 
+let g:fencview_auto_patterns='*.txt,*.htm{l\=},*.c,*.cpp,*.s,*.vim'
 let g:NERDMenuMode=0
-set t_Co=256
 set fillchars+=stl:\ ,stlnc:\
-
+if has('win32')
+ cd -
+endif
 "}}}
