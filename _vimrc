@@ -2,8 +2,7 @@
 "@brief      for windows's gvim
 "@date       2012-12-30 11:01:30
 "@author     tracyone<tracyone@live.cn>
-"@lastchange 2013-5-12 23:26:22
-"@note		 only english allowed
+"@lastchange 2013-5-13 23:32:31
 """"""""""""""""""""""""""""""""""""""""""""""""""""
 
 set nocp  "behave very Vi compatible (not advisable) 
@@ -12,8 +11,8 @@ filetype plugin indent on  "Vim load indentation rules and plugins according to 
 
 "{{{encode
 set encoding=utf-8
-if has("win32")
-	set fileencoding=utf-8
+if has("win32") || has("win64")
+	set fileencoding=chinese
 else
 	set fileencoding=utf-8
 endif
@@ -23,7 +22,7 @@ if v:lang=~? '^\(zh\)\|\(ja\)\|\(ko\)'
 	set ambiwidth=double
 endif
 source $VIMRUNTIME/delmenu.vim
-source $VIMRUNTIME/lang/menu_english_united_kingdom.ascii.vim "english menu
+source $VIMRUNTIME/menu.vim
 lan mes en_US.UTF-8
 "}}}
 "{{{gui releate
@@ -48,7 +47,7 @@ if(has("gui_running"))
 endif
 "}}}
 "{{{system check
-if (has("win32"))
+if (has("win32")) || has("win64")
 	let $HOME=$VIM
 	set filetype=dos
 	behave  xterm
@@ -112,6 +111,7 @@ function! MyFoldText()
 	let sub = strpart( sub, 0, winwidth(0) - strlen( info ) - num_w - fold_w - 1 )
 	return sub . info
 endfunction
+nnoremap <space> za
 set foldtext=MyFoldText()
 autocmd FileType vim set foldmethod=marker 
 autocmd FileType vim set foldlevel=0
@@ -250,9 +250,8 @@ set clipboard+=unnamed
 
 "change to directory of file in buffer
 set autochdir
-
 "alternate format to be used for a status line
-set statusline+=%<%f%m%r%h%w%([%{Tlist_Get_Tagname_By_Line()}]%)
+set statusline+=%<%f%m%r%h%w%{tagbar#currenttag('[%s]','')}
 set statusline+=%=[FORMAT=%{(&fenc!=''?&fenc:&enc)}:%{&ff}]\ [ASCII=\%03.3b]\ [HEX=\%02.2B]
 set statusline+=%{strftime(\"%y/%m/%d\ -\ %H:%M\")}
 "0, 1 or 2; when to use a status line for the last window
@@ -290,25 +289,27 @@ let mapleader=","
 nmap <leader>vc :e $MYVIMRC<cr>
 "update the _vimrc
 map <leader>so :source $MYVIMRC<CR>:e<CR>
-" <Enter> always means inserting line.
-"nmap <Enter> o<ESC>
 
 "clear search result
 noremap <a-q> :nohls<CR>
 
 "save file
-nmap <c-s> <esc>:w<cr>
-imap <c-s> <esc>:w<cr>a
-map <2-LeftMouse> *N
-au FileType qf call Unmap()
-func! Unmap()
-	unmap <2-LeftMouse>
-endfunc
-"autocmd CursorMoved * silent! exe printf('match Underlined /\<%s\>/', expand('<cword>'))
-"autocmd CursorHold * silent! exe printf('match Underlined /\<%s\>/', expand('<cword>'))
-"set ut=1500
+" Use CTRL-S for saving, also in Insert mode
+noremap <C-S>		:update<CR>
+vnoremap <C-S>		<C-C>:update<CR>
+inoremap <C-S>		<C-O>:update<CR>
+
+map <S-Insert>		"+gP
+cmap <C-V>		<C-R>+
+cmap <S-Insert>		<C-R>+
+
 "select all
-nmap <m-a> <esc>ggVG
+noremap <m-a> gggH<C-O>G
+inoremap <m-a> <C-O>gg<C-O>gH<C-O>G
+cnoremap <m-a> <C-C>gggH<C-O>G
+onoremap <m-a> <C-C>gggH<C-O>G
+snoremap <m-a> <C-C>gggH<C-O>G
+xnoremap <m-a> <C-C>ggVG
 
 "Alignment
 nmap <m-=> <esc>ggVG=``
@@ -326,9 +327,7 @@ set mat=2
 vnoremap <C-C> "+y
 
 " CTRL-V and SHIFT-Insert are Paste
-imap <C-V>		<esc>"+gP
-cmap <c-v>	<c-r>*
-
+"
 "move
 imap <A-h> <Left>
 imap <A-l> <Right>
@@ -492,52 +491,13 @@ nmap <silent><leader>ft :FufTag<cr>
 let g:user_zen_expandabbr_key='<C-j>'
 "}}}
 "{{{tagbar
-nmap <silent><leader>tb :TagbarToggle<CR>
-if has("win32")
-	let g:tagbar_ctags_bin='c:\VimTools\ctags.exe'
-else
-	let g:tagbar_ctags_bin='ctags' 
-endif
+nmap <silent><F2> :TagbarToggle<CR>
 let g:tagbar_left=1
 let g:tagbar_width=30
 let g:tagbar_sort=0
 let g:tagbar_autofocus = 1
 let g:tagbar_compact = 1
 let g:tagbar_systemenc='cp936'
-"}}}
-"{{{taglist
-if (has("win32"))
-	let Tlist_Ctags_Cmd='c:/VimTools/ctags.exe'
-else
-	let Tlist_Ctags_Cmd='/usr/bin/ctags'	"Specifies the path to the ctags utility.
-endif
-let Tlist_Auto_Highlight_Tag=1			
-let Tlist_Auto_Open=0					"To automatically open the taglist window
-let Tlist_Close_On_Select=0				"If you want to close the taglist window when a file or tag is selected,then set it
-let Tlist_Exit_OnlyWindow=1				"If you want to exit Vim if only the taglist window is currently opened,then set it
-
-"To automatically close the tags tree for inactive files, you can set the
-"'Tlist_File_Fold_Auto_Close' variable to 1. When this variable is set to 1,
-"the tags tree for the current buffer is automatically opened and for all the
-"other buffers is closed.
-let Tlist_File_Fold_Auto_Close=1	
-let Tlist_GainFocus_On_ToggleOpen=1		" controls whether the cursor is moved to the taglist window or remains
-"in the current window.
-let Tlist_Max_Submenu_Items=25
-let Tlist_Max_Tag_length=20
-let Tlist_Process_File_Always=0		" generate the listof tags for new files even when the taglist window is closed 
-let Tlist_Show_Menu=1				"When using GUI Vim,set this can show the menu
-let Tlist_Show_One_File=1
-let Tlist_Sort_Type='order'			
-let Tlist_OnlyWindow=1
-let Tlist_Use_Right_Window=1
-let Tlist_Use_SingleClick=0			"single click open the tag
-let Tlist_WinHeight=10
-let Tlist_WinWidth=18
-let Tlist_Use_Horiz_Window=0
-let Tlist_Enable_Fold_Column =0 
-let Tlist_Display_Prototype = 0
-map <silent> <leader>tl :TlistToggle<CR>
 "}}}
 "{{{cscope
 if filereadable("cscope.out")
@@ -726,10 +686,14 @@ let g:SrcExpl_isUpdateTags = 0
 let g:SrcExpl_updateTagsCmd = "ctags --sort=foldcase -R ."
 "                                                                              
 " // Set "<F12>" key for updating the tags file artificially                   
-let g:SrcExpl_updateTagsKey = "<F3>"
-"                                                                              
-" Just_change_above_of_them_by_yourself:                                     
-"                                                                              
+"let g:SrcExpl_updateTagsKey = "<F3>"
+" // Set "<F3>" key for displaying the previous definition in the jump list 
+ let g:SrcExpl_prevDefKey = "<c-p>" 
+
+ " // Set "<F4>" key for displaying the next definition in the jump list 
+ let g:SrcExpl_nextDefKey = "<C-n>" 
+
+                                                                             
 "}}}
 "{{{neocomplcache
 " Use neocomplcache. 
@@ -837,7 +801,7 @@ inoremap <expr><C-e>  neocomplcache#cancel_popup()
 "{{{unite.vim 
 
 nnoremap    [unite]   <Nop>
-nmap    <space> [unite]
+nmap    <F4> [unite]
 
 nnoremap <silent> [unite]c  :<C-u>UniteWithCurrentDir -buffer-name=files buffer file_mru bookmark file<CR>
 nnoremap <silent> [unite]b  :Unite buffer -input=!split<CR>
@@ -901,7 +865,7 @@ let g:ConqueTerm_StartMessages = 0
 let g:ConqueTerm_PromptRegex = '^\w\+@[0-9A-Za-z_.-]\+:[0-9A-Za-z_./\~,:-]\+\$'
 let g:ConqueTerm_Syntax = 'conque'
 let g:ConqueTerm_CodePage=0
-if (has("win32"))
+if (has("win32")) || has("win64")
 	map <A-space> :ConqueTermSplit cmd.exe<cr> 
 else
 	map <A-space> :ConqueTermSplit bash<cr> 
@@ -957,6 +921,38 @@ map <F3>f :Dox
 map <F3>b :DoxBlock
 map <F3>c O/** */<Left><Left>
 "}}}
+"{{{CCtree
+" map :CCTreeLoadXRefDBFromDisk $CCTREE_DB
+
+" eg.
+
+" export CSCOPE_DB=/home/tags/cscope.out
+
+" export CCTREE_DB=/home/tags/cctree.out
+
+" export MYTAGS_DB=/home/tags/tags
+
+" (1) map xxx :CCTreeLoadDB $CSCOPE_DB 
+
+" (2) map xxx :CCTreeAppendDB $CSCOPE_DB2 
+
+" (3) map xxx :CCTreSaveXRefDB $CSCOPE_DB 
+
+" (4) map xxx :CCTreeLoadXRefDB $CSCOPE_DB
+
+map xxx :CCTreeLoadXRefDBFromDisk $CSCOPE_DB
+
+" (5) map xxx :CCTreeUnLoadDB 
+
+let g:CCTreeDisplayMode = 3 
+
+let g:CCTreeWindowVertical = 0
+
+let g:CCTreeWindowMinWidth = 40 
+
+let g:CCTreeUseUTF8Symbols = 1
+map <F7> :CCTreeLoadXRefDBFromDisk $CCTREE_DB<cr> 
+"}}}
 "{{{vundle
 let s:justvundled = 0
 if has('win32')
@@ -1010,10 +1006,9 @@ Bundle 'neocomplcache'
 Bundle 'The-NERD-Commenter'
 Bundle 'scrooloose/nerdtree'
 Bundle 'ShowMarks7'
-Bundle 'SrcExpl'
+Bundle 'wesleyche/SrcExpl'
 Bundle 'surround.vim'
-Bundle 'Tagbar'
-Bundle 'tracyone/taglist'
+Bundle 'majutsushi/tagbar'
 Bundle 'unite.vim'
 Bundle 'vimdoc'
 Bundle 'L9'
@@ -1028,6 +1023,7 @@ Bundle 'altercation/vim-colors-solarized'
 Bundle 'mbbill/VimExplorer'
 Bundle 'renamer.vim'
 Bundle 'tracyone/doxygen'
+Bundle 'CCTree'
  
 " non github reposo
 " Bundle 'git://git.wincent.com/command-t.git'
@@ -1048,7 +1044,6 @@ Bundle 'tracyone/doxygen'
 let g:fencview_autodetect=0 "it is look like a conflict with c.vim 
 let g:fencview_auto_patterns='*.txt,*.htm{l\=},*.c,*.cpp,*.s,*.vim'
 let g:NERDMenuMode=0
-set fillchars+=stl:\ ,stlnc:\
 if has('win32')
  cd -
 endif
