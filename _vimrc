@@ -2,7 +2,7 @@
 "@brief      for windows's gvim
 "@date       2012-12-30 11:01:30
 "@author     tracyone<tracyone@live.cn>
-"@lastchange 2013-5-13 23:32:31
+"@lastchange 2013-5-14 23:42:09
 """"""""""""""""""""""""""""""""""""""""""""""""""""
 
 set nocp  "behave very Vi compatible (not advisable) 
@@ -111,10 +111,10 @@ function! MyFoldText()
 	let sub = strpart( sub, 0, winwidth(0) - strlen( info ) - num_w - fold_w - 1 )
 	return sub . info
 endfunction
-nnoremap <space> za
 set foldtext=MyFoldText()
 autocmd FileType vim set foldmethod=marker 
 autocmd FileType vim set foldlevel=0
+nmap <TAB> za
 "set foldtext=foldtext()
 "}}}
 "{{{basic setting
@@ -282,7 +282,9 @@ au BufRead,BufNewFile *.xdc set filetype=javascript
 
 ""no", "yes" or "menu"; how to use the ALT key
 set winaltkeys=no
-
+"visual mode hit tab forward indent ,hit shift-tab backward indent
+vmap <TAB>  >gv  
+vmap <s-TAB>  <gv 
 "leader key
 let mapleader=","
 "open the vimrc
@@ -461,9 +463,6 @@ function! CmdLine(str)
 	unmenu Foo
 endfunction
 "}}}
-
-vnoremap <silent> > >gv
-vnoremap <silent> < <gv
 "}}}
 "{{{plugin setting
 
@@ -565,6 +564,9 @@ nmap <C-@><C-@>d :vert scs find d <C-R>=expand("<cword>")<CR><CR>
 "set timeoutlen=4000
 "set ttimeout
 "set ttimeoutlen=100
+if filereadable('ccglue.out')
+  autocmd VimEnter * CCTreeLoadXRefDBFromDisk ccglue.out
+endif
 if g:iswindows==1 
 	nmap <leader>u :call Do_CsTag()<cr>
 else
@@ -584,7 +586,7 @@ function! CreateCscopeTags()
 	endif
 	call system("touch cscope.files")
 	call system("find $PWD -name \"*.[chsS]\" > ./cscope.files")
-	call system("cscope -bkq -i cscope.files")
+	call system("cscope -Rbckq -i cscope.files")
 	call system("ctags -R")
 	execute "echo \"finish!\"" 
 	cs add cscope.out
@@ -628,19 +630,22 @@ function! Do_CsTag()
 		endif
 	endif
 	if(executable('ctags'))
-		"silent! execute "!ctags -R --c-types=+p --fields=+S *"
+		silent! execute "!ctags -R --c-types=+p --fields=+S *"
 		silent! execute "!ctags -R --c++-kinds=+p --fields=+iaS --extra=+q ."
 	endif
 	if(executable('cscope') && has("cscope") )
 		if(g:iswindows!=1)
-			silent! execute "!unix_find . -name \"*.[chsS]\" > ./cscope.files"
+			silent! execute "!find . -name \"*.[chsS]\" > ./cscope.files"
 		else
 			silent! execute "!dir /s/b *.c,*.cpp,*.h,*.java,*.cs >> cscope.files"
 		endif
-		silent! execute "!cscope -bk -i cscope.files"
+		silent! execute "!cscope -Rbkq -i cscope.files"
+		silent! execute "!ccglue -S cscope.out -o ccglue.out"
 		execute "normal :"
 		if filereadable("cscope.out")
 			execute "cs add cscope.out"
+			"execute "CCTreeLoadDB cscope.out"
+			execute "CCTreeLoadXRefDBFromDisk ccglue.out"
 		else
 			echohl WarningMsg | echo "No cscope.out" | echohl None
 		endif
@@ -801,7 +806,7 @@ inoremap <expr><C-e>  neocomplcache#cancel_popup()
 "{{{unite.vim 
 
 nnoremap    [unite]   <Nop>
-nmap    <F4> [unite]
+nmap   <SPACE> [unite]
 
 nnoremap <silent> [unite]c  :<C-u>UniteWithCurrentDir -buffer-name=files buffer file_mru bookmark file<CR>
 nnoremap <silent> [unite]b  :Unite buffer -input=!split<CR>
@@ -843,14 +848,6 @@ let NERDTreeChDirMode=2
 map <F12> :NERDTreeToggle .<CR> 
 "map <2-LeftMouse>  *N "double click highlight the current cursor word 
 imap <F12> <ESC> :NERDTreeToggle<CR>
-"}}}
-"{{{BufExplorer
-let g:bufExplorerDefaultHelp=1       " Do not show default help.
-let g:bufExplorerShowRelativePath=1  " Show relative paths.
-let g:bufExplorerSortBy='mru'        " Sort by most recently used.
-let g:bufExplorerSplitRight=0        " Split left.
-let g:bufExplorerUseCurrentWindow=1  " Open in new window
-let g:bufExplorerShowDirectories=1   " Show directories.
 "}}}
 "{{{conqueterm.vim
 "ConqueTerm        <command>: open in current window<command> 
@@ -922,36 +919,16 @@ map <F3>b :DoxBlock
 map <F3>c O/** */<Left><Left>
 "}}}
 "{{{CCtree
-" map :CCTreeLoadXRefDBFromDisk $CCTREE_DB
-
-" eg.
-
-" export CSCOPE_DB=/home/tags/cscope.out
-
-" export CCTREE_DB=/home/tags/cctree.out
-
-" export MYTAGS_DB=/home/tags/tags
-
-" (1) map xxx :CCTreeLoadDB $CSCOPE_DB 
-
-" (2) map xxx :CCTreeAppendDB $CSCOPE_DB2 
-
-" (3) map xxx :CCTreSaveXRefDB $CSCOPE_DB 
-
-" (4) map xxx :CCTreeLoadXRefDB $CSCOPE_DB
-
-map xxx :CCTreeLoadXRefDBFromDisk $CSCOPE_DB
-
-" (5) map xxx :CCTreeUnLoadDB 
-
-let g:CCTreeDisplayMode = 3 
-
-let g:CCTreeWindowVertical = 0
-
-let g:CCTreeWindowMinWidth = 40 
-
-let g:CCTreeUseUTF8Symbols = 1
-map <F7> :CCTreeLoadXRefDBFromDisk $CCTREE_DB<cr> 
+let g:CCTreeKeyTraceForwardTree = '<C-\>>'
+let g:CCTreeKeyTraceReverseTree = '<C-\><'
+let g:CCTreeKeyHilightTree = '<C-\>l' " Static highlighting
+let g:CCTreeKeySaveWindow = '<C-\>y'
+let g:CCTreeKeyToggleWindow = '<C-\>w'
+let g:CCTreeKeyCompressTree = 'zs' " Compress call-tree
+let g:CCTreeKeyDepthPlus = '<C-\>='
+let g:CCTreeKeyDepthMinus = '<C-\>-'
+"let g:CCTreeUseUTF8Symbols = 1
+"map <F7> :CCTreeLoadXRefDBFromDisk $CCTREE_DB<cr> 
 "}}}
 "{{{vundle
 let s:justvundled = 0
