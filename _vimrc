@@ -2,17 +2,17 @@
 "@brief      for windows's gvim
 "@date       2012-12-30 11:01:30
 "@author     tracyone<tracyone@live.cn>
-"@lastchange 2013-5-14 23:42:09
+"@Last modified:
 """"""""""""""""""""""""""""""""""""""""""""""""""""
 
 set nocp  "behave very Vi compatible (not advisable) 
-
 filetype plugin indent on  "Vim load indentation rules and plugins according to the detected filetype
+syntax on "open syntax
 
 "{{{encode
 set encoding=utf-8
 if has("win32") || has("win64")
-	set fileencoding=chinese
+	set fileencoding=utf-8
 else
 	set fileencoding=utf-8
 endif
@@ -22,29 +22,8 @@ if v:lang=~? '^\(zh\)\|\(ja\)\|\(ko\)'
 	set ambiwidth=double
 endif
 source $VIMRUNTIME/delmenu.vim
-source $VIMRUNTIME/menu.vim
 lan mes en_US.UTF-8
-"}}}
-"{{{gui releate
-"list of flags that specify how the GUI works
-set rtp+=$VIM/.vim/bundle/Colour-Sampler-Pack/
-if(has("gui_running"))
-	if has("gui_gtk2")
-		set guifont=Monaco\ 14
-	else
-		set guifont=Bitstream_Vera_Sans_Mono:h14:cANSI
-		set gfw=Yahei_Mono:h14.5:cGB2312
-	endif
-	colorscheme wombat
-	set guioptions-=b
-	"set guioptions-=m "whether use menu
-	set guioptions-=r "whether show the rigth scroll bar
-	set guioptions-=l "whether show the left scroll bar
-	"set guioptions-=T "whether show toolbar or not
-	set guitablabel=%N\ %t  "do not show dir in tab
-	set t_Co=256
-	" Nice window title
-endif
+"set langmenu=nl_NL.ISO_8859-1
 "}}}
 "{{{system check
 if (has("win32")) || has("win64")
@@ -58,9 +37,6 @@ if (has("win32")) || has("win64")
 elseif has("unix")
 	set filetype=unix
 	behave xterm
-	if filereadable("/etc/vim/vimrc.local")
-		source /etc/vim/vimrc.local
-	endif
 	set shell=bash
 	runtime! debian.vim
 	set path=./,/usr/include/,, "list of directory names used for file searching
@@ -70,6 +46,7 @@ elseif has("unix")
 elseif has("mac")
 endif
 "}}}
+"{{{basic setting
 "{{{fold setting
 "folding type: "manual", "indent", "expr", "marker" or "syntax"
 set foldenable                  " enable folding
@@ -117,13 +94,10 @@ autocmd FileType vim set foldlevel=0
 nmap <TAB> za
 "set foldtext=foldtext()
 "}}}
-"{{{basic setting
 
 " If using a dark background within the editing area and syntax highlighting
 " turn on this option as well
 set background=dark
-
-syntax on "open syntax
 
 set ffs=dos,unix,mac
 
@@ -252,8 +226,9 @@ set clipboard+=unnamed
 set autochdir
 "alternate format to be used for a status line
 set statusline+=%<%f%m%r%h%w%{tagbar#currenttag('[%s]','')}
-set statusline+=%=[FORMAT=%{(&fenc!=''?&fenc:&enc)}:%{&ff}]\ [ASCII=\%03.3b]\ [HEX=\%02.2B]
+set statusline+=%=[FORMAT=%{(&fenc!=''?&fenc:&enc)}:%{&ff}:%Y]\ [ASCII=\%03.3b]\ [HEX=\%02.2B] 
 set statusline+=%{strftime(\"%y/%m/%d\ -\ %H:%M\")}
+
 "0, 1 or 2; when to use a status line for the last window
 set laststatus=2 "always show status
 "highlight StatusLine guifg=SlateBlue guibg=Yellow 
@@ -340,9 +315,8 @@ imap <A-k> <Up>
 nmap <c-h> :%s/<C-R>=expand("<cword>")<cr>/
 
 "{{{compile releate
-map <F1> :call Do_OneFileMake()<CR>
-
-map <F6> :call Do_make()<CR>
+map <C-F7> :call Do_OneFileMake()<CR>
+map <F7> :call Do_make()<CR>
 map <c-F6> :silent make clean<CR>
 
 "debug func
@@ -490,7 +464,7 @@ nmap <silent><leader>ft :FufTag<cr>
 let g:user_zen_expandabbr_key='<C-j>'
 "}}}
 "{{{tagbar
-nmap <silent><F2> :TagbarToggle<CR>
+nmap <silent><F3> :TagbarToggle<CR>
 let g:tagbar_left=1
 let g:tagbar_width=30
 let g:tagbar_sort=0
@@ -499,22 +473,35 @@ let g:tagbar_compact = 1
 let g:tagbar_systemenc='cp936'
 "}}}
 "{{{cscope
-if filereadable("cscope.out")
-	cs add cscope.out
-	if has("cscope")
-		" use both cscope and ctag for 'ctrl-]', ':ta', and 'vim -t'
-		set cscopetag
-		set csprg=cscope
-		" check cscope for definition of a symbol before checking ctags: set to 1
-		" if you want the reverse search order.
-		set csto=0
-		""set cscopequickfix=s+,c+,d+,i+,t-,e-
-		" add any cscope database in current directory
-		" else add the database pointed to by environment variable 
-		set cscopetagorder=0
-	elseif $CSCOPE_DB != ""
-		cs add $CSCOPE_DB
-	endif
+if filereadable("cscope.out") "if current dir exist then add it 
+au FileType c,cpp,s,cc,h cs add cscope.out
+endif
+if $CSCOPE_DB != "" "tpyically it is a include db 
+au FileType c,cpp,s,cc,h cs add $CSCOPE_DB
+endif
+if $CSCOPE_DB1 != ""
+au FileType c,cpp,s,cc,h cs add $CSCOPE_DB1
+endif
+if $CSCOPE_DB2 != ""
+au FileType c,cpp,s,cc,h cs add $CSCOPE_DB2
+endif
+if $CSCOPE_DB3 != ""
+au FileType c,cpp,s,cc,h cs add $CSCOPE_DB3
+endif
+if filereadable('ccglue.out') "this guy is more efficiency 
+au FileType c,cpp,s,cc,h CCTreeLoadXRefDBFromDisk ccglue.out
+endif
+if has("cscope")
+	" use both cscope and ctag for 'ctrl-]', ':ta', and 'vim -t'
+	set cscopetag
+	set csprg=cscope
+	" check cscope for definition of a symbol before checking ctags: set to 1
+	" if you want the reverse search order.
+	set csto=0
+	""set cscopequickfix=s+,c+,d+,i+,t-,e-
+	" add any cscope database in current directory
+	" else add the database pointed to by environment variable 
+	set cscopetagorder=0
 endif
 	set cscopeverbose 
 " show msg when any other cscope db added
@@ -528,7 +515,7 @@ nmap  <Leader>e :cs find e <C-R>=expand("<cword>")<CR><CR>
 nmap  <Leader>f :cs find f <C-R>=expand("<cfile>")<CR><CR>	
 nmap  <Leader>i :cs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
 nmap  <Leader>d :cs find d <C-R>=expand("<cword>")<CR><CR>	
-
+"manual input 
 nmap <C-\>s :cs find s 
 nmap <C-\>g :cs find g 
 nmap <C-\>c :cs find c 
@@ -564,18 +551,20 @@ nmap <C-@><C-@>d :vert scs find d <C-R>=expand("<cword>")<CR><CR>
 "set timeoutlen=4000
 "set ttimeout
 "set ttimeoutlen=100
-if filereadable('ccglue.out')
-  autocmd VimEnter * CCTreeLoadXRefDBFromDisk ccglue.out
-endif
 if g:iswindows==1 
 	nmap <leader>u :call Do_CsTag()<cr>
 else
 	nmap <leader>u :call CreateCscopeTags()<cr>
 endif
-nmap <leader>a :cs add cscope.out<cr>
-nmap <leader>k :cs kill -1<cr>
+nmap <leader>a :cs add cscope.out<cr>:CCTreeLoadDB cscope.out<cr>
+"kill the connection of current dir 
+if has("cscope") && filereadable("cscope.out")
+	nmap <leader>k :cs kill cscope.out<cr> 
+endif
 function! CreateCscopeTags()
-	cs kill -1
+	if has("cscope") && filereadable("cscope.out")
+		cs kill cscope.out "kill the cscope.out in current dir only 
+	endif
 	if filereadable("cscope.files")
 		call delete("cscope.files")
 		call delete("cscope.out")
@@ -589,7 +578,10 @@ function! CreateCscopeTags()
 	call system("cscope -Rbckq -i cscope.files")
 	call system("ctags -R")
 	execute "echo \"finish!\"" 
-	cs add cscope.out
+	if filereadable("cscope.out")
+		execute "cs add cscope.out"
+		execute "CCTreeLoadDB cscope.out"
+	else
 endfunction
 function! Do_CsTag()
 	let dir = getcwd()
@@ -603,9 +595,6 @@ function! Do_CsTag()
 			echohl WarningMsg | echo "Fail to do tags! I cannot delete the tags" | echohl None
 			return
 		endif
-	endif
-	if has("cscope")
-		silent! execute "cs kill -1"
 	endif
 	if filereadable("cscope.files")
 		if(g:iswindows==1)
@@ -625,7 +614,19 @@ function! Do_CsTag()
 			let csoutdeleted=delete("./"."cscope.out")
 		endif
 		if(csoutdeleted!=0)
-			echohl WarningMsg | echo "Fail to do cscope! I cannot delete the cscope.out" | echohl None
+			echohl WarningMsg | echo "I cannot delete the cscope.out,try again" | echohl None
+			echo "kill the cscope connection" 
+			if has("cscope") && filereadable("cscope.out")
+				silent! execute "cs kill cscope.out"
+			endif
+			if(g:iswindows==1)
+				let csoutdeleted=delete(dir."\\"."cscope.out")
+			else
+				let csoutdeleted=delete("./"."cscope.out")
+			endif
+		endif
+		if(csoutdeleted!=0)
+			echohl WarningMsg | echo "I still cannot delete the cscope.out,failed to do cscope" | echohl None
 			return
 		endif
 	endif
@@ -640,12 +641,12 @@ function! Do_CsTag()
 			silent! execute "!dir /s/b *.c,*.cpp,*.h,*.java,*.cs >> cscope.files"
 		endif
 		silent! execute "!cscope -Rbkq -i cscope.files"
-		silent! execute "!ccglue -S cscope.out -o ccglue.out"
+		"silent! execute "!ccglue -S cscope.out -o ccglue.out"   "don not know how to use
 		execute "normal :"
 		if filereadable("cscope.out")
 			execute "cs add cscope.out"
-			"execute "CCTreeLoadDB cscope.out"
-			execute "CCTreeLoadXRefDBFromDisk ccglue.out"
+			execute "CCTreeLoadDB cscope.out"
+			"execute "CCTreeLoadXRefDBFromDisk ccglue.out"
 		else
 			echohl WarningMsg | echo "No cscope.out" | echohl None
 		endif
@@ -913,13 +914,13 @@ let s:licenseTag="Copyright(C)"
 let g:DoxygenToolkit_licenseTag = s:licenseTag
 let g:doxygen_enhanced_color=1
 let g:DoxygenToolkit_versionString="" 
-map <F3>a :DoxAuthor
-map <F3>f :Dox
-map <F3>b :DoxBlock
-map <F3>c O/** */<Left><Left>
+map <F6>a :DoxAuthor
+map <F6>f :Dox
+map <F6>b :DoxBlock
+map <F6>c O/** */<Left><Left>
 "}}}
 "{{{CCtree
-let g:CCTreeKeyTraceForwardTree = '<C-\>>'
+let g:CCTreeKeyTraceForwardTree = '<C-\>>' "the symbol in current cursor's forward tree 
 let g:CCTreeKeyTraceReverseTree = '<C-\><'
 let g:CCTreeKeyHilightTree = '<C-\>l' " Static highlighting
 let g:CCTreeKeySaveWindow = '<C-\>y'
@@ -929,6 +930,12 @@ let g:CCTreeKeyDepthPlus = '<C-\>='
 let g:CCTreeKeyDepthMinus = '<C-\>-'
 "let g:CCTreeUseUTF8Symbols = 1
 "map <F7> :CCTreeLoadXRefDBFromDisk $CCTREE_DB<cr> 
+"}}}
+"{{{vimwiki
+let g:vimwiki_use_mouse = 1
+let g:vimwiki_list = [{'path': 'c:/vimwiki/',
+\ 'path_html': 'c:/vimwiki/html/',
+\ 'html_header': 'c:/vimwiki/template/header.tpl',}] 
 "}}}
 "{{{vundle
 let s:justvundled = 0
@@ -973,7 +980,6 @@ Bundle 'Align'
 Bundle 'calendar.vim'
 Bundle 'Colour-Sampler-Pack'
 Bundle 'tracyone/ConqueShell'
-Bundle 'tracyone/c.vim'
 Bundle 'amiorin/ctrlp-z'
 Bundle 'ctrlp.vim'
 Bundle 'delimitMate.vim'
@@ -996,11 +1002,13 @@ Bundle 'adah1972/fencview'
 Bundle 'Markdown'
 Bundle 'LaTeX-Suite-aka-Vim-LaTeX'
 Bundle 'DrawIt'
-Bundle 'altercation/vim-colors-solarized'
 Bundle 'mbbill/VimExplorer'
 Bundle 'renamer.vim'
 Bundle 'tracyone/doxygen'
 Bundle 'CCTree'
+Bundle 'hallison/vim-markdown'
+Bundle 'TeTrIs.vim'
+Bundle 'tracyone/mark.vim'
  
 " non github reposo
 " Bundle 'git://git.wincent.com/command-t.git'
@@ -1021,7 +1029,58 @@ Bundle 'CCTree'
 let g:fencview_autodetect=0 "it is look like a conflict with c.vim 
 let g:fencview_auto_patterns='*.txt,*.htm{l\=},*.c,*.cpp,*.s,*.vim'
 let g:NERDMenuMode=0
+"rename multi file name
+nmap <F2> :Ren<cr>
 if has('win32')
  cd -
+endif
+"}}}
+"{{{gui releate
+"list of flags that specify how the GUI works
+if(has("gui_running"))
+	if g:iswindows==0
+		set guifont=Monaco\ 14
+	else
+		set guifont=Bitstream_Vera_Sans_Mono:h14:cANSI
+		set gfw=Yahei_Mono:h14.5:cGB2312
+	endif
+	colorscheme wombat256 
+	set guioptions-=b
+	"set guioptions-=m "whether use menu
+	set guioptions-=r "whether show the rigth scroll bar
+	set guioptions-=l "whether show the left scroll bar
+	"set guioptions-=T "whether show toolbar or not
+	set guitablabel=%N\ %t  "do not show dir in tab
+	"set t_Co=256
+	" Nice window title
+if has("toolbar")
+  if exists("*Do_toolbar_tmenu")
+    delfun Do_toolbar_tmenu
+  endif
+  fun Do_toolbar_tmenu()
+    tmenu ToolBar.Open		Open File
+    tmenu ToolBar.Save		Save File
+    tmenu ToolBar.SaveAll	Save All
+    tmenu ToolBar.Print		Print
+    tmenu ToolBar.Undo		Undo
+    tmenu ToolBar.Redo		Redo
+    tmenu ToolBar.Cut		Cut
+    tmenu ToolBar.Copy		Copy
+    tmenu ToolBar.Paste		Paste
+    tmenu ToolBar.Find		Find&Replace
+    tmenu ToolBar.FindNext	Find Next
+    tmenu ToolBar.FindPrev	Find Prev
+    tmenu ToolBar.Replace	Replace
+    tmenu ToolBar.LoadSesn	Load Session
+    tmenu ToolBar.SaveSesn	Save Session
+    tmenu ToolBar.RunScript	Run a Vim Script
+    tmenu ToolBar.Make		Make
+    tmenu ToolBar.Shell		Shell
+    tmenu ToolBar.RunCtags	ctags! -R
+    tmenu ToolBar.TagJump	Jump to next tag
+    tmenu ToolBar.Help		Help
+    tmenu ToolBar.FindHelp	Search Help
+  endfun
+endif
 endif
 "}}}
