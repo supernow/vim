@@ -101,7 +101,7 @@ set background=dark
 
 set ffs=dos,unix,mac
 
-nmap <F4> :call Dosunix()<cr>
+nmap <c-\>cf :call Dosunix()<cr>
 func! Dosunix()
 	if &ff == 'unix'
 		exec "se ff=dos"
@@ -226,7 +226,7 @@ set clipboard+=unnamed
 set autochdir
 "alternate format to be used for a status line
 set statusline+=%<%f%m%r%h%w%{tagbar#currenttag('[%s]','')}
-set statusline+=%=[FORMAT=%{(&fenc!=''?&fenc:&enc)}:%{&ff}:%Y]\ [ASCII=\%03.3b]\ [HEX=\%02.2B] 
+set statusline+=%=[FORMAT=%{(&fenc!=''?&fenc:&enc)}:%{&ff}]\ [FileType=%Y]\ [ASCII=\%03.3b]\ [POS=%l,%v][%p%%] 
 set statusline+=%{strftime(\"%y/%m/%d\ -\ %H:%M\")}
 
 "0, 1 or 2; when to use a status line for the last window
@@ -315,9 +315,9 @@ imap <A-k> <Up>
 nmap <c-h> :%s/<C-R>=expand("<cword>")<cr>/
 
 "{{{compile releate
-map <C-F7> :call Do_OneFileMake()<CR>
-map <F7> :call Do_make()<CR>
-map <c-F6> :silent make clean<CR>
+"no need makefile only support one file
+map <F7> :call Do_OneFileMake()<CR> 
+map <F5> :call Do_make()<CR>
 
 "debug func
 function! Debug()
@@ -439,7 +439,94 @@ endfunction
 "}}}
 "}}}
 "{{{plugin setting
-
+map <F1> :h myvimhelp.txt<cr>
+"{{{vundle
+let s:justvundled = 0
+if has('win32')
+	cd $VIM
+    call system('dir .\.vim\bundle\vundle')
+else
+    call system('ls ~/.vim/bundle/vundle')
+endif
+if v:shell_error
+    if has('win32')
+        call system('mkdir .\.vim\bundle\vundle')
+        call system('git clone https://github.com/gmarik/vundle.git .\.vim\bundle\vundle')
+    else
+        call system('mkdir -p ~/.vim/bundle/vundle')
+        call system('git clone https://github.com/gmarik/vundle.git ~/.vim/bundle/vundle')
+    endif
+    if !v:shell_error
+        let s:justvundled = 1
+    endif
+endif
+if has('win32')
+    set rtp+=.\.vim\bundle\vundle
+else
+    set rtp+=~/.vim/bundle/vundle/
+endif
+" let Vundle manage Vundle
+" required! 
+call vundle#rc()
+Bundle 'gmarik/vundle'
+ 
+" My Bundles here:
+"
+" original repos on github
+" Bundle 'tpope/vim-fugitive'
+" Bundle 'Lokaltog/vim-easymotion'
+" Bundle 'rstacruz/sparkup', {'rtp': 'vim/'}
+" Bundle 'tpope/vim-rails.git'
+" vim-scripts repos
+Bundle 'a.vim'
+Bundle 'Align'
+Bundle 'tracyone/calendar'
+Bundle 'Colour-Sampler-Pack'
+Bundle 'tracyone/ConqueShell'
+Bundle 'amiorin/ctrlp-z'
+Bundle 'ctrlp.vim'
+Bundle 'delimitMate.vim'
+Bundle 'FuzzyFinder'
+Bundle 'genutils'
+Bundle 'neocomplcache'
+Bundle 'The-NERD-Commenter'
+Bundle 'scrooloose/nerdtree'
+Bundle 'ShowMarks7'
+Bundle 'wesleyche/SrcExpl'
+Bundle 'surround.vim'
+Bundle 'majutsushi/tagbar'
+Bundle 'unite.vim'
+Bundle 'vimdoc'
+Bundle 'L9'
+Bundle 'ZenCoding.vim'
+Bundle 'vimwiki'
+Bundle 'matrix.vim--Yang'
+Bundle 'adah1972/fencview'
+Bundle 'Markdown'
+Bundle 'LaTeX-Suite-aka-Vim-LaTeX'
+Bundle 'DrawIt'
+Bundle 'mbbill/VimExplorer'
+Bundle 'renamer.vim'
+Bundle 'tracyone/doxygen'
+Bundle 'CCTree'
+Bundle 'hallison/vim-markdown'
+Bundle 'TeTrIs.vim'
+Bundle 'tracyone/mark.vim'
+Bundle 'tracyone/MyVimHelp'
+ 
+" non github reposo
+" Bundle 'git://git.wincent.com/command-t.git'
+" ...
+ 
+"
+" Brief help
+" :BundleList          - list configured bundles
+" :BundleInstall(!)    - install(update) bundles
+" :BundleSearch(!) foo - search(or refresh cache first) for foo
+" :BundleClean(!)      - confirm(or auto-approve) removal of unused bundles
+" see :h vundle for more details or wiki for FAQ
+" NOTE: comments after Bundle command are not allowed..
+"}}}
 "{{{tohtml
 let html_use_css=1
 "}}}
@@ -453,7 +540,7 @@ let g:fuf_modesDisable = []
 let g:fuf_mrufile_maxItem = 20
 let g:fuf_mrucmd_maxItem = 20
 "recursive open 
-nmap <F5> :FufFile **/<cr>   
+nmap <F3> :FufFile **/<cr>   
 nmap <silent><leader>ff :FufFile<cr>
 nmap <silent><leader>fb :FufBuffer<cr>
 nmap <silent><leader>fd :FufDir<cr>
@@ -464,7 +551,7 @@ nmap <silent><leader>ft :FufTag<cr>
 let g:user_zen_expandabbr_key='<C-j>'
 "}}}
 "{{{tagbar
-nmap <silent><F3> :TagbarToggle<CR>
+nmap <silent><F9> :TagbarToggle<CR>
 let g:tagbar_left=1
 let g:tagbar_width=30
 let g:tagbar_sort=0
@@ -864,9 +951,9 @@ let g:ConqueTerm_PromptRegex = '^\w\+@[0-9A-Za-z_.-]\+:[0-9A-Za-z_./\~,:-]\+\$'
 let g:ConqueTerm_Syntax = 'conque'
 let g:ConqueTerm_CodePage=0
 if (has("win32")) || has("win64")
-	map <A-space> :ConqueTermSplit cmd.exe<cr> 
+	map <F4> :ConqueTermSplit cmd.exe<cr> 
 else
-	map <A-space> :ConqueTermSplit bash<cr> 
+	map <F4> :ConqueTermSplit bash<cr> 
 endif
 
 "}}}
@@ -910,7 +997,7 @@ let g:DoxygenToolkit_paramTag_pre="@param\t"
 let g:DoxygenToolkit_returnTag="@returns\t"
 let g:DoxygenToolkit_versionTag = "@version\t1.0"
 let g:DoxygenToolkit_authorName="tracyone,tracyone@live.cn"
-let s:licenseTag="Copyright(C)"
+let s:licenseTag="Copyright(C) 2000-2013 AllWin Tel.,Co., Ltd."
 let g:DoxygenToolkit_licenseTag = s:licenseTag
 let g:doxygen_enhanced_color=1
 let g:DoxygenToolkit_versionString="" 
@@ -936,92 +1023,19 @@ let g:vimwiki_use_mouse = 1
 let g:vimwiki_list = [{'path': 'c:/vimwiki/',
 \ 'path_html': 'c:/vimwiki/html/',
 \ 'html_header': 'c:/vimwiki/template/header.tpl',}] 
+let g:vimwiki_use_calendar=1 "use calendar plugin 
 "}}}
-"{{{vundle
-let s:justvundled = 0
-if has('win32')
-	cd $VIM
-    call system('dir .\.vim\bundle\vundle')
-else
-    call system('ls ~/.vim/bundle/vundle')
-endif
-if v:shell_error
-    if has('win32')
-        call system('mkdir .\.vim\bundle\vundle')
-        call system('git clone https://github.com/gmarik/vundle.git .\.vim\bundle\vundle')
-    else
-        call system('mkdir -p ~/.vim/bundle/vundle')
-        call system('git clone https://github.com/gmarik/vundle.git ~/.vim/bundle/vundle')
-    endif
-    if !v:shell_error
-        let s:justvundled = 1
-    endif
-endif
-if has('win32')
-    set rtp+=.\.vim\bundle\vundle
-else
-    set rtp+=~/.vim/bundle/vundle/
-endif
-" let Vundle manage Vundle
-" required! 
-call vundle#rc()
-Bundle 'gmarik/vundle'
- 
-" My Bundles here:
-"
-" original repos on github
-" Bundle 'tpope/vim-fugitive'
-" Bundle 'Lokaltog/vim-easymotion'
-" Bundle 'rstacruz/sparkup', {'rtp': 'vim/'}
-" Bundle 'tpope/vim-rails.git'
-" vim-scripts repos
-Bundle 'a.vim'
-Bundle 'Align'
-Bundle 'calendar.vim'
-Bundle 'Colour-Sampler-Pack'
-Bundle 'tracyone/ConqueShell'
-Bundle 'amiorin/ctrlp-z'
-Bundle 'ctrlp.vim'
-Bundle 'delimitMate.vim'
-Bundle 'FuzzyFinder'
-Bundle 'genutils'
-Bundle 'neocomplcache'
-Bundle 'The-NERD-Commenter'
-Bundle 'scrooloose/nerdtree'
-Bundle 'ShowMarks7'
-Bundle 'wesleyche/SrcExpl'
-Bundle 'surround.vim'
-Bundle 'majutsushi/tagbar'
-Bundle 'unite.vim'
-Bundle 'vimdoc'
-Bundle 'L9'
-Bundle 'ZenCoding.vim'
-Bundle 'vimwiki'
-Bundle 'matrix.vim--Yang'
-Bundle 'adah1972/fencview'
-Bundle 'Markdown'
-Bundle 'LaTeX-Suite-aka-Vim-LaTeX'
-Bundle 'DrawIt'
-Bundle 'mbbill/VimExplorer'
-Bundle 'renamer.vim'
-Bundle 'tracyone/doxygen'
-Bundle 'CCTree'
-Bundle 'hallison/vim-markdown'
-Bundle 'TeTrIs.vim'
-Bundle 'tracyone/mark.vim'
- 
-" non github reposo
-" Bundle 'git://git.wincent.com/command-t.git'
-" ...
- 
-"
-" Brief help
-" :BundleList          - list configured bundles
-" :BundleInstall(!)    - install(update) bundles
-" :BundleSearch(!) foo - search(or refresh cache first) for foo
-" :BundleClean(!)      - confirm(or auto-approve) removal of unused bundles
-" see :h vundle for more details or wiki for FAQ
-" NOTE: comments after Bundle command are not allowed..
+"{{{calendar
+"'close'                     Closes calendar window.             'q'
+"'do_action'                 Executes |calendar_action|.           '<CR>'
+"'goto_today'                Executes |calendar_today|.            't'
+"'show_help'                 Displays a short help message.      '?'
+"'redisplay'                 Redraws calendar window.            'r'
+"'goto_next_month'           Jumps to the next month.            '<Right>'
+"'goto_prev_month'           Jumps to the previous month.        '<Left>'
+"'goto_next_year'            Jumps to the next month.            '<Up>'
+"'goto_prev_year'            Jumps to the previous month.        '<Down>'
+map <F10> :Calendar<cr>
 "}}}
 "let g:loaded_indentLine=0
 "let g:indentLine_color_gui = '#A4E57E'
@@ -1030,7 +1044,8 @@ let g:fencview_autodetect=0 "it is look like a conflict with c.vim
 let g:fencview_auto_patterns='*.txt,*.htm{l\=},*.c,*.cpp,*.s,*.vim'
 let g:NERDMenuMode=0
 "rename multi file name
-nmap <F2> :Ren<cr>
+map <F2> :Ren<cr>
+map <F11> :VE<cr><cr>
 if has('win32')
  cd -
 endif
