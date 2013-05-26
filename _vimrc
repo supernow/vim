@@ -2,7 +2,7 @@
 "@brief      for windows's gvim
 "@date       2012-12-30 11:01:30
 "@author     tracyone<tracyone@live.cn>
-"@Last modified:
+"@Last modified:2013-05-26
 """"""""""""""""""""""""""""""""""""""""""""""""""""
 
 set nocp  "behave very Vi compatible (not advisable) 
@@ -29,7 +29,7 @@ lan mes en_US.UTF-8
 if (has("win32")) || has("win64")
 	let $HOME=$VIM
 	set filetype=dos
-	behave  xterm
+	"behave  xterm
 	set path=./,C:\Program\ Files\IAR\ Systems\Embedded\ Workbench\ 6.0\arm\inc\,C:\MinGW\include,C:\Program\ Files\IAR\ Systems\Embedded\ Workbench\ 6.0\arm\CMSIS\Include,,  "list of directory names used for file searching
 	au GUIEnter * simalt~x "maximize window
 	let $VIMFILES = $VIM.'/vimfiles'
@@ -255,6 +255,13 @@ au BufRead,BufNewFile *.xdc set filetype=javascript
 "}}}
 "{{{key mapping
 
+"key mapping
+""key map timeouts
+"set notimeout 
+"set timeoutlen=4000
+"set ttimeout
+"set ttimeoutlen=100
+
 ""no", "yes" or "menu"; how to use the ALT key
 set winaltkeys=no
 "visual mode hit tab forward indent ,hit shift-tab backward indent
@@ -444,14 +451,14 @@ map <F1> :h myvimhelp.txt<cr>
 let s:justvundled = 0
 if has('win32')
 	cd $VIM
-    call system('dir .\vimfiles\bundle\vundle')
+    call system('dir .\.vim\bundle\vundle')
 else
     call system('ls ~/.vim/bundle/vundle')
 endif
 if v:shell_error
     if has('win32')
-        call system('mkdir .\vimfiles\bundle\vundle')
-        call system('git clone https://github.com/gmarik/vundle.git .\vimfiles\bundle\vundle')
+        call system('mkdir .\.vim\bundle\vundle')
+        call system('git clone https://github.com/gmarik/vundle.git .\.vim\bundle\vundle')
     else
         call system('mkdir -p ~/.vim/bundle/vundle')
         call system('git clone https://github.com/gmarik/vundle.git ~/.vim/bundle/vundle')
@@ -461,13 +468,13 @@ if v:shell_error
     endif
 endif
 if has('win32')
-    set rtp+=.\vimfiles\bundle\vundle
+    set rtp+=.\.vim\bundle\vundle
 else
     set rtp+=~/.vim/bundle/vundle/
 endif
 " let Vundle manage Vundle
 " required! 
-call vundle#rc('$VIM/vimfiles/bundle/')
+call vundle#rc()
 Bundle 'gmarik/vundle'
  
 " My Bundles here:
@@ -496,7 +503,6 @@ Bundle 'wesleyche/SrcExpl'
 Bundle 'surround.vim'
 Bundle 'majutsushi/tagbar'
 Bundle 'unite.vim'
-Bundle 'vimdoc'
 Bundle 'L9'
 Bundle 'ZenCoding.vim'
 Bundle 'vimwiki'
@@ -508,13 +514,15 @@ Bundle 'DrawIt'
 Bundle 'mbbill/VimExplorer'
 Bundle 'renamer.vim'
 Bundle 'tracyone/doxygen'
-Bundle 'CCTree'
+Bundle 'tracyone/CCtree'
 Bundle 'hallison/vim-markdown'
 Bundle 'TeTrIs.vim'
 Bundle 'tracyone/mark.vim'
 Bundle 'tracyone/MyVimHelp'
 Bundle 'sunuslee/vim-plugin-random-colorscheme-picker' 
 Bundle 'tracyone/pyclewn' 
+"Bundle 'tracyone/cscope_quickfix' 
+"Bundle 'tracyone/cscope_win' 
 " non github reposo
 " Bundle 'git://git.wincent.com/command-t.git'
 " ...
@@ -561,23 +569,21 @@ let g:tagbar_compact = 1
 let g:tagbar_systemenc='cp936'
 "}}}
 "{{{cscope
-if filereadable("cscope.out") "if current dir exist then add it 
-au FileType c,cpp,s,cc,h cs add cscope.out
-endif
+au VimEnter *.c,*.cpp,*.s,*.cc,*.h exec "silent! cs add cscope.out"
 if $CSCOPE_DB != "" "tpyically it is a include db 
-au FileType c,cpp,s,cc,h cs add $CSCOPE_DB
+	au VimEnter *.c,*.cpp,*.s,*.cc,*.h exec "silent! cs add $CSCOPE_DB"
 endif
 if $CSCOPE_DB1 != ""
-au FileType c,cpp,s,cc,h cs add $CSCOPE_DB1
+	au VimEnter *.c,*.cpp,*.s,*.cc,*.h exec "silent! cs add $CSCOPE_DB1"
 endif
 if $CSCOPE_DB2 != ""
-au FileType c,cpp,s,cc,h cs add $CSCOPE_DB2
+	au VimEnter *.c,*.cpp,*.s,*.cc,*.h exec "silent! cs add $CSCOPE_DB2"
 endif
 if $CSCOPE_DB3 != ""
-au FileType c,cpp,s,cc,h cs add $CSCOPE_DB3
+	au VimEnter *.c,*.cpp,*.s,*.cc,*.h exec "silent! cs add $CSCOPE_DB3"
 endif
 if filereadable('ccglue.out') "this guy is more efficiency 
-au FileType c,cpp,s,cc,h CCTreeLoadXRefDBFromDisk ccglue.out
+	au VimEnter *.c,*.cpp,*.s,*.cc,*.h exec "silent! CCTreeLoadXRefDBFromDisk ccglue.out"
 endif
 if has("cscope")
 	" use both cscope and ctag for 'ctrl-]', ':ta', and 'vim -t'
@@ -586,24 +592,40 @@ if has("cscope")
 	" check cscope for definition of a symbol before checking ctags: set to 1
 	" if you want the reverse search order.
 	set csto=0
-	""set cscopequickfix=s+,c+,d+,i+,t-,e-
+	set cscopequickfix=s-,c-,d-,i-,t-,e-,i-,g-
 	" add any cscope database in current directory
 	" else add the database pointed to by environment variable 
 	set cscopetagorder=0
 endif
 	set cscopeverbose 
 " show msg when any other cscope db added
+nmap <Leader>s :cs find s <C-R>=expand("<cword>")<CR><CR>:cw 7<cr>
+nmap <Leader>g :cs find g <C-R>=expand("<cword>")<CR><CR>:cw 7<cr>
+nmap <Leader>d :cs find d <C-R>=expand("<cword>")<CR> <C-R>=expand("%")<CR><CR>:cw 7<cr>
+nmap <Leader>c :cs find c <C-R>=expand("<cword>")<CR><CR>:cw 7<cr>
+nmap <Leader>t :cs find t <C-R>=expand("<cword>")<CR><CR>:cw 7<cr>
+nmap <Leader>e :cs find e <C-R>=expand("<cword>")<CR><CR>:cw 7<cr>
+nmap <Leader>f :cs find f <C-R>=expand("<cfile>")<CR><CR>:cw 7<cr>
+nmap <Leader>i :cs find i ^<C-R>=expand("<cfile>")<CR>$<CR>:cw 7<cr>
 
-"key mapping
-nmap  <leader>s :cs find s <C-R>=expand("<cword>")<CR><CR>	
-nmap  <Leader>g :cs find g <C-R>=expand("<cword>")<CR><CR>	
-nmap  <Leader>c :cs find c <C-R>=expand("<cword>")<CR><CR>	
-nmap  <Leader>t :cs find t <C-R>=expand("<cword>")<CR><CR>	
-nmap  <Leader>e :cs find e <C-R>=expand("<cword>")<CR><CR>	
-nmap  <Leader>f :cs find f <C-R>=expand("<cfile>")<CR><CR>	
-nmap  <Leader>i :cs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
-nmap  <Leader>d :cs find d <C-R>=expand("<cword>")<CR><CR>	
-"manual input 
+nmap <C-@>s :split<CR>:cs find s <C-R>=expand("<cword>")<CR><CR>
+nmap <C-@>g :split<CR>:cs find g <C-R>=expand("<cword>")<CR><CR>
+nmap <C-@>d :split<CR>:cs find d <C-R>=expand("<cword>")<CR> <C-R>=expand("%")<CR><CR>
+nmap <C-@>c :split<CR>:cs find c <C-R>=expand("<cword>")<CR><CR>
+nmap <C-@>t :split<CR>:cs find t <C-R>=expand("<cword>")<CR><CR>
+nmap <C-@>e :split<CR>:cs find e <C-R>=expand("<cword>")<CR><CR>
+nmap <C-@>f :split<CR>:cs find f <C-R>=expand("<cfile>")<CR><CR>
+nmap <C-@>i :split<CR>:cs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
+
+nmap <C-@><C-@>s :vert split<CR>:cs find s <C-R>=expand("<cword>")<CR><CR>
+nmap <C-@><C-@>g :vert split<CR>:cs find g <C-R>=expand("<cword>")<CR><CR>
+nmap <C-@><C-@>d :vert split<CR>:cs find d <C-R>=expand("<cword>")<CR> <C-R>=expand("%")<CR><CR>
+nmap <C-@><C-@>c :vert split<CR>:cs find c <C-R>=expand("<cword>")<CR><CR>
+nmap <C-@><C-@>t :vert split<CR>:cs find t <C-R>=expand("<cword>")<CR><CR>
+nmap <C-@><C-@>e :vert split<CR>:cs find e <C-R>=expand("<cword>")<CR><CR>
+nmap <C-@><C-@>f :vert split<CR>:cs find f <C-R>=expand("<cfile>")<CR><CR>
+nmap <C-@><C-@>i :vert split<CR>:cs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
+
 nmap <C-\>s :cs find s 
 nmap <C-\>g :cs find g 
 nmap <C-\>c :cs find c 
@@ -613,32 +635,6 @@ nmap <C-\>f :cs find f
 nmap <C-\>i :cs find i 
 nmap <C-\>d :cs find d 
 
-
-" The :scscope command does the same(cs command) and also splits the window (short: scs).
-nmap <C-@>s :scs find s <C-R>=expand("<cword>")<CR><CR>	
-nmap <C-@>g :scs find g <C-R>=expand("<cword>")<CR><CR>	
-nmap <C-@>c :scs find c <C-R>=expand("<cword>")<CR><CR>	
-nmap <C-@>t :scs find t <C-R>=expand("<cword>")<CR><CR>	
-nmap <C-@>e :scs find e <C-R>=expand("<cword>")<CR><CR>	
-nmap <C-@>f :scs find f <C-R>=expand("<cfile>")<CR><CR>	
-nmap <C-@>i :scs find i ^<C-R>=expand("<cfile>")<CR>$<CR>	
-nmap <C-@>d :scs find d <C-R>=expand("<cword>")<CR><CR>
-
-" Hitting CTRL-@ *twice* before the search type does a vertical
-" split instead of a horizontal one
-nmap <C-@><C-@>s :vert scs find s <C-R>=expand("<cword>")<CR><CR>
-nmap <C-@><C-@>g :vert scs find g <C-R>=expand("<cword>")<CR><CR>
-nmap <C-@><C-@>c :vert scs find c <C-R>=expand("<cword>")<CR><CR>
-nmap <C-@><C-@>t :vert scs find t <C-R>=expand("<cword>")<CR><CR>
-nmap <C-@><C-@>e :vert scs find e <C-R>=expand("<cword>")<CR><CR>
-nmap <C-@><C-@>f :vert scs find f <C-R>=expand("<cfile>")<CR><CR>	
-nmap <C-@><C-@>i :vert scs find i ^<C-R>=expand("<cfile>")<CR>$<CR>	
-nmap <C-@><C-@>d :vert scs find d <C-R>=expand("<cword>")<CR><CR>
-""key map timeouts
-"set notimeout 
-"set timeoutlen=4000
-"set ttimeout
-"set ttimeoutlen=100
 if g:iswindows==1 
 	nmap <leader>u :call Do_CsTag()<cr>
 else
@@ -743,7 +739,8 @@ endfunction
 "}}}
 "{{{srcexpl.vim
 " // The switch of the Source Explorer                                         
-nmap <F8> :SrcExplToggle<CR>
+map <F8> :SrcExplToggle<CR>
+imap <F8> <ESC>:SrcExplToggle<CR>i
 "                                                                              
 " // Set the height of Source Explorer window                                  
 let g:SrcExpl_winHeight = 8
@@ -809,7 +806,8 @@ let g:neocomplcache_enable_underbar_completion = 1
 
 "Set minimum syntax keyword length. 
 let g:neocomplcache_min_syntax_length = 2 
-
+let g:neocomplcache_same_filetype_lists = {}           
+let g:neocomplcache_same_filetype_lists._ = '_'
 "let g:neocomplcache_lock_buffer_name_pattern = '/*ku/*' 
 
 "let g:neocomplcache_enable_auto_delimiter = 1 
@@ -876,7 +874,7 @@ let g:neocomplcache_min_syntax_length = 2
 "let g:neocomplcache_omni_patterns.cpp = '/h/w*/%(/./|->/)/h/w*/|/h/w*::' 
 
 "For input-saving, this variable controls whether you can  choose a candidate with a alphabet or number displayed beside a candidate after '-'.  When you input 'ho-a',  neocomplcache will select candidate 'a'.
-imap <expr> -  pumvisible() ? "\<Plug>(neocomplcache_start_unite_quick_match)" : '-'
+imap <expr> `  pumvisible() ? "\<Plug>(neocomplcache_start_unite_quick_match)" : '`'
 
 " Recommended key-mappings.
 " <CR>: close popup and save indent.
@@ -996,7 +994,7 @@ let g:DoxygenToolkit_briefTag_pre = "@brief\t"
 let g:DoxygenToolkit_briefTag_funcName = "yes"
 let g:DoxygenToolkit_paramTag_pre="@param\t"
 let g:DoxygenToolkit_returnTag="@returns\t"
-let g:DoxygenToolkit_versionTag = "@version\t1.0"
+let g:DoxygenToolkit_versionTag = "@version\t0.1"
 let g:DoxygenToolkit_authorName="tracyone,tracyone@live.cn"
 let s:licenseTag="Copyright(C) 2000-2013 AllWin Tel.,Co., Ltd."
 let g:DoxygenToolkit_licenseTag = s:licenseTag
@@ -1037,6 +1035,10 @@ let g:vimwiki_use_calendar=1 "use calendar plugin
 "'goto_next_year'            Jumps to the next month.            '<Up>'
 "'goto_prev_year'            Jumps to the previous month.        '<Down>'
 map <F10> :Calendar<cr>
+"}}}
+"{{{ctrlp
+let g:ctrlp_extensions = ['tag', 'buffertag', 'quickfix', 'dir', 'rtscript',
+			\ 'undo', 'line', 'changes', 'mixed', 'bookmarkdir']
 "}}}
 "let g:loaded_indentLine=0
 "let g:indentLine_color_gui = '#A4E57E'
