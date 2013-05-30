@@ -2,7 +2,7 @@
 "@brief      for windows's gvim
 "@date       2012-12-30 11:01:30
 "@author     tracyone<tracyone@live.cn>
-"@Last modified:2013-05-26
+"@Last modified:2013-05-30
 """"""""""""""""""""""""""""""""""""""""""""""""""""
 
 set nocp  "behave very Vi compatible (not advisable) 
@@ -270,7 +270,7 @@ vmap <s-TAB>  <gv
 "leader key
 let mapleader=","
 "open the vimrc
-nmap <leader>vc :e $MYVIMRC<cr>
+nmap <leader>vc :tabedit $MYVIMRC<cr>
 "update the _vimrc
 map <leader>so :source $MYVIMRC<CR>:e<CR>
 
@@ -451,14 +451,14 @@ map <F1> :h myvimhelp.txt<cr>
 let s:justvundled = 0
 if has('win32')
 	cd $VIM
-    call system('dir .\.vim\bundle\vundle')
+    call system('dir .\vimfiles\bundle\vundle')
 else
     call system('ls ~/.vim/bundle/vundle')
 endif
 if v:shell_error
     if has('win32')
-        call system('mkdir .\.vim\bundle\vundle')
-        call system('git clone https://github.com/gmarik/vundle.git .\.vim\bundle\vundle')
+        call system('mkdir .\vimfiles\bundle\vundle')
+        call system('git clone https://github.com/gmarik/vundle.git .\vimfiles\bundle\vundle')
     else
         call system('mkdir -p ~/.vim/bundle/vundle')
         call system('git clone https://github.com/gmarik/vundle.git ~/.vim/bundle/vundle')
@@ -468,13 +468,13 @@ if v:shell_error
     endif
 endif
 if has('win32')
-    set rtp+=.\.vim\bundle\vundle
+    set rtp+=.\vimfiles\bundle\vundle
 else
     set rtp+=~/.vim/bundle/vundle/
 endif
 " let Vundle manage Vundle
 " required! 
-call vundle#rc()
+call vundle#rc('$VIM/vimfiles/bundle/')
 Bundle 'gmarik/vundle'
  
 " My Bundles here:
@@ -496,6 +496,7 @@ Bundle 'delimitMate.vim'
 Bundle 'FuzzyFinder'
 Bundle 'genutils'
 Bundle 'neocomplcache'
+"Bundle 'Valloric/YouCompleteMe'
 Bundle 'The-NERD-Commenter'
 Bundle 'scrooloose/nerdtree'
 Bundle 'ShowMarks7'
@@ -513,7 +514,8 @@ Bundle 'LaTeX-Suite-aka-Vim-LaTeX'
 Bundle 'DrawIt'
 Bundle 'mbbill/VimExplorer'
 Bundle 'renamer.vim'
-Bundle 'tracyone/doxygen'
+"Bundle 'tracyone/doxygen'
+Bundle 'tracyone/doxygen-support'
 Bundle 'tracyone/CCtree'
 Bundle 'hallison/vim-markdown'
 Bundle 'TeTrIs.vim'
@@ -806,8 +808,10 @@ let g:neocomplcache_enable_underbar_completion = 1
 
 "Set minimum syntax keyword length. 
 let g:neocomplcache_min_syntax_length = 2 
+
 let g:neocomplcache_same_filetype_lists = {}           
 let g:neocomplcache_same_filetype_lists._ = '_'
+
 "let g:neocomplcache_lock_buffer_name_pattern = '/*ku/*' 
 
 "let g:neocomplcache_enable_auto_delimiter = 1 
@@ -989,21 +993,9 @@ let delimitMate_expand_cr = 1
 let delimitMate_expand_space = 1
 "}}}
 "{{{doxygen
-let g:load_doxygen_syntax=0
-let g:DoxygenToolkit_briefTag_pre = "@brief\t"
-let g:DoxygenToolkit_briefTag_funcName = "yes"
-let g:DoxygenToolkit_paramTag_pre="@param\t"
-let g:DoxygenToolkit_returnTag="@returns\t"
-let g:DoxygenToolkit_versionTag = "@version\t0.1"
-let g:DoxygenToolkit_authorName="tracyone,tracyone@live.cn"
-let s:licenseTag="Copyright(C) 2000-2013 AllWin Tel.,Co., Ltd."
-let g:DoxygenToolkit_licenseTag = s:licenseTag
-let g:doxygen_enhanced_color=1
-let g:DoxygenToolkit_versionString="" 
-map <F6>a :DoxAuthor
-map <F6>f :Dox
-map <F6>b :DoxBlock
-map <F6>c O/** */<Left><Left>
+nmap <leader>dh :DoxyFILEHeader<cr>
+nmap <leader>df :DoxyFunction<cr>
+map <leader>db :DoxyBlockLong<cr>
 "}}}
 "{{{CCtree
 let g:CCTreeKeyTraceForwardTree = '<C-\>>' "the symbol in current cursor's forward tree 
