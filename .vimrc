@@ -2,7 +2,7 @@
 "@brief      for linux's gvim
 "@date       2012-12-30 11:01:30
 "@author     tracyone,tracyone@live.cn
-"@lastchange 2013-05-05 15:42:47
+"@lastchange [2013-06-03/23:41:31]
 """"""""""""""""""""""""""""""""""""""""""""""""""""
 
 "behave very Vi compatible (not advisable)
@@ -10,62 +10,52 @@ set nocp
 " Uncomment the following to have Vim load indentation rules and plugins
 " according to the detected filetype.
 filetype plugin indent on
+syntax on
 
-""{{{fuck the encoding
-"function! Utf8()
-	"character encoding used in Vim: "latin1", "utf-8"
-	set encoding=utf-8
-
-	set termencoding=utf-8
-	"automatically detected character encodings
-	set fileencodings=utf-8,chinese,latin-1,cp936,gb18030,usc-bom,euc-jp,gbk,gb2312
-
-	"character encoding for the current file(local to buffer)
+"{{{encode
+set encoding=utf-8
+if has("win32") || has("win64")
 	set fileencoding=utf-8
-
-	"dealing with menu and the right key encode
-	source $VIMRUNTIME/delmenu.vim
-	source $VIMRUNTIME/menu.vim
-
-	"consle output encode
-	language messages zh_CN.utf-8
-"endfunction
-"set fileencodings=utf-8,chinese,latin-1,cp936,gb18030,usc-bom,euc-jp,gbk,gb2312
-"set ambiwidth=double
-""}}}
+else
+	set fileencoding=gbk
+endif
+set fileencodings=ucs-bom,utf-8,cp936,gb1830,big5,euc-jp,euc-kr,latin1
+set termencoding=utf-8
+if v:lang=~? '^\(zh\)\|\(ja\)\|\(ko\)'
+	set ambiwidth=double
+endif
+source $VIMRUNTIME/delmenu.vim
+lan mes en_US.UTF-8
+"set langmenu=nl_NL.ISO_8859-1
+"}}}
 "{{{system check
-if (has("win32"))
+if (has("win32")) || has("win64")
 	let $HOME=$VIM
 	set filetype=dos
-	"list of directory names used for file searching
-	set path=./,C:\Program\ Files\IAR\ Systems\Embedded\ Workbench\ 6.0\arm\inc\,C:\MinGW\include,C:\Program\ Files\IAR\ Systems\Embedded\ Workbench\ 6.0\arm\CMSIS\Include,,
+	behave  xterm
+	set path=./,C:\Program\ Files\IAR\ Systems\Embedded\ Workbench\ 6.0\arm\inc\,C:\MinGW\include,C:\Program\ Files\IAR\ Systems\Embedded\ Workbench\ 6.0\arm\CMSIS\Include,,  "list of directory names used for file searching
 	let $VIMFILES = $VIM.'/vimfiles'
 	let g:iswindows=1 "windows flags
 elseif has("unix")
 	set filetype=unix
-	if filereadable("/etc/vim/vimrc.local")
-		source /etc/vim/vimrc.local
-	endif
+	behave xterm
 	set shell=bash
 	runtime! debian.vim
-	"list of directory names used for file searching
-	set path=./,/usr/include/,,
+	set path=./,/usr/include/,, "list of directory names used for file searching
 	let $VIMFILES = $HOME.'/.vim'
 	let g:iswindows=0
 elseif has("mac")
 endif
 "}}}
+"{{{basic setting
 "{{{fold setting
 "folding type: "manual", "indent", "expr", "marker" or "syntax"
 set foldenable                  " enable folding
-set foldcolumn=1                " add a fold column and specific it's width
 autocmd FileType c,cpp set foldmethod=syntax 
-autocmd FileType vim set foldmethod=marker " detect triple-{ style fold markers
 autocmd FileType verilog set foldmethod=manual 
-au BufRead,BufNewFile *.vimprojects set filetype=project
-au FileType project,vim set foldlevel=0
 set foldlevel=100         " start out with everything folded
 set foldopen=block,hor,insert,jump,mark,percent,quickfix,search,tag,undo
+set foldcolumn=1
 function! MyFoldText()
 	let line = getline(v:foldstart)
 	if match( line, '^[ \t]*\(\/\*\|\/\/\)[*/\\]*[ \t]*$' ) == 0
@@ -100,19 +90,31 @@ function! MyFoldText()
 	return sub . info
 endfunction
 set foldtext=MyFoldText()
+autocmd FileType vim set foldmethod=marker 
+autocmd FileType vim set foldlevel=0
+nmap <TAB> za
 "set foldtext=foldtext()
 "}}}
-"{{{basic setting
-highlight StatusLine guifg=White guibg=Orange	
 
-highlight StatusLineNC guifg=LightGrey guibg=LightSlateGrey	
+" If using a dark background within the editing area and syntax highlighting
+" turn on this option as well
+set background=dark
 
-highlight ModeMsg guifg=White guibg=LimeGreen	
-set showfulltag
+if g:iswindows == 1
+	set ffs=dos,unix,mac
+else
+	set ffs=unix,dos
+endif
 
-"open syntax
-syntax on
 
+nmap <F6> :call Dosunix()<cr>
+func! Dosunix()
+	if &ff == 'unix'
+		exec "se ff=dos"
+	else
+		exec "se ff=unix"
+	endif
+endfunc
 "display unprintable characters by set list
 "set list
 "Strings to use in 'list' mode and for the |:list| command
@@ -120,41 +122,30 @@ set listchars=tab:\|\ ,trail:-
 
 " Uncomment the following to have Vim jump to the last position when
 " reopening a file
-"au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 
 "{{{backup
-"generate a backupfile when open file
-set backup
+set backup "generate a backupfile when open file
 
-"backup file'a suffix
-set backupext=.bak
+set backupext=.bak  "backup file'a suffix
 
-"swp file's directory
-set directory=$HOME/vimbackup
+set directory=$HOME/vimbackup  "swp file's directory
 if !isdirectory(&directory)
 	call mkdir(&directory, "p")
 endif
 
-"backup file's directory
-set backupdir=$HOME/vimbackup
+set backupdir=$HOME/vimbackup  "backup file's directory
 if !isdirectory(&backupdir)
 	call mkdir(&backupdir, "p")
 endif
 "}}}
 
-function! MaximizeWindow()
-	silent !wmctrl -r :ACTIVE: -b add,maximized_vert,maximized_horz
-endfunction
-
-"Threshold for reporting number of lines changed
-set report=0
+set report=0  "Threshold for reporting number of lines changed
 
 "help doc dir
 "let helptags=$VIMFILES.'/doc'
-"choose help helplang
 
 set helplang=en,cn  "set helplang=en
-
 "autoread when a file is changed from the outside
 set autoread
 
@@ -167,8 +158,8 @@ set cmdheight=1
 "when inserting a bracket, briefly jump to its match
 set showmatch
 
-"name of the font to be used for :hardcopy,打印
-set printfont=yaheimono:h10:cGB2312
+"name of the font to be used for :hardcopy
+set printfont=Yahei_Mono:h10:cGB2312
 
 "override 'ignorecase' when pattern has upper case characters
 set smartcase
@@ -182,11 +173,9 @@ set mouse=a
 "start a dialog when a command fails
 set confirm
 
-"do clever autoindenting
-set smartindent
+set smartindent "do clever autoindenting
 
-"don't auto linefeed
-"set nowrap   
+"set nowrap   "don't auto linefeed
 
 "enable specific indenting for C code
 set cindent
@@ -215,7 +204,6 @@ set showmode
 "show cursor position below each window
 "set ruler
 
-
 ""old", "inclusive" or "exclusive"; how selecting text behaves
 set selection=inclusive
 
@@ -238,12 +226,20 @@ set clipboard+=unnamed
 "change to directory of file in buffer
 set autochdir
 
-"alternate format to be used for a status line
-set statusline=%F%m%r%h%w\ [FORMAT=%{&ff}]\ [TYPE=%Y]\ [POS=%l,%v][%p%%]\ %{strftime(\"%d/%m/%y\ -\ %H:%M\")}
-
+"statusline
+set statusline+=%<%f%m%r%h%w%{tagbar#currenttag('[%s]','')}
+set statusline+=%=[FORMAT=%{(&fenc!=''?&fenc:&enc)}:%{&ff}]\ [FileType=%Y]\ [ASCII=\%03.3b]\ [POS=%l,%v][%p%%] 
+set statusline+=%{strftime(\"%y/%m/%d\ -\ %H:%M\")}
 "0, 1 or 2; when to use a status line for the last window
 set laststatus=2 "always show status
-
+hi StatusLine guifg=Black guibg=White gui=none
+highlight StatusLineNC guifg=LightGrey guibg=LightSlateGrey	
+if version >= 700 
+	au InsertEnter * hi StatusLine guibg=#818D29 guifg=#FCFCFC gui=none
+	au InsertLeave * hi StatusLine guifg=Black guibg=White gui=none
+endif
+nmap <F7> a<C-R>=strftime("[%Y-%m-%d/%H:%M:%S]")<CR><ESC>
+imap <F7> <C-R>=strftime("[%Y-%m-%d/%H:%M:%S]")<CR>
 "automatic recognition vt file as verilog 
 au BufRead,BufNewFile *.vt set filetype=verilog
 
@@ -253,40 +249,50 @@ au BufRead,BufNewFile *.bld set filetype=javascript
 "automatic recognition xdc file as javascript
 au BufRead,BufNewFile *.xdc set filetype=javascript
 
-"automatic recognition cfg file as javascript
-au BufRead,BufNewFile *.cfg set filetype=javascript
+au BufRead,BufNewFile *.mk set filetype=make
 "}}}
 "{{{key mapping
 
+"key mapping
+""key map timeouts
+"set notimeout 
+"set timeoutlen=4000
+"set ttimeout
+"set ttimeoutlen=100
+
 ""no", "yes" or "menu"; how to use the ALT key
 set winaltkeys=no
-
+"visual mode hit tab forward indent ,hit shift-tab backward indent
+vmap <TAB>  >gv  
+vmap <s-TAB>  <gv 
 "leader key
 let mapleader=","
 "open the vimrc
-nmap <leader>vc :e $MYVIMRC<cr>
+nmap <leader>vc :tabedit $MYVIMRC<cr>
 "update the _vimrc
-map <leader>so :source $MYVIMRC<CR>:e<CR>
-
-nmap vv V
-" <Enter> always means inserting line.
-nmap <Enter> o<ESC>
+nmap <leader>so :source $MYVIMRC<CR>:e<CR>
 
 "clear search result
 noremap <a-q> :nohls<CR>
 
 "save file
-nmap <c-s> <esc>:w<cr>
-imap <c-s> <esc>:w<cr>a
+" Use CTRL-S for saving, also in Insert mode
+noremap <C-S>		:update<CR>
+vnoremap <C-S>		<C-C>:update<CR>
+inoremap <C-S>		<C-O>:update<CR>
 
-"heightlight when double click
-map <2-LeftMouse>  *N
-"map! <2-LeftMouse> <c-o>*
-"autocmd CursorMoved * silent! exe printf('match Underlined /\<%s\>/', expand('<cword>'))
-"autocmd CursorHold * silent! exe printf('match Underlined /\<%s\>/', expand('<cword>'))
-set ut=1500
+map <S-Insert>		"+gP
+imap <c-v>		<C-o>"+gp
+cmap <C-V>		<C-R>+
+cmap <S-Insert>		<C-R>+
+
 "select all
-nmap <m-a> <esc>ggVG
+noremap <m-a> gggH<C-O>G
+inoremap <m-a> <C-O>gg<C-O>gH<C-O>G
+cnoremap <m-a> <C-C>gggH<C-O>G
+onoremap <m-a> <C-C>gggH<C-O>G
+snoremap <m-a> <C-C>gggH<C-O>G
+xnoremap <m-a> <C-C>ggVG
 
 "Alignment
 nmap <m-=> <esc>ggVG=``
@@ -304,36 +310,21 @@ set mat=2
 vnoremap <C-C> "+y
 
 " CTRL-V and SHIFT-Insert are Paste
-imap <C-V>		<esc>"+gP
-cmap <c-v>	<c-r>*
-
+"
 "move
 imap <A-h> <Left>
 imap <A-l> <Right>
 imap <A-j> <Down>
 imap <A-k> <Up>
-
+"move between windos
+nmap <A-h> <C-w>h
+nmap <A-l> <C-w>l
+nmap <A-j> <C-w>j
+nmap <A-k> <C-w>k
 "replace
-nmap <c-h> :%s/<C-R>=expand('<cword>')<cr>
+nmap <c-h> :%s/<C-R>=expand("<cword>")<cr>/
 
-"{{{compile releate
-map <F1> :call Do_OneFileMake()<CR>
-
-map <F6> :call Do_make()<CR>
-map <c-F6> :silent make clean<CR>
-
-"debug func
-function! Debug()
-	exec "w"
-	"c program
-	if &filetype == 'c'
-		exec "!gcc % -g -o %<.exe"
-		exec "!gdb %<.exe"
-	elseif &filetype == 'cpp'
-		exec "!g++ % -g -o %<.exe"
-		exec "!gdb %<.exe"
-	endif
-endfunc
+map <F5> :call Do_make()<CR>
 
 function! Do_make()
 	set makeprg=make
@@ -342,70 +333,6 @@ function! Do_make()
 endfunction 
 
 "compile and run open quickfix if wrong
-function! Do_OneFileMake()
-	if expand("%:p:h")!=getcwd()
-		echohl WarningMsg | echo "Fail to make! This file is not in the current dir! Press <F7> to redirect to the dir of this file." | echohl None
-		return
-	endif
-	let sourcefileename=expand("%:t")
-	if (sourcefileename=="" || (&filetype!="cpp" && &filetype!="c"))
-		echohl WarningMsg | echo "Fail to make! Please select the right file!" | echohl None
-		return
-	endif
-	let deletedspacefilename=substitute(sourcefileename,' ','','g')
-	if strlen(deletedspacefilename)!=strlen(sourcefileename)
-		echohl WarningMsg | echo "Fail to make! Please delete the spaces in the filename!" | echohl None
-		return
-	endif
-	if &filetype=="c"
-		if g:iswindows==1
-			set makeprg=gcc\ -g\ -o\ %<.exe\ %
-		else
-			set makeprg=gcc\ -g\ -o\ %<\ %
-		endif
-	elseif &filetype=="cpp"
-		if g:iswindows==1
-			set makeprg=g++\ -o\ %<.exe\ %
-		else
-			set makeprg=g++\ -o\ %<\ %
-		endif
-		"elseif &filetype=="cs"
-		"set makeprg=csc\ \/nologo\ \/out:%<.exe\ %
-	endif
-	if(g:iswindows==1)
-		let outfilename=substitute(sourcefileename,'\(\.[^.]*\)' ,'.exe','g')
-		let toexename=outfilename
-	else
-		let outfilename=substitute(sourcefileename,'\(\.[^.]*\)' ,'','g')
-		let toexename=outfilename
-	endif
-	if filereadable(outfilename)
-		if(g:iswindows==1)
-			let outdeletedsuccess=delete(getcwd()."\\".outfilename)
-		else
-			let outdeletedsuccess=delete("./".outfilename)
-		endif
-		if(outdeletedsuccess!=0)
-			set makeprg=make
-			echohl WarningMsg | echo "Fail to make! I cannot delete the ".outfilename | echohl None
-			return
-		endif
-	endif
-	execute "silent make"
-	set makeprg=make
-	execute "normal :"
-	if filereadable(outfilename)
-		if(g:iswindows==1)
-			execute "!".toexename
-		else
-			execute "!./".toexename
-		endif
-	endif
-	execute "copen"
-endfunction
-
-nmap <F2> :run macros/gdb_mappings.vim<CR>
-"}}}
 
 "delete the ^M
 nmap dm :%s/\r\(\n\)/\1/g<CR>
@@ -442,12 +369,105 @@ function! CmdLine(str)
 	unmenu Foo
 endfunction
 "}}}
-
-vnoremap <silent> > >gv
-vnoremap <silent> < <gv
 "}}}
 "{{{plugin setting
+map <F1> :h myvimhelp.txt<cr>
+"{{{vundle
+"
+let s:justvundled = 0
+if has('win32')
+	cd $HOME
+    call system('dir .\.vim\bundle\vundle')
+else
+    call system('ls ~/.vim/bundle/vundle')
+endif
+if v:shell_error
+    if has('win32')
+        call system('mkdir .\.vim\bundle\vundle')
+        call system('git clone https://github.com/gmarik/vundle.git .\.vim\bundle\vundle')
+    else
+        call system('mkdir -p ~/.vim/bundle/vundle')
+        call system('git clone https://github.com/gmarik/vundle.git ~/.vim/bundle/vundle')
+    endif
+    if !v:shell_error
+        let s:justvundled = 1
+    endif
+endif
 
+if has('win32')
+    set rtp+=.\.vim\bundle\vundle
+else
+    set rtp+=~/.vim/bundle/vundle/
+endif
+
+" let Vundle manage Vundle
+" required! 
+call vundle#rc()
+Bundle 'gmarik/vundle'
+ 
+" My Bundles here:
+"
+" original repos on github
+" Bundle 'tpope/vim-fugitive'
+" Bundle 'Lokaltog/vim-easymotion'
+" Bundle 'rstacruz/sparkup', {'rtp': 'vim/'}
+" Bundle 'tpope/vim-rails.git'
+" vim-scripts repos
+Bundle 'a.vim'
+Bundle 'Align'
+Bundle 'tracyone/calendar'
+Bundle 'Colour-Sampler-Pack'
+Bundle 'tracyone/ConqueShell'
+Bundle 'amiorin/ctrlp-z'
+Bundle 'ctrlp.vim'
+Bundle 'delimitMate.vim'
+Bundle 'FuzzyFinder'
+Bundle 'genutils'
+Bundle 'neocomplcache'
+"Bundle 'Valloric/YouCompleteMe'
+Bundle 'The-NERD-Commenter'
+Bundle 'scrooloose/nerdtree'
+Bundle 'ShowMarks7'
+Bundle 'wesleyche/SrcExpl'
+Bundle 'surround.vim'
+Bundle 'majutsushi/tagbar'
+Bundle 'unite.vim'
+Bundle 'L9'
+Bundle 'ZenCoding.vim'
+Bundle 'vimwiki'
+Bundle 'matrix.vim--Yang'
+Bundle 'adah1972/fencview'
+Bundle 'Markdown'
+Bundle 'LaTeX-Suite-aka-Vim-LaTeX'
+Bundle 'DrawIt'
+Bundle 'mbbill/VimExplorer'
+Bundle 'renamer.vim'
+Bundle 'tracyone/doxygen-support'
+Bundle 'tracyone/CCtree'
+Bundle 'hallison/vim-markdown'
+Bundle 'TeTrIs.vim'
+Bundle 'tracyone/mark.vim'
+Bundle 'tracyone/MyVimHelp'
+Bundle 'sunuslee/vim-plugin-random-colorscheme-picker' 
+Bundle 'tracyone/vimgdb'
+if g:iswindows == 1
+	Bundle 'tracyone/pyclewn' 
+else
+	Bundle 'tracyone/pyclewn_linux' 
+endif
+" non github reposo
+" Bundle 'git://git.wincent.com/command-t.git'
+" ...
+ 
+"
+" Brief help
+" :BundleList          - list configured bundles
+" :BundleInstall(!)    - install(update) bundles
+" :BundleSearch(!) foo - search(or refresh cache first) for foo
+" :BundleClean(!)      - confirm(or auto-approve) removal of unused bundles
+" see :h vundle for more details or wiki for FAQ
+" NOTE: comments after Bundle command are not allowed..
+"}}}
 "{{{tohtml
 let html_use_css=1
 "}}}
@@ -461,7 +481,7 @@ let g:fuf_modesDisable = []
 let g:fuf_mrufile_maxItem = 20
 let g:fuf_mrucmd_maxItem = 20
 "recursive open 
-nmap <F5> :FufFile **/<cr>   
+nmap <F3> :FufFile **/<cr>   
 nmap <silent><leader>ff :FufFile<cr>
 nmap <silent><leader>fb :FufBuffer<cr>
 nmap <silent><leader>fd :FufDir<cr>
@@ -472,12 +492,7 @@ nmap <silent><leader>ft :FufTag<cr>
 let g:user_zen_expandabbr_key='<C-j>'
 "}}}
 "{{{tagbar
-nmap <silent><leader>tb :TagbarToggle<CR>
-if has("win32")
-	let g:tagbar_ctags_bin='c:\VimTools\ctags.exe'
-else
-	let g:tagbar_ctags_bin='ctags' 
-endif
+nmap <silent><F9> :TagbarToggle<CR>
 let g:tagbar_left=1
 let g:tagbar_width=30
 let g:tagbar_sort=0
@@ -485,70 +500,63 @@ let g:tagbar_autofocus = 1
 let g:tagbar_compact = 1
 let g:tagbar_systemenc='cp936'
 "}}}
-"{{{tilst
-if (has("win32"))
-	let Tlist_Ctags_Cmd='c:/VimTools/ctags.exe'
-else
-	let Tlist_Ctags_Cmd='/usr/bin/ctags'	"Specifies the path to the ctags utility.
-endif
-let Tlist_Auto_Highlight_Tag=1			
-let Tlist_Auto_Open=0					"To automatically open the taglist window
-let Tlist_Close_On_Select=0				"If you want to close the taglist window when a file or tag is selected,then set it
-let Tlist_Exit_OnlyWindow=1				"If you want to exit Vim if only the taglist window is currently opened,then set it
-
-"To automatically close the tags tree for inactive files, you can set the
-"'Tlist_File_Fold_Auto_Close' variable to 1. When this variable is set to 1,
-"the tags tree for the current buffer is automatically opened and for all the
-"other buffers is closed.
-let Tlist_File_Fold_Auto_Close=1	
-let Tlist_GainFocus_On_ToggleOpen=1		" controls whether the cursor is moved to the taglist window or remains
-"in the current window.
-let Tlist_Max_Submenu_Items=25
-let Tlist_Max_Tag_length=20
-let Tlist_Process_File_Always=0		" generate the listof tags for new files even when the taglist window is closed 
-let Tlist_Show_Menu=1				"When using GUI Vim,set this can show the menu
-let Tlist_Show_One_File=1
-let Tlist_Sort_Type='order'			
-let Tlist_OnlyWindow=1
-let Tlist_Use_Right_Window=1
-let Tlist_Use_SingleClick=0			"single click open the tag
-let Tlist_WinHeight=10
-let Tlist_WinWidth=18
-let Tlist_Use_Horiz_Window=0
-let Tlist_Enable_Fold_Column =0 
-let Tlist_Display_Prototype = 0
-map <silent> <leader>tl :TlistToggle<CR>
-"}}}
 "{{{cscope
-if filereadable("cscope.out")
-	cs add cscope.out
-	if has("cscope")
-		" use both cscope and ctag for 'ctrl-]', ':ta', and 'vim -t'
-		set cscopetag
-		set csprg=cscope
-		" check cscope for definition of a symbol before checking ctags: set to 1
-		" if you want the reverse search order.
-		set csto=0
-		""set cscopequickfix=s+,c+,d+,i+,t-,e-
-		" add any cscope database in current directory
-		" else add the database pointed to by environment variable 
-		set cscopetagorder=0
-	elseif $CSCOPE_DB != ""
-		cs add $CSCOPE_DB
-	endif
+au VimEnter *.c,*.cpp,*.s,*.cc,*.h exec "silent! cs add cscope.out"
+if $CSCOPE_DB != "" "tpyically it is a include db 
+	au VimEnter *.c,*.cpp,*.s,*.cc,*.h exec "silent! cs add $CSCOPE_DB"
+endif
+if $CSCOPE_DB1 != ""
+	au VimEnter *.c,*.cpp,*.s,*.cc,*.h exec "silent! cs add $CSCOPE_DB1"
+endif
+if $CSCOPE_DB2 != ""
+	au VimEnter *.c,*.cpp,*.s,*.cc,*.h exec "silent! cs add $CSCOPE_DB2"
+endif
+if $CSCOPE_DB3 != ""
+	au VimEnter *.c,*.cpp,*.s,*.cc,*.h exec "silent! cs add $CSCOPE_DB3"
+endif
+if filereadable('ccglue.out') "this guy is more efficiency 
+	au VimEnter *.c,*.cpp,*.s,*.cc,*.h exec "silent! CCTreeLoadXRefDBFromDisk ccglue.out"
+endif
+if has("cscope")
+	" use both cscope and ctag for 'ctrl-]', ':ta', and 'vim -t'
+	set cscopetag
+	set csprg=cscope
+	" check cscope for definition of a symbol before checking ctags: set to 1
+	" if you want the reverse search order.
+	set csto=0
+	set cscopequickfix=s-,c-,d-,i-,t-,e-,i-,g-
+	" add any cscope database in current directory
+	" else add the database pointed to by environment variable 
+	set cscopetagorder=0
 endif
 	set cscopeverbose 
 " show msg when any other cscope db added
+nmap <Leader>s :cs find s <C-R>=expand("<cword>")<CR><CR>:cw 7<cr>
+nmap <Leader>g :cs find g <C-R>=expand("<cword>")<CR><CR>:cw 7<cr>
+nmap <Leader>d :cs find d <C-R>=expand("<cword>")<CR> <C-R>=expand("%")<CR><CR>:cw 7<cr>
+nmap <Leader>c :cs find c <C-R>=expand("<cword>")<CR><CR>:cw 7<cr>
+nmap <Leader>t :cs find t <C-R>=expand("<cword>")<CR><CR>:cw 7<cr>
+nmap <Leader>e :cs find e <C-R>=expand("<cword>")<CR><CR>:cw 7<cr>
+nmap <Leader>f :cs find f <C-R>=expand("<cfile>")<CR><CR>:cw 7<cr>
+nmap <Leader>i :cs find i ^<C-R>=expand("<cfile>")<CR>$<CR>:cw 7<cr>
 
-"key mapping
-nmap  <leader>s :cs find s <C-R>=expand("<cword>")<CR><CR>	
-nmap  <Leader>g :cs find g <C-R>=expand("<cword>")<CR><CR>	
-nmap  <Leader>c :cs find c <C-R>=expand("<cword>")<CR><CR>	
-nmap  <Leader>t :cs find t <C-R>=expand("<cword>")<CR><CR>	
-nmap  <Leader>e :cs find e <C-R>=expand("<cword>")<CR><CR>	
-nmap  <Leader>f :cs find f <C-R>=expand("<cfile>")<CR><CR>	
-nmap  <Leader>i :cs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
-nmap  <Leader>d :cs find d <C-R>=expand("<cword>")<CR><CR>	
+nmap <C-@>s :split<CR>:cs find s <C-R>=expand("<cword>")<CR><CR>
+nmap <C-@>g :split<CR>:cs find g <C-R>=expand("<cword>")<CR><CR>
+nmap <C-@>d :split<CR>:cs find d <C-R>=expand("<cword>")<CR> <C-R>=expand("%")<CR><CR>
+nmap <C-@>c :split<CR>:cs find c <C-R>=expand("<cword>")<CR><CR>
+nmap <C-@>t :split<CR>:cs find t <C-R>=expand("<cword>")<CR><CR>
+nmap <C-@>e :split<CR>:cs find e <C-R>=expand("<cword>")<CR><CR>
+nmap <C-@>f :split<CR>:cs find f <C-R>=expand("<cfile>")<CR><CR>
+nmap <C-@>i :split<CR>:cs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
+
+nmap <C-@><C-@>s :vert split<CR>:cs find s <C-R>=expand("<cword>")<CR><CR>
+nmap <C-@><C-@>g :vert split<CR>:cs find g <C-R>=expand("<cword>")<CR><CR>
+nmap <C-@><C-@>d :vert split<CR>:cs find d <C-R>=expand("<cword>")<CR> <C-R>=expand("%")<CR><CR>
+nmap <C-@><C-@>c :vert split<CR>:cs find c <C-R>=expand("<cword>")<CR><CR>
+nmap <C-@><C-@>t :vert split<CR>:cs find t <C-R>=expand("<cword>")<CR><CR>
+nmap <C-@><C-@>e :vert split<CR>:cs find e <C-R>=expand("<cword>")<CR><CR>
+nmap <C-@><C-@>f :vert split<CR>:cs find f <C-R>=expand("<cfile>")<CR><CR>
+nmap <C-@><C-@>i :vert split<CR>:cs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
 
 nmap <C-\>s :cs find s 
 nmap <C-\>g :cs find g 
@@ -559,36 +567,20 @@ nmap <C-\>f :cs find f
 nmap <C-\>i :cs find i 
 nmap <C-\>d :cs find d 
 
-
-" The :scscope command does the same(cs command) and also splits the window (short: scs).
-nmap <C-@>s :scs find s <C-R>=expand("<cword>")<CR><CR>	
-nmap <C-@>g :scs find g <C-R>=expand("<cword>")<CR><CR>	
-nmap <C-@>c :scs find c <C-R>=expand("<cword>")<CR><CR>	
-nmap <C-@>t :scs find t <C-R>=expand("<cword>")<CR><CR>	
-nmap <C-@>e :scs find e <C-R>=expand("<cword>")<CR><CR>	
-nmap <C-@>f :scs find f <C-R>=expand("<cfile>")<CR><CR>	
-nmap <C-@>i :scs find i ^<C-R>=expand("<cfile>")<CR>$<CR>	
-nmap <C-@>d :scs find d <C-R>=expand("<cword>")<CR><CR>
-
-" Hitting CTRL-@ *twice* before the search type does a vertical
-" split instead of a horizontal one
-nmap <C-@><C-@>s :vert scs find s <C-R>=expand("<cword>")<CR><CR>
-nmap <C-@><C-@>g :vert scs find g <C-R>=expand("<cword>")<CR><CR>
-nmap <C-@><C-@>c :vert scs find c <C-R>=expand("<cword>")<CR><CR>
-nmap <C-@><C-@>t :vert scs find t <C-R>=expand("<cword>")<CR><CR>
-nmap <C-@><C-@>e :vert scs find e <C-R>=expand("<cword>")<CR><CR>
-nmap <C-@><C-@>f :vert scs find f <C-R>=expand("<cfile>")<CR><CR>	
-nmap <C-@><C-@>i :vert scs find i ^<C-R>=expand("<cfile>")<CR>$<CR>	
-nmap <C-@><C-@>d :vert scs find d <C-R>=expand("<cword>")<CR><CR>
-""key map timeouts
-"set notimeout 
-"set timeoutlen=4000
-"set ttimeout
-"set ttimeoutlen=100
-nmap <leader>u :call CreateCscopeTags()<cr>
-nmap <leader>a :cs add cscope.out<cr>
-nmap <leader>k :cs kill -1<cr>
+if g:iswindows==1 
+	nmap <leader>u :call Do_CsTag()<cr>
+else
+	nmap <leader>u :call CreateCscopeTags()<cr>
+endif
+nmap <leader>a :cs add cscope.out<cr>:CCTreeLoadDB cscope.out<cr>
+"kill the connection of current dir 
+if has("cscope") && filereadable("cscope.out")
+	nmap <leader>k :cs kill cscope.out<cr> 
+endif
 function! CreateCscopeTags()
+	if has("cscope") && filereadable("cscope.out")
+		cs kill cscope.out "kill the cscope.out in current dir only 
+	endif
 	if filereadable("cscope.files")
 		call delete("cscope.files")
 		call delete("cscope.out")
@@ -596,23 +588,91 @@ function! CreateCscopeTags()
 		execute "echo \"Updating cscope.files...\r\"" 
 	else
 		execute "echo \"Creating cscope.files...\r\"" 
+	endif
+	call system("touch cscope.files")
+	call system("find $PWD -name \"*.[chsS]\" > ./cscope.files")
+	call system("cscope -Rbckq -i cscope.files")
+	call system("ctags -R")
+	execute "echo \"finish!\"" 
+	if filereadable("cscope.out")
+		execute "cs add cscope.out"
+		execute "CCTreeLoadDB cscope.out"
+	else
+endfunction
+function! Do_CsTag()
+	let dir = getcwd()
+	if filereadable("tags")
 		if(g:iswindows==1)
-			call system("echo > cscope.files")
-			call system("set Path=c:\VimTools\;C:\MinGW\bin;")
-			call system("unix_find %~dp0 -name \"*.[chsS]\" > ./cscope.files")
+			let tagsdeleted=delete(dir."\\"."tags")
 		else
-			call system("touch cscope.files")
-			call system("find $PWD -name \"*.[chsS]\" > ./cscope.files")
+			let tagsdeleted=delete("./"."tags")
+		endif
+		if(tagsdeleted!=0)
+			echohl WarningMsg | echo "Fail to do tags! I cannot delete the tags" | echohl None
+			return
 		endif
 	endif
-	call system("cscope -bkq -i cscope.files")
-	call system("ctags -R")
-	execute "echo \"finish!hit <leader>a to add database\r\"" 
+	if filereadable("cscope.files")
+		if(g:iswindows==1)
+			let csfilesdeleted=delete(dir."\\"."cscope.files")
+		else
+			let csfilesdeleted=delete("./"."cscope.files")
+		endif
+		if(csfilesdeleted!=0)
+			echohl WarningMsg | echo "Fail to do cscope! I cannot delete the cscope.files" | echohl None
+			return
+		endif
+	endif
+	if filereadable("cscope.out")
+		if(g:iswindows==1)
+			let csoutdeleted=delete(dir."\\"."cscope.out")
+		else
+			let csoutdeleted=delete("./"."cscope.out")
+		endif
+		if(csoutdeleted!=0)
+			echohl WarningMsg | echo "I cannot delete the cscope.out,try again" | echohl None
+			echo "kill the cscope connection" 
+			if has("cscope") && filereadable("cscope.out")
+				silent! execute "cs kill cscope.out"
+			endif
+			if(g:iswindows==1)
+				let csoutdeleted=delete(dir."\\"."cscope.out")
+			else
+				let csoutdeleted=delete("./"."cscope.out")
+			endif
+		endif
+		if(csoutdeleted!=0)
+			echohl WarningMsg | echo "I still cannot delete the cscope.out,failed to do cscope" | echohl None
+			return
+		endif
+	endif
+	if(executable('ctags'))
+		silent! execute "!ctags -R --c-types=+p --fields=+S *"
+		silent! execute "!ctags -R --c++-kinds=+p --fields=+iaS --extra=+q ."
+	endif
+	if(executable('cscope') && has("cscope") )
+		if(g:iswindows!=1)
+			silent! execute "!find . -name \"*.[chsS]\" > ./cscope.files"
+		else
+			silent! execute "!dir /s/b *.c,*.cpp,*.h,*.java,*.cs >> cscope.files"
+		endif
+		silent! execute "!cscope -Rbkq -i cscope.files"
+		"silent! execute "!ccglue -S cscope.out -o ccglue.out"   "don not know how to use
+		execute "normal :"
+		if filereadable("cscope.out")
+			execute "cs add cscope.out"
+			execute "CCTreeLoadDB cscope.out"
+			"execute "CCTreeLoadXRefDBFromDisk ccglue.out"
+		else
+			echohl WarningMsg | echo "No cscope.out" | echohl None
+		endif
+	endif
 endfunction
 "}}}
 "{{{srcexpl.vim
 " // The switch of the Source Explorer                                         
-nmap <F8> :SrcExplToggle<CR>
+map <F8> :SrcExplToggle<CR>
+imap <F8> <ESC>:SrcExplToggle<CR>i
 "                                                                              
 " // Set the height of Source Explorer window                                  
 let g:SrcExpl_winHeight = 8
@@ -624,7 +684,7 @@ let g:SrcExpl_refreshTime = 100
 let g:SrcExpl_jumpKey = "<ENTER>"
 "                                                                              
 " // Set "Space" key for back from the definition context                      
-let g:SrcExpl_gobackKey = "<SPACE>"
+"let g:SrcExpl_gobackKey = "<SPACE>"
 "                                                                              
 " // In order to Avoid conflicts, the Source Explorer should know what plugins 
 " // are using buffers. And you need add their bufname into the list below     
@@ -632,7 +692,8 @@ let g:SrcExpl_gobackKey = "<SPACE>"
 let g:SrcExpl_pluginList = [
 			\ "__Tag_List__",
 			\ "_NERD_tree_",
-			\ "Source_Explorer"
+			\ "Source_Explorer",
+			\ "*unite*"
 			\ ]
 "
 " // Enable/Disable the local definition searching, and note that this is not  
@@ -645,13 +706,17 @@ let g:SrcExpl_isUpdateTags = 0
 "                                                                              
 " // Use 'Exuberant Ctags' with '--sort=foldcase -R .' or '-L cscope.files' to 
 " //  create/update a tags file                                                
-" let g:SrcExpl_updateTagsCmd = "ctags --sort=foldcase -R ."
+let g:SrcExpl_updateTagsCmd = "ctags --sort=foldcase -R ."
 "                                                                              
 " // Set "<F12>" key for updating the tags file artificially                   
-"let g:SrcExpl_updateTagsKey = "<F12>"
-"                                                                              
-" Just_change_above_of_them_by_yourself:                                     
-"                                                                              
+"let g:SrcExpl_updateTagsKey = "<F3>"
+" // Set "<F3>" key for displaying the previous definition in the jump list 
+ let g:SrcExpl_prevDefKey = "<c-p>" 
+
+ " // Set "<F4>" key for displaying the next definition in the jump list 
+ let g:SrcExpl_nextDefKey = "<C-n>" 
+
+                                                                             
 "}}}
 "{{{neocomplcache
 " Use neocomplcache. 
@@ -674,6 +739,9 @@ let g:neocomplcache_enable_underbar_completion = 1
 "Set minimum syntax keyword length. 
 let g:neocomplcache_min_syntax_length = 2 
 
+let g:neocomplcache_same_filetype_lists = {}           
+let g:neocomplcache_same_filetype_lists._ = '_'
+
 "let g:neocomplcache_lock_buffer_name_pattern = '/*ku/*' 
 
 "let g:neocomplcache_enable_auto_delimiter = 1 
@@ -685,7 +753,15 @@ let g:neocomplcache_min_syntax_length = 2
 
 "" Define dictionary. 
 
-let g:neocomplcache_dictionary_filetype_lists = { 'default' : '','vimshell' : $HOME.'/_vimshell_hist', 'scheme' : $HOME.'/.gosh_completions',} 
+""let g:neocomplcache_dictionary_filetype_lists = { 
+
+""/ 'default' : '', 
+
+""/ 'vimshell' : $HOME.'/.vimshell_hist', 
+
+""/ 'scheme' : $HOME.'/.gosh_completions', 
+
+""/ } 
 
 
 ""Define keyword. 
@@ -732,7 +808,7 @@ let g:neocomplcache_dictionary_filetype_lists = { 'default' : '','vimshell' : $H
 "let g:neocomplcache_omni_patterns.cpp = '/h/w*/%(/./|->/)/h/w*/|/h/w*::' 
 
 "For input-saving, this variable controls whether you can  choose a candidate with a alphabet or number displayed beside a candidate after '-'.  When you input 'ho-a',  neocomplcache will select candidate 'a'.
-imap <expr> -  pumvisible() ? "\<Plug>(neocomplcache_start_unite_quick_match)" : '-'
+imap <expr> `  pumvisible() ? "\<Plug>(neocomplcache_start_unite_quick_match)" : '`'
 
 " Recommended key-mappings.
 " <CR>: close popup and save indent.
@@ -751,7 +827,7 @@ inoremap <expr><C-e>  neocomplcache#cancel_popup()
 "{{{unite.vim 
 
 nnoremap    [unite]   <Nop>
-nmap    <space> [unite]
+nmap   <SPACE> [unite]
 
 nnoremap <silent> [unite]c  :<C-u>UniteWithCurrentDir -buffer-name=files buffer file_mru bookmark file<CR>
 nnoremap <silent> [unite]b  :Unite buffer -input=!split<CR>
@@ -791,22 +867,15 @@ let NERDTreeWinPos='right'	"show nerdtree in the rigth side
 let NERDTreeShowBookmarks=1
 let NERDTreeChDirMode=2
 map <F12> :NERDTreeToggle .<CR> 
-map <2-LeftMouse>  *N
+"map <2-LeftMouse>  *N "double click highlight the current cursor word 
 imap <F12> <ESC> :NERDTreeToggle<CR>
-"}}}
-"{{{BufExplorer
-let g:bufExplorerDefaultHelp=1       " Do not show default help.
-let g:bufExplorerShowRelativePath=1  " Show relative paths.
-let g:bufExplorerSortBy='mru'        " Sort by most recently used.
-let g:bufExplorerSplitRight=0        " Split left.
-let g:bufExplorerUseCurrentWindow=1  " Open in new window
-let g:bufExplorerShowDirectories=1   " Show directories.
 "}}}
 "{{{conqueterm.vim
 "ConqueTerm        <command>: open in current window<command> 
 "ConqueTermSplit    <command>:horizontal split window<command> 
 "ConqueTermVSplit <command>:vertical split window<command> 
 "ConqueTermTab    <command>:open in tab<command>
+let g:ConqueTerm_PyVersion = 3
 let g:ConqueTerm_FastMode = 0        " enable fast mode 
 let g:ConqueTerm_Color=0          " diable terminal colors 
 let g:ConqueTerm_CloseOnEnd = 1      " close buffer when program exits 
@@ -815,11 +884,13 @@ let g:ConqueTerm_StartMessages = 0
 let g:ConqueTerm_PromptRegex = '^\w\+@[0-9A-Za-z_.-]\+:[0-9A-Za-z_./\~,:-]\+\$'
 let g:ConqueTerm_Syntax = 'conque'
 let g:ConqueTerm_CodePage=0
-if (has("win32"))
-	map <A-space> :ConqueTermSplit cmd.exe<cr> 
+let g:ConqueTerm_CWInsert = 1
+if (has("win32")) || has("win64")
+	map <F4> :ConqueTermSplit cmd.exe<cr> 
 else
-	map <A-space> :ConqueTermSplit bash<cr> 
+	map <F4> :ConqueTermSplit bash<cr> 
 endif
+
 "}}}
 "{{{a.vim
 ":A switches to the header file corresponding to the current file being  edited (or vise versa)
@@ -828,12 +899,20 @@ endif
 ":AT new tab and switches
 ":AN cycles through matches
 ":IH switches to file under cursor
-nmap <A-h> :IH<cr>
 ":IHS splits and switches
 ":IHV vertical splits and switches
 ":IHT new tab and switches
-nmap <A-t> :IHT<cr>
 ":IHN cycles through matches
+nmap <leader>ih :IH<cr>
+nmap <leader>ihs :IHS<cr>
+nmap <leader>ihv :IHV<cr>
+nmap <leader>iht :IHT<cr>
+nmap <leader>ihn :IHN<cr>
+nmap <leader>ia :A<cr>
+nmap <leader>ias :AS<cr>
+nmap <leader>iav :AT<cr>
+nmap <leader>iat :AT<cr>
+nmap <leader>ian :AN<cr>
 "}}}
 "{{{showmark 
 "The following mappings are setup by default:
@@ -847,133 +926,235 @@ let showmarks_enable = 0            " disable showmarks when vim startup
 let showmarks_include = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ" 
 let showmarks_ignore_type = "hqm"   " help, Quickfix, non-modifiable 
 "}}}
-"{{{delimitmate
+"{{{delimitMate
 au FileType verilog,c let b:delimitMate_matchpairs = "(:),[:],{:}"
 let delimitMate_nesting_quotes = ['"','`']
 let delimitMate_expand_cr = 1
 let delimitMate_expand_space = 1
-let delimitMate_excluded_regions = "Comment,String,Statement"
-"Conditional,Repeat,Label,Operator,PreCondit,Macro
 "}}}
-"{{{vundle
-"
-let s:justvundled = 0
-if has('win32')
-	cd $HOME
-    call system('dir .\.vim\bundle\vundle')
+"{{{doxygen
+nmap <leader>dh :DoxyFILEHeader<cr>
+nmap <leader>df :DoxyFunction<cr>
+map <leader>db :DoxyBlockLong<cr>
+"}}}
+"{{{CCtree
+let g:CCTreeKeyTraceForwardTree = '<C-\>>' "the symbol in current cursor's forward tree 
+let g:CCTreeKeyTraceReverseTree = '<C-\><'
+let g:CCTreeKeyHilightTree = '<C-\>l' " Static highlighting
+let g:CCTreeKeySaveWindow = '<C-\>y'
+let g:CCTreeKeyToggleWindow = '<C-\>w'
+let g:CCTreeKeyCompressTree = 'zs' " Compress call-tree
+let g:CCTreeKeyDepthPlus = '<C-\>='
+let g:CCTreeKeyDepthMinus = '<C-\>-'
+"let g:CCTreeUseUTF8Symbols = 1
+"map <F7> :CCTreeLoadXRefDBFromDisk $CCTREE_DB<cr> 
+"}}}
+"{{{vimwiki
+let g:vimwiki_use_mouse = 1
+let g:vimwiki_list = [{'path': 'c:/vimwiki/',
+\ 'path_html': 'c:/vimwiki/html/',
+\ 'html_header': 'c:/vimwiki/template/header.tpl',}] 
+let g:vimwiki_use_calendar=1 "use calendar plugin 
+"}}}
+"{{{calendar
+"'close'                     Closes calendar window.             'q'
+"'do_action'                 Executes |calendar_action|.           '<CR>'
+"'goto_today'                Executes |calendar_today|.            't'
+"'show_help'                 Displays a short help message.      '?'
+"'redisplay'                 Redraws calendar window.            'r'
+"'goto_next_month'           Jumps to the next month.            '<Right>'
+"'goto_prev_month'           Jumps to the previous month.        '<Left>'
+"'goto_next_year'            Jumps to the next month.            '<Up>'
+"'goto_prev_year'            Jumps to the previous month.        '<Down>'
+map <F10> :Calendar<cr>
+"}}}
+"{{{ctrlp
+let g:ctrlp_extensions = ['tag', 'buffertag', 'quickfix', 'dir', 'rtscript',
+			\ 'undo', 'line', 'changes', 'mixed', 'bookmarkdir']
+"}}}
+"{{{pyclewn
+function! Pyclewnmap()
+	silent! nmap <tab> :C
+	exec "Cmapkeys"
+	 silent! :execute "Cdbgvar"
+	:execute "only"
+	:rightbelow 35vsplit (clewn)_console
+	:set syntax=cpp
+	:wincmd h
+	" watch
+	:rightbelow 5split (clewn)_dbgvar
+	:set syntax=cpp
+	:wincmd k
+endfunction
+function! Pyclewnunmap()
+	nmap <TAB> za
+	exec "silent! Cunmapkeys"
+	silent!	bwipeout (clewn)_console
+	silent!	bdelete (clewn)_console
+	silent! bwipeout (clewn)_dbgvar
+	silent! ccl
+endfunction
+func! OpenClosedbgvar()
+if bufexists("(clewn)_dbgvar")
+	silent! bwipeout (clewn)_dbgvar
 else
-    call system('ls ~/.vim/bundle/vundle')
+	:rightbelow 5split (clewn)_dbgvar
+	:set syntax=cpp
 endif
-if v:shell_error
-    if has('win32')
-        call system('mkdir .\.vim\bundle\vundle')
-        call system('git clone https://github.com/gmarik/vundle.git .\.vim\bundle\vundle')
-    else
-        call system('mkdir -p ~/.vim/bundle/vundle')
-        call system('git clone https://github.com/gmarik/vundle.git ~/.vim/bundle/vundle')
-    endif
-    if !v:shell_error
-        let s:justvundled = 1
-    endif
-endif
-
-if has('win32')
-    set rtp+=.\.vim\bundle\vundle
-else
-    set rtp+=~/.vim/bundle/vundle/
-endif
-
-" let Vundle manage Vundle
-" required! 
-call vundle#rc()
-Bundle 'gmarik/vundle'
- 
-" My Bundles here:
-"
-" original repos on github
-" Bundle 'tpope/vim-fugitive'
-" Bundle 'Lokaltog/vim-easymotion'
-" Bundle 'rstacruz/sparkup', {'rtp': 'vim/'}
-" Bundle 'tpope/vim-rails.git'
-" vim-scripts repos
-Bundle 'a.vim'
-Bundle 'Align'
-Bundle 'bufexplorer.zip'
-Bundle 'calendar.vim'
-Bundle 'Colour-Sampler-Pack'
-Bundle 'Conque-Shell'
-Bundle 'tracyone/c.vim'
-Bundle 'amiorin/ctrlp-z'
-Bundle 'ctrlp.vim'
-Bundle 'delimitMate.vim'
-Bundle 'FuzzyFinder'
-Bundle 'genutils'
-Bundle 'neocomplcache'
-Bundle 'The-NERD-Commenter'
-Bundle 'scrooloose/nerdtree'
-Bundle 'ShowMarks7'
-Bundle 'SrcExpl'
-Bundle 'surround.vim'
-Bundle 'Tagbar'
-Bundle 'taglist.vim'
-Bundle 'unite.vim'
-Bundle 'vimdoc'
-Bundle 'L9'
-Bundle 'ZenCoding.vim'
-Bundle 'vimwiki'
-Bundle 'matrix.vim--Yang'
-Bundle 'FencView.vim'
-Bundle 'Markdown'
-Bundle 'LaTeX-Suite-aka-Vim-LaTeX'
-Bundle 'DrawIt'
-Bundle 'altercation/vim-colors-solarized'
-Bundle 'mbbill/VimExplorer'
-Bundle 'renamer.vim'
- 
-" non github reposo
-" Bundle 'git://git.wincent.com/command-t.git'
-" ...
- 
-"
-" Brief help
-" :BundleList          - list configured bundles
-" :BundleInstall(!)    - install(update) bundles
-" :BundleSearch(!) foo - search(or refresh cache first) for foo
-" :BundleClean(!)      - confirm(or auto-approve) removal of unused bundles
-" see :h vundle for more details or wiki for FAQ
-" NOTE: comments after Bundle command are not allowed..
+endfunc
+let g:openflag=0
+func! LoadProj()
+	if filereadable(".proj")
+		:silent! Pyclewn
+		:call Pyclewnmap()
+		:Csource .proj
+		:Cstart
+	else
+		echohl WarningMsg | echo "No .proj file!!You must create it first( use <leader>pc )\n" | echohl None
+		echohl WarningMsg | echo "wait for a second...starting Pyclewn.." | echohl None
+		:5sleep
+		:silent! Pyclewn
+		:call Pyclewnmap()
+	endif
+endfunc
+let g:pyclewn_args = "--args=-q --gdb=async --terminal=gnome-terminal,-x"
+silent!	nmap <leader>pw :silent! Cdbgvar <C-R><C-W><CR>
+silent! nmap <leader>pf :silent! exe "Cfoldvar " . line(".")<CR>
+nmap <leader>ps :silent! Pyclewn<cr>:silent! call Pyclewnmap()<cr>
+nmap <leader>pp :call LoadProj()<cr>
+nmap <leader>pd :call Pyclewnunmap()<cr>:Cquit<cr>:nbclose<cr>
+nmap <leader>pc :Cproject .proj<cr>
 "}}}
 "let g:loaded_indentLine=0
 "let g:indentLine_color_gui = '#A4E57E'
 "let g:indentLine_enabled = 1
-let g:fencview_autodetect=1
+let g:fencview_autodetect=0 "it is look like a conflict with c.vim 
+let g:fencview_auto_patterns='*.txt,*.htm{l\=},*.c,*.cpp,*.s,*.vim'
 let g:NERDMenuMode=0
-"let g:Powerline_symbols = 'fancy'
-
+"rename multi file name
+map <F2> :Ren<cr>
+map <F11> :VE<cr><cr>
+if has('win32')
+ cd -
+endif
 "}}}
-"{{{gui setting
+"{{{gui releate
+"list of flags that specify how the GUI works
 if(has("gui_running"))
-	if(g:iswindows==1)
-		set guifont=Monaco:h14:b:cANSI
-		au GUIEnter * simalt~x "maximize window
-	else
-		set guifont=consolas\ 18
+	if g:iswindows==0
 		au GUIEnter * call MaximizeWindow()
+		set guifont=consolas\ 14
+	else
+		au GUIEnter * simalt~x "maximize window
+		set guifont=Bitstream_Vera_Sans_Mono:h14:cANSI
+		set gfw=Yahei_Mono:h14.5:cGB2312
 	endif
-	colorscheme desert256
-	" If using a dark background within the editing area and syntax highlighting
-	" turn on this option as well
-	set background=dark
-	"list of flags that specify how the GUI works
 	set guioptions-=b
 	"set guioptions-=m "whether use menu
 	set guioptions-=r "whether show the rigth scroll bar
 	set guioptions-=l "whether show the left scroll bar
 	"set guioptions-=T "whether show toolbar or not
 	set guitablabel=%N\ %t  "do not show dir in tab
-	behave xterm
-else
-	set background=light
+	"set t_Co=256
+	" Nice window title
+	if has("toolbar")
+		if exists("*Do_toolbar_tmenu")
+			delfun Do_toolbar_tmenu
+		endif
+		fun Do_toolbar_tmenu()
+			tmenu ToolBar.Open		Open File
+			tmenu ToolBar.Save		Save File
+			tmenu ToolBar.SaveAll	Save All
+			tmenu ToolBar.Print		Print
+			tmenu ToolBar.Undo		Undo
+			tmenu ToolBar.Redo		Redo
+			tmenu ToolBar.Cut		Cut
+			tmenu ToolBar.Copy		Copy
+			tmenu ToolBar.Paste		Paste
+			tmenu ToolBar.Find		Find&Replace
+			tmenu ToolBar.FindNext	Find Next
+			tmenu ToolBar.FindPrev	Find Prev
+			tmenu ToolBar.Replace	Replace
+			tmenu ToolBar.LoadSesn	Load Session
+			tmenu ToolBar.SaveSesn	Save Session
+			tmenu ToolBar.RunScript	Run a Vim Script
+			tmenu ToolBar.Make		Make
+			tmenu ToolBar.Shell		Shell
+			tmenu ToolBar.RunCtags	ctags! -R
+			tmenu ToolBar.TagJump	Jump to next tag
+			tmenu ToolBar.Help		Help
+			tmenu ToolBar.FindHelp	Search Help
+		endfun
+"add Pyclewn debug toolbar
+		amenu ToolBar.-Sep- :
+"conect the pyclewn
+		amenu icon=$VIMFILES/bundle/pyclewn/debug_icons/dbgrun.bmp ToolBar.Run :silent! Pyclewn<cr>:silent! call Pyclewnmap()<cr>
+		tmenu ToolBar.Run Connect pyclewn-->Map keys-->Cfile <user input>
+"start debug
+		amenu icon=$VIMFILES/bundle/pyclewn/debug_icons/run.bmp ToolBar.Start :Cstart<cr>
+		tmenu ToolBar.Start	Start debug(Cstart)
+"stop debug
+		amenu icon=$VIMFILES/bundle/pyclewn/debug_icons/stop.bmp ToolBar.Quit :call Pyclewnunmap()<cr>:Cquit<cr>:nbclose<cr>
+		tmenu ToolBar.Quit Stop debug
+"next
+		amenu icon=$VIMFILES/bundle/pyclewn/debug_icons/dbgnext.bmp ToolBar.Next :Cnext<cr>
+		tmenu ToolBar.Next	Next(Cnext)
+"step
+		amenu icon=$VIMFILES/bundle/pyclewn/debug_icons/dbgstep.bmp ToolBar.Step :Cstep<cr>
+		tmenu ToolBar.Step	Step(Cstep)
+"stepi
+		amenu icon=$VIMFILES/bundle/pyclewn/debug_icons/dbgstepi.bmp ToolBar.Stepi :Cstepi<cr>
+		tmenu ToolBar.Stepi	Stepi(Cstepi)
+"continue
+		amenu icon=$VIMFILES/bundle/pyclewn/debug_icons/dbgrunto.bmp ToolBar.Runto :Ccontinue<cr>
+		tmenu ToolBar.Runto	Continue(Cconinue)
+"finish
+		amenu icon=$VIMFILES/bundle/pyclewn/debug_icons/dbgstepout.bmp ToolBar.Finish :Cfinish<cr>
+		tmenu ToolBar.Finish Stepout(Cfinish)
+
+		amenu icon=$VIMFILES/bundle/pyclewn/debug_icons/dbgwindow.bmp ToolBar.Watch :call OpenClosedbgvar()<cr>
+		tmenu ToolBar.Watch Open or close watch windows 
+"load project
+		if filereadable(".proj")
+			amenu icon=$VIMFILES/bundle/pyclewn/debug_icons/project.bmp ToolBar.Project :silent! Pyclewn<cr>:call Pyclewnmap()<cr>:Csource .proj<cr>:Cstart<cr>
+			tmenu ToolBar.Project Load project and start debug
+		endif
+	endif
+		amenu icon=$VIMFILES/bundle/pyclewn/debug_icons/filesaveas.bmp ToolBar.SaveProject :Cproject .proj<cr>
+		tmenu ToolBar.SaveProject Save Project setting(save as .proj)
+"chose your colorscheme
+	let g:colorscheme_file='' "color thmem's name  
+	if g:iswindows == 0
+		let g:slash='/'
+		let g:love_path=$HOME.'/.love'
+	else
+		let g:slash='\'
+		let g:love_path=$HOME.'\love.txt'
+	endif
+
+	command! Love call LoveCS()
+	function! LoveCS()
+		let g:colorscheme_file=g:colors_name
+		execute writefile([g:colorscheme_file], g:love_path)
+	endfunction
+	function! ApplyCS()
+		let cmd='colorscheme '.g:colorscheme_file
+		execute cmd
+	endfunction
+
+	let r=findfile(g:love_path)
+	if r != ''
+		let loves=readfile(g:love_path)
+		if len(loves) > 0
+			let g:colorscheme_file=loves[0]
+			call ApplyCS()
+		endif
+	else
+		colorscheme wombat256 "default setting 
+	endif
+	function! MaximizeWindow()
+		silent !wmctrl -r :ACTIVE: -b add,maximized_vert,maximized_horz
+	endfunction
 endif
 "}}}
 
