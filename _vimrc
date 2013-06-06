@@ -2,7 +2,7 @@
 "@brief      for linux's gvim
 "@date       2012-12-30 11:01:30
 "@author     tracyone,tracyone@live.cn
-"@lastchange [2013-06-06/00:25:12]
+"@lastchange [2013-06-06/22:56:45]
 """"""""""""""""""""""""""""""""""""""""""""""""""""
 
 "behave very Vi compatible (not advisable)
@@ -752,9 +752,9 @@ if g:iswindows==1
 
 	" Enable heavy features.
 	" Use camel case completion.
-	"let g:neocomplcache_enable_camel_case_completion = 1
+	let g:neocomplcache_enable_camel_case_completion = 1
 	" Use underbar completion.
-	"let g:neocomplcache_enable_underbar_completion = 1
+	let g:neocomplcache_enable_underbar_completion = 1
 
 	" Define dictionary.
 	let g:neocomplcache_dictionary_filetype_lists = {

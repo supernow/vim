@@ -2,7 +2,7 @@
 "@brief      for linux's gvim
 "@date       2012-12-30 11:01:30
 "@author     tracyone,tracyone@live.cn
-"@lastchange [2013-06-06/00:25:12]
+"@lastchange [2013-06-06/23:49:35]
 """"""""""""""""""""""""""""""""""""""""""""""""""""
 
 "behave very Vi compatible (not advisable)
