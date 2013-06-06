@@ -2,7 +2,7 @@
 "@brief      for linux's gvim
 "@date       2012-12-30 11:01:30
 "@author     tracyone,tracyone@live.cn
-"@lastchange [2013-06-03/23:41:31]
+"@lastchange [2013-06-06/00:25:12]
 """"""""""""""""""""""""""""""""""""""""""""""""""""
 
 "behave very Vi compatible (not advisable)
@@ -226,10 +226,12 @@ set clipboard+=unnamed
 "change to directory of file in buffer
 set autochdir
 
+"always show the tabline
+set stal=2
 "statusline
 set statusline+=%<%f%m%r%h%w%{tagbar#currenttag('[%s]','')}
-set statusline+=%=[FORMAT=%{(&fenc!=''?&fenc:&enc)}:%{&ff}]\ [FileType=%Y]\ [ASCII=\%03.3b]\ [POS=%l,%v][%p%%] 
-set statusline+=%{strftime(\"%y/%m/%d\ -\ %H:%M\")}
+set statusline+=%=[FORMAT=%{(&fenc!=''?&fenc:&enc)}:%{&ff}:%Y]\ [ASCII=\%03.3b]\ [POS=%l,%v][%p%%] 
+set statusline+=%{strftime(\"%y/%m/%d\-\%H:%M\")}
 "0, 1 or 2; when to use a status line for the last window
 set laststatus=2 "always show status
 hi StatusLine guifg=Black guibg=White gui=none
@@ -336,7 +338,15 @@ endfunction
 
 "delete the ^M
 nmap dm :%s/\r\(\n\)/\1/g<CR>
-
+nmap <m-1> <esc>1gt
+nmap <m-2> <esc>2gt
+nmap <m-3> <esc>3gt
+nmap <m-4> <esc>4gt
+nmap <m-5> <esc>5gt
+nmap <m-6> <esc>6gt
+nmap <m-7> <esc>7gt
+nmap <m-8> <esc>8gt
+nmap <m-9> <esc>9gt
 " {{{Visual mode pressing * or # searches for the current selection
 " Super useful! From an idea by Michael Naumann
 vnoremap <silent> * :call VisualSelection('f')<CR>
@@ -371,20 +381,20 @@ endfunction
 "}}}
 "}}}
 "{{{plugin setting
-map <F1> :h myvimhelp.txt<cr>
+
 "{{{vundle
 "
 let s:justvundled = 0
-if has('win32')
+if g:iswindows==1
 	cd $HOME
-    call system('dir .\.vim\bundle\vundle')
+    call system('dir .\vimfiles\bundle\vundle')
 else
     call system('ls ~/.vim/bundle/vundle')
 endif
 if v:shell_error
     if has('win32')
-        call system('mkdir .\.vim\bundle\vundle')
-        call system('git clone https://github.com/gmarik/vundle.git .\.vim\bundle\vundle')
+        call system('mkdir .\vimfiles\bundle\vundle')
+        call system('git clone https://github.com/gmarik/vundle.git .\vimfiles\bundle\vundle')
     else
         call system('mkdir -p ~/.vim/bundle/vundle')
         call system('git clone https://github.com/gmarik/vundle.git ~/.vim/bundle/vundle')
@@ -394,15 +404,19 @@ if v:shell_error
     endif
 endif
 
-if has('win32')
-    set rtp+=.\.vim\bundle\vundle
+if g:iswindows==1
+    set rtp+=.\vimfiles\bundle\vundle
 else
     set rtp+=~/.vim/bundle/vundle/
 endif
 
 " let Vundle manage Vundle
 " required! 
-call vundle#rc()
+if g:iswindows==1
+	call vundle#rc('$VIM/vimfiles/bundle/')
+else
+	call vundle#rc()
+endif
 Bundle 'gmarik/vundle'
  
 " My Bundles here:
@@ -423,8 +437,11 @@ Bundle 'ctrlp.vim'
 Bundle 'delimitMate.vim'
 Bundle 'FuzzyFinder'
 Bundle 'genutils'
-Bundle 'neocomplcache'
-"Bundle 'Valloric/YouCompleteMe'
+if g:iswindows==1
+	Bundle 'Shougo/neocomplcache'
+else
+	Bundle 'Valloric/YouCompleteMe'
+endif
 Bundle 'The-NERD-Commenter'
 Bundle 'scrooloose/nerdtree'
 Bundle 'ShowMarks7'
@@ -450,6 +467,7 @@ Bundle 'tracyone/mark.vim'
 Bundle 'tracyone/MyVimHelp'
 Bundle 'sunuslee/vim-plugin-random-colorscheme-picker' 
 Bundle 'tracyone/vimgdb'
+Bundle 'scrooloose/syntastic'
 if g:iswindows == 1
 	Bundle 'tracyone/pyclewn' 
 else
@@ -718,111 +736,102 @@ let g:SrcExpl_updateTagsCmd = "ctags --sort=foldcase -R ."
 
                                                                              
 "}}}
-"{{{neocomplcache
-" Use neocomplcache. 
-let g:neocomplcache_enable_at_startup = 1
+"{{{neocomplcache or neocomplete
+"neocomplete is a new plugin develop by the same author,it required lua
+"feature and it is more intelligen of course...but is is unstable..so we
+"use neocomplcache
+if g:iswindows==1
+	let g:acp_enableAtStartup = 0
+	" Use neocomplcache.
+	let g:neocomplcache_enable_at_startup = 1
+	" Use smartcase.
+	let g:neocomplcache_enable_smart_case = 1
+	" Set minimum syntax keyword length.
+	let g:neocomplcache_min_syntax_length = 3
+	let g:neocomplcache_lock_buffer_name_pattern = '\*ku\*'
 
-""set completeopt=menu,longest 
+	" Enable heavy features.
+	" Use camel case completion.
+	"let g:neocomplcache_enable_camel_case_completion = 1
+	" Use underbar completion.
+	"let g:neocomplcache_enable_underbar_completion = 1
 
-"" Disable AutoComplPop. 
-let g:acp_enableAtStartup = 0 
+	" Define dictionary.
+	let g:neocomplcache_dictionary_filetype_lists = {
+				\ 'default' : '',
+				\ 'vimshell' : $HOME.'/.vimshell_hist',
+				\ 'scheme' : $HOME.'/.gosh_completions'
+				\ }
 
-" Use smartcase. 
-"let g:neocomplcache_enable_smart_case = 0 
+	" Define keyword.
+	if !exists('g:neocomplcache_keyword_patterns')
+		let g:neocomplcache_keyword_patterns = {}
+	endif
+	let g:neocomplcache_keyword_patterns['default'] = '\h\w*'
 
-"" Use camel case completion. 
-let g:neocomplcache_enable_camel_case_completion = 1 
+	" Plugin key-mappings.
+	inoremap <expr><C-g>     neocomplcache#undo_completion()
+	inoremap <expr><C-l>     neocomplcache#complete_common_string()
 
-"" Use underbar completion. 
-let g:neocomplcache_enable_underbar_completion = 1 
+	" Recommended key-mappings.
+	" <CR>: close popup and save indent.
+	inoremap <silent> <CR> <C-r>=<SID>my_cr_function()<CR>
+	function! s:my_cr_function()
+		return neocomplcache#smart_close_popup() . "\<CR>"
+		" For no inserting <CR> key.
+		"return pumvisible() ? neocomplcache#close_popup() : "\<CR>"
+	endfunction
+	" <TAB>: completion.
+	inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
+	" <C-h>, <BS>: close popup and delete backword char.
+	inoremap <expr><C-h> neocomplcache#smart_close_popup()."\<C-h>"
+	inoremap <expr><BS> neocomplcache#smart_close_popup()."\<C-h>"
+	inoremap <expr><C-y>  neocomplcache#close_popup()
+	inoremap <expr><C-e>  neocomplcache#cancel_popup()
+	" Close popup by <Space>.
+	"inoremap <expr><Space> pumvisible() ? neocomplcache#close_popup() : "\<Space>"
 
-"Set minimum syntax keyword length. 
-let g:neocomplcache_min_syntax_length = 2 
+	" For cursor moving in insert mode(Not recommended)
+	"inoremap <expr><Left>  neocomplcache#close_popup() . "\<Left>"
+	"inoremap <expr><Right> neocomplcache#close_popup() . "\<Right>"
+	"inoremap <expr><Up>    neocomplcache#close_popup() . "\<Up>"
+	"inoremap <expr><Down>  neocomplcache#close_popup() . "\<Down>"
+	" Or set this.
+	"let g:neocomplcache_enable_cursor_hold_i = 1
+	" Or set this.
+	"let g:neocomplcache_enable_insert_char_pre = 1
 
-let g:neocomplcache_same_filetype_lists = {}           
-let g:neocomplcache_same_filetype_lists._ = '_'
+	" AutoComplPop like behavior.
+	"let g:neocomplcache_enable_auto_select = 1
 
-"let g:neocomplcache_lock_buffer_name_pattern = '/*ku/*' 
+	" Shell like behavior(not recommended).
+	"set completeopt+=longest
+	"let g:neocomplcache_enable_auto_select = 1
+	"let g:neocomplcache_disable_auto_complete = 1
+	"inoremap <expr><TAB>  pumvisible() ? "\<Down>" : "\<C-x>\<C-u>"
 
-"let g:neocomplcache_enable_auto_delimiter = 1 
+	" Enable omni completion.
+	autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
+	autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
+	autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
+	autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
+	autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
 
-"do not auto show complete menu
-"let g:neocomplcache_disable_auto_complete = 1   
+	" Enable heavy omni completion.
+	if !exists('g:neocomplcache_omni_patterns')
+		let g:neocomplcache_omni_patterns = {}
+	endif
+	let g:neocomplcache_omni_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
+	let g:neocomplcache_omni_patterns.c = '[^.[:digit:] *\t]\%(\.\|->\)'
+	let g:neocomplcache_omni_patterns.cpp = '[^.[:digit:] *\t]\%(\.\|->\)\|\h\w*::'
 
-"let g:neocomplcache_enable_wildcard = 1 
+	" For perlomni.vim setting.
+	" https://github.com/c9s/perlomni.vim
+	let g:neocomplcache_omni_patterns.perl = '\h\w*->\h\w*\|\h\w*::'
 
-"" Define dictionary. 
-
-""let g:neocomplcache_dictionary_filetype_lists = { 
-
-""/ 'default' : '', 
-
-""/ 'vimshell' : $HOME.'/.vimshell_hist', 
-
-""/ 'scheme' : $HOME.'/.gosh_completions', 
-
-""/ } 
-
-
-""Define keyword. 
-
-"if !exists('g:neocomplcache_keyword_patterns') 
-"let g:neocomplcache_keyword_patterns = {} 
-"endif 
-"let g:neocomplcache_keyword_patterns['default'] = '/h/w*' 
-
-
-"""let g:neocomplcache_enable_auto_select = 1 
-
-"let g:neocomplcache_enable_caching_message=1 
-
-
-""" Enable omni completion. 
-
-"autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS 
-
-"autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags 
-
-"autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS 
-
-"autocmd FileType python setlocal omnifunc=pythoncomplete#Complete 
-
-"autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags 
-
-"autocmd filetype cpp set omnifunc=omni#cpp#complete#main
-
-""Enable heavy omni completion. 
-
-"if !exists('g:neocomplcache_omni_patterns') 
-"let g:neocomplcache_omni_patterns = {} 
-"endif 
-
-"let g:neocomplcache_omni_patterns.ruby = '[^. */t]/./w*/|/h/w*::' 
-
-"autocmd FileType ruby setlocal omnifunc=rubycomplete#Complete 
-
-"let g:neocomplcache_omni_patterns.php = '[^. /t]->/h/w*/|/h/w*::' 
-
-"let g:neocomplcache_omni_patterns.c = '/%(/./|->/)/h/w*' 
-
-"let g:neocomplcache_omni_patterns.cpp = '/h/w*/%(/./|->/)/h/w*/|/h/w*::' 
-
-"For input-saving, this variable controls whether you can  choose a candidate with a alphabet or number displayed beside a candidate after '-'.  When you input 'ho-a',  neocomplcache will select candidate 'a'.
-imap <expr> `  pumvisible() ? "\<Plug>(neocomplcache_start_unite_quick_match)" : '`'
-
-" Recommended key-mappings.
-" <CR>: close popup and save indent.
-"inoremap <expr><silent> <CR> <SID>my_cr_function()
-"function! s:my_cr_function()
-"return pumvisible() ? neocomplcache#close_popup() . "\<CR>" : "\<CR>"
-"endfunction
-" <TAB>: completion.
+	imap <expr> `  pumvisible() ? "\<Plug>(neocomplcache_start_unite_quick_match)" : '`'
+endif
 inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
-" <C-h>, <BS>: close popup and delete backword char.
-inoremap <expr><C-h> neocomplcache#smart_close_popup()."\<C-h>"
-inoremap <expr><BS> neocomplcache#smart_close_popup()."\<C-h>"
-inoremap <expr><C-y>  neocomplcache#close_popup()
-inoremap <expr><C-e>  neocomplcache#cancel_popup()
 "}}}
 "{{{unite.vim 
 
@@ -875,7 +884,6 @@ imap <F12> <ESC> :NERDTreeToggle<CR>
 "ConqueTermSplit    <command>:horizontal split window<command> 
 "ConqueTermVSplit <command>:vertical split window<command> 
 "ConqueTermTab    <command>:open in tab<command>
-let g:ConqueTerm_PyVersion = 3
 let g:ConqueTerm_FastMode = 0        " enable fast mode 
 let g:ConqueTerm_Color=0          " diable terminal colors 
 let g:ConqueTerm_CloseOnEnd = 1      " close buffer when program exits 
@@ -1017,13 +1025,51 @@ func! LoadProj()
 		:call Pyclewnmap()
 	endif
 endfunc
-let g:pyclewn_args = "--args=-q --gdb=async --terminal=gnome-terminal,-x"
+if g:iswindows==1
+	let g:pyclewn_args = "--args=-q --gdb=async --terminal=gnome-terminal,-x"
+else
+	let g:pyclewn_args = "--args=-q --gdb=async"
+endif
 silent!	nmap <leader>pw :silent! Cdbgvar <C-R><C-W><CR>
 silent! nmap <leader>pf :silent! exe "Cfoldvar " . line(".")<CR>
 nmap <leader>ps :silent! Pyclewn<cr>:silent! call Pyclewnmap()<cr>
 nmap <leader>pp :call LoadProj()<cr>
 nmap <leader>pd :call Pyclewnunmap()<cr>:Cquit<cr>:nbclose<cr>
 nmap <leader>pc :Cproject .proj<cr>
+"}}}
+"{{{YouCompleteMe
+"it's very complicated to compile YouCompleteMe and libcang in windows,
+"and its efficiency is low..so we use it only in linux or mac.
+if g:iswindows==0
+	let g:ycm_global_ycm_extra_conf = '~/.vim/bundle/YouCompleteMe/.ycm_extra_conf.py'
+	let g:ycm_complete_in_strings                           = 1
+	let g:ycm_complete_in_comments                          = 1
+	let g:ycm_max_diagnostics_to_display                    = 14
+	let g:ycm_collect_identifiers_from_comments_and_strings = 1
+	" let g:ycm_add_preview_to_completeopt                  = 1
+	let g:ycm_complete_in_comments_and_strings              = 1
+	let g:ycm_autoclose_preview_window_after_completion     = 1
+	let g:ycm_autoclose_preview_window_after_insertion      = 1
+	let g:ycm_filetypes_to_completely_ignore                = {}
+	let g:ycm_filetype_blacklist                            = {
+				\ 'notes'    : 1,
+				\ 'markdown' : 1,
+				\ 'python'   : 1,
+				\ 'conque_term'   : 1,
+				\ 'vimwiki'  : 1
+				\}
+	let g:ycm_filetype_whitelist                            = {
+				\ '*'	   : 1
+				\}
+	" let g:ycm_filetype_specific_completion_to_disable     = {}
+	let g:ycm_allow_changing_updatetime                     = 0
+	let g:ycm_register_as_syntastic_checker                 = 1
+	let g:ycm_seed_identifiers_with_syntax                  = 1
+	"let g:ycm_key_invoke_completion                       = '<C-Space>'
+	" let g:ycm_key_detailed_diagnostics                    = '<leader>d'
+	let g:ycm_key_list_select_completion                    = ['<Down>']
+	let g:ycm_key_list_previous_completion                  = ['<Up>']
+endif
 "}}}
 "let g:loaded_indentLine=0
 "let g:indentLine_color_gui = '#A4E57E'
@@ -1037,13 +1083,27 @@ map <F11> :VE<cr><cr>
 if has('win32')
  cd -
 endif
+let g:startupfile="first_statup.txt"
+if g:iswindows==1
+	let g:start_path=$VIM.'/first_statup.txt'
+else
+	let g:start_path=$HOME.'/.first_statup'
+endif
+if filereadable(g:start_path)
+	map <F1> :h MyVimHelp.txt<cr>
+else
+	execute writefile([g:startupfile], g:start_path)
+	execute "silent! h MyVimHelp.txt"
+	:only
+	map <F1> :h MyVimHelp.txt<cr>
+endif
 "}}}
 "{{{gui releate
 "list of flags that specify how the GUI works
 if(has("gui_running"))
 	if g:iswindows==0
 		au GUIEnter * call MaximizeWindow()
-		set guifont=consolas\ 14
+		set guifont=Consolas\ 14
 	else
 		au GUIEnter * simalt~x "maximize window
 		set guifont=Bitstream_Vera_Sans_Mono:h14:cANSI
@@ -1051,7 +1111,7 @@ if(has("gui_running"))
 	endif
 	set guioptions-=b
 	"set guioptions-=m "whether use menu
-	set guioptions-=r "whether show the rigth scroll bar
+	set guioptions+=r "whether show the rigth scroll bar
 	set guioptions-=l "whether show the left scroll bar
 	"set guioptions-=T "whether show toolbar or not
 	set guitablabel=%N\ %t  "do not show dir in tab
@@ -1084,44 +1144,49 @@ if(has("gui_running"))
 			tmenu ToolBar.TagJump	Jump to next tag
 			tmenu ToolBar.Help		Help
 			tmenu ToolBar.FindHelp	Search Help
-		endfun
-"add Pyclewn debug toolbar
-		amenu ToolBar.-Sep- :
-"conect the pyclewn
-		amenu icon=$VIMFILES/bundle/pyclewn/debug_icons/dbgrun.bmp ToolBar.Run :silent! Pyclewn<cr>:silent! call Pyclewnmap()<cr>
-		tmenu ToolBar.Run Connect pyclewn-->Map keys-->Cfile <user input>
-"start debug
-		amenu icon=$VIMFILES/bundle/pyclewn/debug_icons/run.bmp ToolBar.Start :Cstart<cr>
-		tmenu ToolBar.Start	Start debug(Cstart)
-"stop debug
-		amenu icon=$VIMFILES/bundle/pyclewn/debug_icons/stop.bmp ToolBar.Quit :call Pyclewnunmap()<cr>:Cquit<cr>:nbclose<cr>
-		tmenu ToolBar.Quit Stop debug
-"next
-		amenu icon=$VIMFILES/bundle/pyclewn/debug_icons/dbgnext.bmp ToolBar.Next :Cnext<cr>
-		tmenu ToolBar.Next	Next(Cnext)
-"step
-		amenu icon=$VIMFILES/bundle/pyclewn/debug_icons/dbgstep.bmp ToolBar.Step :Cstep<cr>
-		tmenu ToolBar.Step	Step(Cstep)
-"stepi
-		amenu icon=$VIMFILES/bundle/pyclewn/debug_icons/dbgstepi.bmp ToolBar.Stepi :Cstepi<cr>
-		tmenu ToolBar.Stepi	Stepi(Cstepi)
-"continue
-		amenu icon=$VIMFILES/bundle/pyclewn/debug_icons/dbgrunto.bmp ToolBar.Runto :Ccontinue<cr>
-		tmenu ToolBar.Runto	Continue(Cconinue)
-"finish
-		amenu icon=$VIMFILES/bundle/pyclewn/debug_icons/dbgstepout.bmp ToolBar.Finish :Cfinish<cr>
-		tmenu ToolBar.Finish Stepout(Cfinish)
-
-		amenu icon=$VIMFILES/bundle/pyclewn/debug_icons/dbgwindow.bmp ToolBar.Watch :call OpenClosedbgvar()<cr>
-		tmenu ToolBar.Watch Open or close watch windows 
-"load project
-		if filereadable(".proj")
-			amenu icon=$VIMFILES/bundle/pyclewn/debug_icons/project.bmp ToolBar.Project :silent! Pyclewn<cr>:call Pyclewnmap()<cr>:Csource .proj<cr>:Cstart<cr>
+			tmenu ToolBar.Run Connect pyclewn-->Map keys-->Cfile <user input>
+			tmenu ToolBar.Start	Start debug(Cstart)
+			tmenu ToolBar.Quit Stop debug
+			tmenu ToolBar.Next	Next(Cnext)
+			tmenu ToolBar.Step	Step(Cstep)
+			tmenu ToolBar.Stepi	Stepi(Cstepi)
+			tmenu ToolBar.Finish Stepout(Cfinish)
+			tmenu ToolBar.Watch Open or close watch windows 
+			tmenu ToolBar.Runto	Continue(Cconinue)
 			tmenu ToolBar.Project Load project and start debug
+			tmenu ToolBar.SaveProject Save Project setting(save as .proj)
+		endfun
+		amenu ToolBar.-Sep- :
+		if g:iswindows==1
+			amenu icon=$VIMFILES/bundle/pyclewn/debug_icons/dbgrun.bmp ToolBar.Run :silent! Pyclewn<cr>:silent! call Pyclewnmap()<cr>
+			amenu icon=$VIMFILES/bundle/pyclewn/debug_icons/run.bmp ToolBar.Start :Cstart<cr>
+			amenu icon=$VIMFILES/bundle/pyclewn/debug_icons/stop.bmp ToolBar.Quit :call Pyclewnunmap()<cr>:Cquit<cr>:nbclose<cr>
+			amenu icon=$VIMFILES/bundle/pyclewn/debug_icons/dbgnext.bmp ToolBar.Next :Cnext<cr>
+			amenu icon=$VIMFILES/bundle/pyclewn/debug_icons/dbgstep.bmp ToolBar.Step :Cstep<cr>
+			amenu icon=$VIMFILES/bundle/pyclewn/debug_icons/dbgstepi.bmp ToolBar.Stepi :Cstepi<cr>
+			amenu icon=$VIMFILES/bundle/pyclewn/debug_icons/dbgrunto.bmp ToolBar.Runto :Ccontinue<cr>
+			amenu icon=$VIMFILES/bundle/pyclewn/debug_icons/dbgstepout.bmp ToolBar.Finish :Cfinish<cr>
+			amenu icon=$VIMFILES/bundle/pyclewn/debug_icons/dbgwindow.bmp ToolBar.Watch :call OpenClosedbgvar()<cr>
+			if filereadable(".proj")
+				amenu icon=$VIMFILES/bundle/pyclewn/debug_icons/project.bmp ToolBar.Project :silent! Pyclewn<cr>:call Pyclewnmap()<cr>:Csource .proj<cr>:Cstart<cr>
+			endif
+			amenu icon=$VIMFILES/bundle/pyclewn/debug_icons/filesaveas.bmp ToolBar.SaveProject :Cproject .proj<cr>
+		else
+			amenu icon=$VIMFILES/bundle/pyclewn_linux/debug_icons/dbgrun.png ToolBar.Run :silent! Pyclewn<cr>:silent! call Pyclewnmap()<cr>:Cinferiortty<cr>
+			amenu icon=$VIMFILES/bundle/pyclewn_linux/debug_icons/run.png ToolBar.Start :Cstart<cr>
+			amenu icon=$VIMFILES/bundle/pyclewn_linux/debug_icons/dbgstop.png ToolBar.Quit :call Pyclewnunmap()<cr>:Cquit<cr>:nbclose<cr>
+			amenu icon=$VIMFILES/bundle/pyclewn_linux/debug_icons/dbgnext.png ToolBar.Next :Cnext<cr>
+			amenu icon=$VIMFILES/bundle/pyclewn_linux/debug_icons/dbgstep.png ToolBar.Step :Cstep<cr>
+			amenu icon=$VIMFILES/bundle/pyclewn_linux/debug_icons/dbgstepi.png ToolBar.Stepi :Cstepi<cr>
+			amenu icon=$VIMFILES/bundle/pyclewn_linux/debug_icons/dbgrunto.png ToolBar.Runto :Ccontinue<cr>
+			amenu icon=$VIMFILES/bundle/pyclewn_linux/debug_icons/dbgstepout.png ToolBar.Finish :Cfinish<cr>
+			amenu icon=$VIMFILES/bundle/pyclewn_linux/debug_icons/dbgwindow.png ToolBar.Watch :call OpenClosedbgvar()<cr>
+			if filereadable(".proj")
+				amenu icon=$VIMFILES/bundle/pyclewn_linux/debug_icons/project.png ToolBar.Project :silent! Pyclewn<cr>:call Pyclewnmap()<cr>:Cinferiortty<cr>:Csource .proj<cr>:Cstart<cr>
+			endif
+			amenu icon=$VIMFILES/bundle/pyclewn_linux/debug_icons/filesaveas.png ToolBar.SaveProject :Cproject .proj<cr>
 		endif
-	endif
-		amenu icon=$VIMFILES/bundle/pyclewn/debug_icons/filesaveas.bmp ToolBar.SaveProject :Cproject .proj<cr>
-		tmenu ToolBar.SaveProject Save Project setting(save as .proj)
+endif
 "chose your colorscheme
 	let g:colorscheme_file='' "color thmem's name  
 	if g:iswindows == 0
