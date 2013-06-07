@@ -2,7 +2,7 @@
 "@brief      for linux's gvim
 "@date       2012-12-30 11:01:30
 "@author     tracyone,tracyone@live.cn
-"@lastchange [2013-06-06/22:56:45]
+"@lastchange [2013-06-07/19:12:01]
 """"""""""""""""""""""""""""""""""""""""""""""""""""
 
 "behave very Vi compatible (not advisable)
@@ -1025,7 +1025,7 @@ func! LoadProj()
 		:call Pyclewnmap()
 	endif
 endfunc
-if g:iswindows==1
+if g:iswindows==0
 	let g:pyclewn_args = "--args=-q --gdb=async --terminal=gnome-terminal,-x"
 else
 	let g:pyclewn_args = "--args=-q --gdb=async"
