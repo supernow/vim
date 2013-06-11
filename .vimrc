@@ -2,17 +2,9 @@
 "@brief      for linux's gvim
 "@date       2012-12-30 11:01:30
 "@author     tracyone,tracyone@live.cn
-"@lastchange [2013-06-06/23:49:35]
+"@lastchange 2013-06-11/21:48:22
 """"""""""""""""""""""""""""""""""""""""""""""""""""
-
-"behave very Vi compatible (not advisable)
-set nocp 
-" Uncomment the following to have Vim load indentation rules and plugins
-" according to the detected filetype.
-filetype plugin indent on
-syntax on
-
-"{{{encode
+"encode {{{
 set encoding=utf-8
 if has("win32") || has("win64")
 	set fileencoding=utf-8
@@ -28,26 +20,28 @@ source $VIMRUNTIME/delmenu.vim
 lan mes en_US.UTF-8
 "set langmenu=nl_NL.ISO_8859-1
 "}}}
-"{{{system check
+"system check{{{
 if (has("win32")) || has("win64")
 	let $HOME=$VIM
 	set filetype=dos
+	set ffs=dos,unix,mac
 	behave  xterm
-	set path=./,C:\Program\ Files\IAR\ Systems\Embedded\ Workbench\ 6.0\arm\inc\,C:\MinGW\include,C:\Program\ Files\IAR\ Systems\Embedded\ Workbench\ 6.0\arm\CMSIS\Include,,  "list of directory names used for file searching
+	"set path=
 	let $VIMFILES = $VIM.'/vimfiles'
 	let g:iswindows=1 "windows flags
 elseif has("unix")
 	set filetype=unix
+	set ffs=unix,dos
 	behave xterm
 	set shell=bash
 	runtime! debian.vim
-	set path=./,/usr/include/,, "list of directory names used for file searching
+	set path=.,/usr/include/ "c++ is in /usr/include/c++/...
 	let $VIMFILES = $HOME.'/.vim'
 	let g:iswindows=0
 elseif has("mac")
 endif
 "}}}
-"{{{basic setting
+"basic setting{{{
 "{{{fold setting
 "folding type: "manual", "indent", "expr", "marker" or "syntax"
 set foldenable                  " enable folding
@@ -95,17 +89,13 @@ autocmd FileType vim set foldlevel=0
 nmap <TAB> za
 "set foldtext=foldtext()
 "}}}
-
+"highlight Pmenu ctermbg=13 guibg=LightGray
+"highlight PmenuSel ctermbg=7 guibg=DarkBlue guifg=White
+"highlight PmenuSbar ctermbg=7 guibg=DarkGray
+"highlight PmenuThumb guibg=Black
 " If using a dark background within the editing area and syntax highlighting
 " turn on this option as well
 set background=dark
-
-if g:iswindows == 1
-	set ffs=dos,unix,mac
-else
-	set ffs=unix,dos
-endif
-
 
 nmap <F6> :call Dosunix()<cr>
 func! Dosunix()
@@ -193,7 +183,7 @@ set smarttab
 set hlsearch
 
 "highlight the screen line of the cursor
-"set cul
+set cul
 
 "number of spaces used for each step of (auto)indent
 set shiftwidth=4
@@ -226,8 +216,6 @@ set clipboard+=unnamed
 "change to directory of file in buffer
 set autochdir
 
-"always show the tabline
-set stal=2
 "statusline
 set statusline+=%<%f%m%r%h%w%{tagbar#currenttag('[%s]','')}
 set statusline+=%=[FORMAT=%{(&fenc!=''?&fenc:&enc)}:%{&ff}:%Y]\ [ASCII=\%03.3b]\ [POS=%l,%v][%p%%] 
@@ -240,8 +228,10 @@ if version >= 700
 	au InsertEnter * hi StatusLine guibg=#818D29 guifg=#FCFCFC gui=none
 	au InsertLeave * hi StatusLine guifg=Black guibg=White gui=none
 endif
-nmap <F7> a<C-R>=strftime("[%Y-%m-%d/%H:%M:%S]")<CR><ESC>
-imap <F7> <C-R>=strftime("[%Y-%m-%d/%H:%M:%S]")<CR>
+"always show the tabline
+set stal=2
+nmap <F7> a<C-R>=strftime("%Y-%m-%d/%H:%M:%S")<CR><ESC>
+imap <F7> <C-R>=strftime("%Y-%m-%d/%H:%M:%S")<CR>
 "automatic recognition vt file as verilog 
 au BufRead,BufNewFile *.vt set filetype=verilog
 
@@ -253,7 +243,7 @@ au BufRead,BufNewFile *.xdc set filetype=javascript
 
 au BufRead,BufNewFile *.mk set filetype=make
 "}}}
-"{{{key mapping
+"key mapping{{{
 
 "key mapping
 ""key map timeouts
@@ -380,45 +370,49 @@ function! CmdLine(str)
 endfunction
 "}}}
 "}}}
-"{{{plugin setting
+"plugin setting{{{
+
+"behave very Vi compatible (not advisable)
+set nocp 
+" Uncomment the following to have Vim load indentation rules and plugins
+" according to the detected filetype.
+filetype plugin indent on
+syntax on
 
 "{{{vundle
 "
-let s:justvundled = 0
-if g:iswindows==1
-	cd $HOME
-    call system('dir .\vimfiles\bundle\vundle')
-else
-    call system('ls ~/.vim/bundle/vundle')
-endif
-if v:shell_error
+func! Vundle()
+	if g:iswindows==1 
+		set rtp+=$VIM\\vimfiles\\bundle\\vundle
+	else
+		set rtp+=~/.vim/bundle/vundle/
+	endif
+	" let Vundle manage Vundle
+	" required! 
+	if g:iswindows==1
+		silent! :execute "call vundle#rc('$VIM/vimfiles/bundle')"
+	else
+		silent! :execute "call vundle#rc()"
+	endif
+	silent! :execute "Bundle 'gmarik/vundle'"
+endfunc
+execute "call Vundle()"
+let g:justvundled = exists(':Bundle')
+if g:justvundled == 0
     if has('win32')
-        call system('mkdir .\vimfiles\bundle\vundle')
+		cd $VIM
+		call mkdir($VIM."\\vimfiles\\bundle\\vundle","p")
         call system('git clone https://github.com/gmarik/vundle.git .\vimfiles\bundle\vundle')
+		cd -
+		execute "silent! call Vundle()"
     else
         call system('mkdir -p ~/.vim/bundle/vundle')
         call system('git clone https://github.com/gmarik/vundle.git ~/.vim/bundle/vundle')
+		execute "silent! call Vundle()"
     endif
-    if !v:shell_error
-        let s:justvundled = 1
-    endif
+	:helptags $VIMFILES\bundle\vundle\doc\
 endif
 
-if g:iswindows==1
-    set rtp+=.\vimfiles\bundle\vundle
-else
-    set rtp+=~/.vim/bundle/vundle/
-endif
-
-" let Vundle manage Vundle
-" required! 
-if g:iswindows==1
-	call vundle#rc('$VIM/vimfiles/bundle/')
-else
-	call vundle#rc()
-endif
-Bundle 'gmarik/vundle'
- 
 " My Bundles here:
 "
 " original repos on github
@@ -428,6 +422,7 @@ Bundle 'gmarik/vundle'
 " Bundle 'tpope/vim-rails.git'
 " vim-scripts repos
 Bundle 'a.vim'
+Bundle 'tracyone/dict'
 Bundle 'Align'
 Bundle 'tracyone/calendar'
 Bundle 'Colour-Sampler-Pack'
@@ -439,6 +434,8 @@ Bundle 'FuzzyFinder'
 Bundle 'genutils'
 if g:iswindows==1
 	Bundle 'Shougo/neocomplcache'
+	"Bundle 'Shougo/neosnippet'
+	"Bundle 'honza/vim-snippets'
 else
 	Bundle 'Valloric/YouCompleteMe'
 endif
@@ -466,7 +463,6 @@ Bundle 'TeTrIs.vim'
 Bundle 'tracyone/mark.vim'
 Bundle 'tracyone/MyVimHelp'
 Bundle 'sunuslee/vim-plugin-random-colorscheme-picker' 
-Bundle 'tracyone/vimgdb'
 Bundle 'scrooloose/syntastic'
 if g:iswindows == 1
 	Bundle 'tracyone/pyclewn' 
@@ -748,87 +744,81 @@ if g:iswindows==1
 	let g:neocomplcache_enable_smart_case = 1
 	" Set minimum syntax keyword length.
 	let g:neocomplcache_min_syntax_length = 3
-	let g:neocomplcache_lock_buffer_name_pattern = '\*ku\*'
-
+	"neocomplcache selects the first candidate
+	let g:neocomplcache_enable_auto_select = 0
 	" Enable heavy features.
 	" Use camel case completion.
 	"let g:neocomplcache_enable_camel_case_completion = 1
 	" Use underbar completion.
 	"let g:neocomplcache_enable_underbar_completion = 1
-
-	" Define dictionary.
+	let g:neocomplcache_auto_completion_start_length = 2
+	let g:neocomplcache_manual_completion_start_length = 2
+	let g:neocomplcache_min_keyword_length = 3
+	let g:neocomplcache_enable_ignore_case = 1
+	"fuzzy complete
+	let g:neocomplcache_enable_fuzzy_completion=1
+	"Define dictionary,in editplus's official website can find many dict with
+	"stx suffix
 	let g:neocomplcache_dictionary_filetype_lists = {
 				\ 'default' : '',
-				\ 'vimshell' : $HOME.'/.vimshell_hist',
-				\ 'scheme' : $HOME.'/.gosh_completions'
+				\ 'cpp' : $VIMFILES.'/bundle/dict/cpp.dict',
+				\ 'html' : $VIMFILES.'/bundle/dict/html.dict',
+				\ 'c' : $VIMFILES.'/bundle/dict/c.dict',
+				\ 'sh' : $VIMFILES.'/bundle/dict/bash.dict',
+				\ 'dosbatch' : $VIMFILES.'/bundle/dict/batch.dict',
+				\ 'tex' : $VIMFILES.'/bundle/dict/latex.dict',
+				\ 'vim' : $VIMFILES.'/bundle/dict/vim.dict.txt',
+				\ 'verilog' : $VIMFILES.'/bundle/dict/verilog.dict'
 				\ }
-
+	if !exists("g:neocomplcache_include_paths")
+		let g:neocomplcache_include_paths = {}
+	endif
+	let g:neocomplcache_include_paths = {
+				\ 'cpp' : '.,e:/Program Files/MinGw/lib/gcc/mingw32/4.6.2/include/c++',
+				\ 'c' : '.,e:/Program Files/MinGW/lib/gcc/mingw32/4.6.2/include,e:/Program Files/MinGw/include'
+				\ }
+	let g:neocomplcache_include_patterns = {
+				\ 'cpp' : '^\s*#\s*include',
+				\ 'c' : '^\s*#\s*include'
+				\ }
 	" Define keyword.
 	if !exists('g:neocomplcache_keyword_patterns')
 		let g:neocomplcache_keyword_patterns = {}
 	endif
 	let g:neocomplcache_keyword_patterns['default'] = '\h\w*'
 
-	" Plugin key-mappings.
-	inoremap <expr><C-g>     neocomplcache#undo_completion()
-	inoremap <expr><C-l>     neocomplcache#complete_common_string()
-
-	" Recommended key-mappings.
-	" <CR>: close popup and save indent.
-	inoremap <silent> <CR> <C-r>=<SID>my_cr_function()<CR>
-	function! s:my_cr_function()
-		return neocomplcache#smart_close_popup() . "\<CR>"
-		" For no inserting <CR> key.
-		"return pumvisible() ? neocomplcache#close_popup() : "\<CR>"
-	endfunction
-	" <TAB>: completion.
-	inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
-	" <C-h>, <BS>: close popup and delete backword char.
-	inoremap <expr><C-h> neocomplcache#smart_close_popup()."\<C-h>"
-	inoremap <expr><BS> neocomplcache#smart_close_popup()."\<C-h>"
-	inoremap <expr><C-y>  neocomplcache#close_popup()
-	inoremap <expr><C-e>  neocomplcache#cancel_popup()
-	" Close popup by <Space>.
-	"inoremap <expr><Space> pumvisible() ? neocomplcache#close_popup() : "\<Space>"
-
-	" For cursor moving in insert mode(Not recommended)
-	"inoremap <expr><Left>  neocomplcache#close_popup() . "\<Left>"
-	"inoremap <expr><Right> neocomplcache#close_popup() . "\<Right>"
-	"inoremap <expr><Up>    neocomplcache#close_popup() . "\<Up>"
-	"inoremap <expr><Down>  neocomplcache#close_popup() . "\<Down>"
-	" Or set this.
-	"let g:neocomplcache_enable_cursor_hold_i = 1
-	" Or set this.
-	"let g:neocomplcache_enable_insert_char_pre = 1
-
-	" AutoComplPop like behavior.
-	"let g:neocomplcache_enable_auto_select = 1
-
-	" Shell like behavior(not recommended).
-	"set completeopt+=longest
-	"let g:neocomplcache_enable_auto_select = 1
-	"let g:neocomplcache_disable_auto_complete = 1
-	"inoremap <expr><TAB>  pumvisible() ? "\<Down>" : "\<C-x>\<C-u>"
-
-	" Enable omni completion.
-	autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
-	autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
-	autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
+	autocmd BufReadPost,BufEnter,BufWritePost :NeoComplCacheCachingBuffer <buffer>:echo "Caching done."<CR>
 	autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
+	autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
+	autocmd FileType html setlocal omnifunc=htmlcomplete#CompleteTags
+	autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
 	autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
+	autocmd FileType php setlocal omnifunc=phpcomplete#CompletePHP
+	autocmd FileType c setlocal omnifunc=ccomplete#Complete
+	autocmd FileType ruby setlocal omnifunc=rubycomplete#Complete
 
 	" Enable heavy omni completion.
 	if !exists('g:neocomplcache_omni_patterns')
 		let g:neocomplcache_omni_patterns = {}
 	endif
+	let g:neocomplcache_omni_patterns.ruby = '[^. *\t]\.\h\w*\|\h\w*::'
 	let g:neocomplcache_omni_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
-	let g:neocomplcache_omni_patterns.c = '[^.[:digit:] *\t]\%(\.\|->\)'
-	let g:neocomplcache_omni_patterns.cpp = '[^.[:digit:] *\t]\%(\.\|->\)\|\h\w*::'
-
-	" For perlomni.vim setting.
-	" https://github.com/c9s/perlomni.vim
-	let g:neocomplcache_omni_patterns.perl = '\h\w*->\h\w*\|\h\w*::'
-
+	let g:neocomplcache_omni_patterns.c = '\%(\.\|->\)\h\w*'
+	let g:neocomplcache_omni_patterns.cpp = '\h\w*\%(\.\|->\)\h\w*\|\h\w*::'
+	" Plugin key-mappings.
+	inoremap <expr><C-g>     neocomplcache#undo_completion()
+	inoremap <expr><C-l>     neocomplcache#complete_common_string()
+	" <TAB>: completion.
+	inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
+	" <C-h>, <BS>: close popup and delete backword char.
+	inoremap <expr><BS> neocomplcache#smart_close_popup()."\<C-h>"
+	inoremap <expr><C-y>  neocomplcache#close_popup()
+	inoremap <expr><C-e>  neocomplcache#cancel_popup()
+	" For cursor moving in insert mode(Not recommended)
+	"inoremap <expr><Left>  neocomplcache#close_popup() . "\<Left>"
+	"inoremap <expr><Right> neocomplcache#close_popup() . "\<Right>"
+	"inoremap <expr><Up>    neocomplcache#close_popup() . "\<Up>"
+	"inoremap <expr><Down>  neocomplcache#close_popup() . "\<Down>"
 	imap <expr> `  pumvisible() ? "\<Plug>(neocomplcache_start_unite_quick_match)" : '`'
 endif
 inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
@@ -884,6 +874,11 @@ imap <F12> <ESC> :NERDTreeToggle<CR>
 "ConqueTermSplit    <command>:horizontal split window<command> 
 "ConqueTermVSplit <command>:vertical split window<command> 
 "ConqueTermTab    <command>:open in tab<command>
+if g:iswindows==1
+    let g:ConqueTerm_PyVersion = 3
+else
+    let g:ConqueTerm_PyVersion = 2
+endif
 let g:ConqueTerm_FastMode = 0        " enable fast mode 
 let g:ConqueTerm_Color=0          " diable terminal colors 
 let g:ConqueTerm_CloseOnEnd = 1      " close buffer when program exits 
@@ -1025,7 +1020,7 @@ func! LoadProj()
 		:call Pyclewnmap()
 	endif
 endfunc
-if g:iswindows==1
+if g:iswindows==0
 	let g:pyclewn_args = "--args=-q --gdb=async --terminal=gnome-terminal,-x"
 else
 	let g:pyclewn_args = "--args=-q --gdb=async"
@@ -1055,7 +1050,7 @@ if g:iswindows==0
 				\ 'notes'    : 1,
 				\ 'markdown' : 1,
 				\ 'python'   : 1,
-				\ 'conque_term'   : 1,
+				\ 'conque_term' : 1,
 				\ 'vimwiki'  : 1
 				\}
 	let g:ycm_filetype_whitelist                            = {
@@ -1080,9 +1075,6 @@ let g:NERDMenuMode=0
 "rename multi file name
 map <F2> :Ren<cr>
 map <F11> :VE<cr><cr>
-if has('win32')
- cd -
-endif
 let g:startupfile="first_statup.txt"
 if g:iswindows==1
 	let g:start_path=$VIM.'/first_statup.txt'
@@ -1098,7 +1090,7 @@ else
 	map <F1> :h MyVimHelp.txt<cr>
 endif
 "}}}
-"{{{gui releate
+"gui releate{{{
 "list of flags that specify how the GUI works
 if(has("gui_running"))
 	if g:iswindows==0
@@ -1106,7 +1098,7 @@ if(has("gui_running"))
 		set guifont=Consolas\ 14
 	else
 		au GUIEnter * simalt~x "maximize window
-		set guifont=Bitstream_Vera_Sans_Mono:h14:cANSI
+		set guifont=Consolas:h14:cANSI
 		set gfw=Yahei_Mono:h14.5:cGB2312
 	endif
 	set guioptions-=b
@@ -1160,7 +1152,7 @@ if(has("gui_running"))
 		if g:iswindows==1
 			amenu icon=$VIMFILES/bundle/pyclewn/debug_icons/dbgrun.bmp ToolBar.Run :silent! Pyclewn<cr>:silent! call Pyclewnmap()<cr>
 			amenu icon=$VIMFILES/bundle/pyclewn/debug_icons/run.bmp ToolBar.Start :Cstart<cr>
-			amenu icon=$VIMFILES/bundle/pyclewn/debug_icons/stop.bmp ToolBar.Quit :call Pyclewnunmap()<cr>:Cquit<cr>:nbclose<cr>
+			amenu icon=$VIMFILES/bundle/pyclewn/debug_icons/stop.bmp ToolBar.Quit :call Pyclewnunmap()<cr>:Cquit<cr>:nbclose<cr>:call Pyclewnunmap()<cr>
 			amenu icon=$VIMFILES/bundle/pyclewn/debug_icons/dbgnext.bmp ToolBar.Next :Cnext<cr>
 			amenu icon=$VIMFILES/bundle/pyclewn/debug_icons/dbgstep.bmp ToolBar.Step :Cstep<cr>
 			amenu icon=$VIMFILES/bundle/pyclewn/debug_icons/dbgstepi.bmp ToolBar.Stepi :Cstepi<cr>
@@ -1174,7 +1166,7 @@ if(has("gui_running"))
 		else
 			amenu icon=$VIMFILES/bundle/pyclewn_linux/debug_icons/dbgrun.png ToolBar.Run :silent! Pyclewn<cr>:silent! call Pyclewnmap()<cr>:Cinferiortty<cr>
 			amenu icon=$VIMFILES/bundle/pyclewn_linux/debug_icons/run.png ToolBar.Start :Cstart<cr>
-			amenu icon=$VIMFILES/bundle/pyclewn_linux/debug_icons/dbgstop.png ToolBar.Quit :call Pyclewnunmap()<cr>:Cquit<cr>:nbclose<cr>
+			amenu icon=$VIMFILES/bundle/pyclewn_linux/debug_icons/dbgstop.png ToolBar.Quit :call Pyclewnunmap()<cr>:Cquit<cr>:nbclose<cr>:call Pyclewnunmap()<cr>
 			amenu icon=$VIMFILES/bundle/pyclewn_linux/debug_icons/dbgnext.png ToolBar.Next :Cnext<cr>
 			amenu icon=$VIMFILES/bundle/pyclewn_linux/debug_icons/dbgstep.png ToolBar.Step :Cstep<cr>
 			amenu icon=$VIMFILES/bundle/pyclewn_linux/debug_icons/dbgstepi.png ToolBar.Stepi :Cstepi<cr>
