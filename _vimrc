@@ -2,7 +2,7 @@
 "@brief      for linux's gvim
 "@date       2012-12-30 11:01:30
 "@author     tracyone,tracyone@live.cn
-"@lastchange 2013-06-11/21:48:22
+"@lastchange 2013-06-11/23:22:21
 """"""""""""""""""""""""""""""""""""""""""""""""""""
 "encode {{{
 set encoding=utf-8
@@ -245,13 +245,11 @@ au BufRead,BufNewFile *.mk set filetype=make
 "}}}
 "key mapping{{{
 
-"key mapping
 ""key map timeouts
 "set notimeout 
 "set timeoutlen=4000
 "set ttimeout
 "set ttimeoutlen=100
-
 ""no", "yes" or "menu"; how to use the ALT key
 set winaltkeys=no
 "visual mode hit tab forward indent ,hit shift-tab backward indent
@@ -490,8 +488,11 @@ let html_use_css=1
 "<C-j> (|g:fuf_keyOpenSplit|)   - opens in a split window.
 "<C-k> (|g:fuf_keyOpenVsplit|)  - opens in a vertical-split window.
 "<C-l> (|g:fuf_keyOpenTabpage|) - opens in a new tab page.
+let g:fuf_file_exclude = '\v\~$|\.(o|exe|bak|swp|gif|jpg|png)$|(^|[/\\])\.(hg|git|bzr)($|[/\\])'
+let g:fuf_mrufile_exclude = '\v\~$|\.bak$|\.swp|\.howm$|\.(gif|jpg|png)$'
+let g:fuf_mrufile_maxItem = 10000
+"let g:fuf_enumeratingLimit = 20
 let g:fuf_modesDisable = []
-"let g:fuf_enumeratingLimit = 10
 let g:fuf_mrufile_maxItem = 20
 let g:fuf_mrucmd_maxItem = 20
 "recursive open 
@@ -972,8 +973,20 @@ let g:vimwiki_use_calendar=1 "use calendar plugin
 map <F10> :Calendar<cr>
 "}}}
 "{{{ctrlp
-let g:ctrlp_extensions = ['tag', 'buffertag', 'quickfix', 'dir', 'rtscript',
-			\ 'undo', 'line', 'changes', 'mixed', 'bookmarkdir']
+" Set Ctrl-P to show match at top of list instead of at bottom, which is so
+" stupid that it's not default
+let g:ctrlp_match_window_reversed = 0
+
+" Tell Ctrl-P to keep the current VIM working directory when starting a
+" search, another really stupid non default
+let g:ctrlp_working_path_mode = 0
+
+" Ctrl-P ignore target dirs so VIM doesn't have to! Yay!
+let g:ctrlp_custom_ignore = {
+    \ 'dir': '\.git$\|\.hg$\|\.svn$\|target$\|built$\|.build$\|node_modules\|\.sass-cache',
+    \ 'file': '\.ttc$',
+    \ }
+let g:ctrlp_extensions = ['tag', 'buffertag', 'dir', 'bookmarkdir']
 "}}}
 "{{{pyclewn
 function! Pyclewnmap()
