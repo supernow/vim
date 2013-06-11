@@ -775,8 +775,8 @@ if g:iswindows==1
 		let g:neocomplcache_include_paths = {}
 	endif
 	let g:neocomplcache_include_paths = {
-				\ 'cpp' : '.,e:/Program Files/MinGw/lib/gcc/mingw32/4.6.2/include/c++',
-				\ 'c' : '.,e:/Program Files/MinGW/lib/gcc/mingw32/4.6.2/include,e:/Program Files/MinGw/include'
+				\ 'cpp' : '.,c:/Program Files/MinGw/lib/gcc/mingw32/4.6.2/include/c++',
+				\ 'c' : '.,c:/Program Files/MinGW/lib/gcc/mingw32/4.6.2/include,c:/Program Files/MinGw/include'
 				\ }
 	let g:neocomplcache_include_patterns = {
 				\ 'cpp' : '^\s*#\s*include',
