@@ -1,9 +1,9 @@
-"@file       .vimrc
-"@brief      for linux's gvim
+"@file       .vimrc & _vimrc
+"@brief      config file of vim and gvim for both windows and linux
 "@date       2012-12-30 11:01:30
 "@author     tracyone,tracyone@live.cn
 "@lastchange 2013-06-12/22:13:09
-""""""""""""""""""""""""""""""""""""""""""""""""""""
+"----------------------------------------------------------------------
 "encode {{{
 set encoding=utf-8
 if has("win32") || has("win64")
