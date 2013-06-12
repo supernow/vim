@@ -2,7 +2,7 @@
 "@brief      for linux's gvim
 "@date       2012-12-30 11:01:30
 "@author     tracyone,tracyone@live.cn
-"@lastchange 2013-06-11/23:22:21
+"@lastchange 2013-06-12/22:13:09
 """"""""""""""""""""""""""""""""""""""""""""""""""""
 "encode {{{
 set encoding=utf-8
@@ -32,6 +32,7 @@ if (has("win32")) || has("win64")
 elseif has("unix")
 	set filetype=unix
 	set ffs=unix,dos
+	set keywordprg=""
 	behave xterm
 	set shell=bash
 	runtime! debian.vim
@@ -181,9 +182,6 @@ set smarttab
 
 "highlight all matches for the last used search pattern
 set hlsearch
-
-"highlight the screen line of the cursor
-set cul
 
 "number of spaces used for each step of (auto)indent
 set shiftwidth=4
@@ -430,7 +428,12 @@ Bundle 'ctrlp.vim'
 Bundle 'delimitMate.vim'
 Bundle 'FuzzyFinder'
 Bundle 'genutils'
-if g:iswindows==1
+if g:iswindows==0 && has("patch584")
+	let g:use_ycm=1
+else
+	let g:use_ycm=0
+endif
+if g:use_ycm==0
 	Bundle 'Shougo/neocomplcache'
 	"Bundle 'Shougo/neosnippet'
 	"Bundle 'honza/vim-snippets'
@@ -737,7 +740,7 @@ let g:SrcExpl_updateTagsCmd = "ctags --sort=foldcase -R ."
 "neocomplete is a new plugin develop by the same author,it required lua
 "feature and it is more intelligen of course...but is is unstable..so we
 "use neocomplcache
-if g:iswindows==1
+if g:use_ycm==0
 	let g:acp_enableAtStartup = 0
 	" Use neocomplcache.
 	let g:neocomplcache_enable_at_startup = 1
@@ -979,7 +982,7 @@ let g:ctrlp_match_window_reversed = 0
 
 " Tell Ctrl-P to keep the current VIM working directory when starting a
 " search, another really stupid non default
-let g:ctrlp_working_path_mode = 0
+let g:ctrlp_working_path_mode = 'w'
 
 " Ctrl-P ignore target dirs so VIM doesn't have to! Yay!
 let g:ctrlp_custom_ignore = {
@@ -1048,7 +1051,7 @@ nmap <leader>pc :Cproject .proj<cr>
 "{{{YouCompleteMe
 "it's very complicated to compile YouCompleteMe and libcang in windows,
 "and its efficiency is low..so we use it only in linux or mac.
-if g:iswindows==0
+if g:use_ycm==1
 	let g:ycm_global_ycm_extra_conf = '~/.vim/bundle/YouCompleteMe/.ycm_extra_conf.py'
 	let g:ycm_complete_in_strings                           = 1
 	let g:ycm_complete_in_comments                          = 1
@@ -1121,7 +1124,8 @@ if(has("gui_running"))
 	"set guioptions-=T "whether show toolbar or not
 	set guitablabel=%N\ %t  "do not show dir in tab
 	"set t_Co=256
-	" Nice window title
+	"highlight the screen line of the cursor
+	set cul
 	if has("toolbar")
 		if exists("*Do_toolbar_tmenu")
 			delfun Do_toolbar_tmenu
