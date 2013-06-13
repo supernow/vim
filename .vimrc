@@ -2,7 +2,7 @@
 "@brief      config file of vim and gvim for both windows and linux
 "@date       2012-12-30 11:01:30
 "@author     tracyone,tracyone@live.cn
-"@lastchange 2013-06-12/22:13:09
+"@lastchange 2013-06-13/09:37:18
 "----------------------------------------------------------------------
 "encode {{{
 set encoding=utf-8
@@ -1125,7 +1125,7 @@ if(has("gui_running"))
 	set guitablabel=%N\ %t  "do not show dir in tab
 	"set t_Co=256
 	"highlight the screen line of the cursor
-	set cul
+	"set cul
 	if has("toolbar")
 		if exists("*Do_toolbar_tmenu")
 			delfun Do_toolbar_tmenu
@@ -1153,17 +1153,6 @@ if(has("gui_running"))
 			tmenu ToolBar.TagJump	Jump to next tag
 			tmenu ToolBar.Help		Help
 			tmenu ToolBar.FindHelp	Search Help
-			tmenu ToolBar.Run Connect pyclewn-->Map keys-->Cfile <user input>
-			tmenu ToolBar.Start	Start debug(Cstart)
-			tmenu ToolBar.Quit Stop debug
-			tmenu ToolBar.Next	Next(Cnext)
-			tmenu ToolBar.Step	Step(Cstep)
-			tmenu ToolBar.Stepi	Stepi(Cstepi)
-			tmenu ToolBar.Finish Stepout(Cfinish)
-			tmenu ToolBar.Watch Open or close watch windows 
-			tmenu ToolBar.Runto	Continue(Cconinue)
-			tmenu ToolBar.Project Load project and start debug
-			tmenu ToolBar.SaveProject Save Project setting(save as .proj)
 		endfun
 		amenu ToolBar.-Sep- :
 		if g:iswindows==1
@@ -1195,6 +1184,17 @@ if(has("gui_running"))
 			endif
 			amenu icon=$VIMFILES/bundle/pyclewn_linux/debug_icons/filesaveas.png ToolBar.SaveProject :Cproject .proj<cr>
 		endif
+		tmenu ToolBar.Run Connect pyclewn-->Map keys-->Cfile <user input>
+		tmenu ToolBar.Start	Start debug(Cstart)
+		tmenu ToolBar.Quit Stop debug
+		tmenu ToolBar.Next	Next(Cnext)
+		tmenu ToolBar.Step	Step(Cstep)
+		tmenu ToolBar.Stepi	Stepi(Cstepi)
+		tmenu ToolBar.Finish Stepout(Cfinish)
+		tmenu ToolBar.Watch Open or close watch windows 
+		tmenu ToolBar.Runto	Continue(Cconinue)
+		tmenu ToolBar.Project Load project and start debug
+		tmenu ToolBar.SaveProject Save Project setting(save as .proj)
 endif
 "chose your colorscheme
 	let g:colorscheme_file='' "color thmem's name  
