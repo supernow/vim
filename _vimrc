@@ -2,8 +2,11 @@
 "@brief      config file of vim and gvim for both windows and linux
 "@date       2012-12-30 11:01:30
 "@author     tracyone,tracyone@live.cn
-"@lastchange 2013-06-13/09:37:18
-"----------------------------------------------------------------------
+"@lastchange 2013-06-13/19:56:59
+"@note:		Prior to use, in the case of windows vim convert this file's 
+"			format into dos,while convert it into unix format in the case 
+"			of linux vim
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "encode {{{
 set encoding=utf-8
 if has("win32") || has("win64")
@@ -778,8 +781,8 @@ if g:use_ycm==0
 		let g:neocomplcache_include_paths = {}
 	endif
 	let g:neocomplcache_include_paths = {
-				\ 'cpp' : '.,c:/Program Files/MinGw/lib/gcc/mingw32/4.6.2/include/c++',
-				\ 'c' : '.,c:/Program Files/MinGW/lib/gcc/mingw32/4.6.2/include,c:/Program Files/MinGw/include'
+				\ 'cpp' : '.,d:/MinGw/lib/gcc/mingw32/4.6.2/include/c++',
+				\ 'c' : '.,d:/MinGW/lib/gcc/mingw32/4.6.2/include,c:/Program Files/MinGw/include'
 				\ }
 	let g:neocomplcache_include_patterns = {
 				\ 'cpp' : '^\s*#\s*include',
