@@ -2,7 +2,7 @@
 "@brief      config file of vim and gvim for both windows and linux
 "@date       2012-12-30 11:01:30
 "@author     tracyone,tracyone@live.cn
-"@lastchange 2013-06-15/23:05:12
+"@lastchange 2013-06-15/23:44:09
 "@note:		Prior to use, in the case of windows vim convert this file's 
 "			format into dos,while convert it into unix format in the case 
 "			of linux vim
@@ -350,19 +350,19 @@ func! Uploadvimrc()
 	call system('git config --global user.name \"tracyone\"')
 	call system('git config --global user.email \"tracyone@live.cn\"')
 	if xx=='vim' "find it 
-		call g:VEPlatform.copyfile('_vimrc','vim')
-		cd ./vim/
-		call system('git add _vimrc')
-		call system('git commit -m "update"')
-		call system('git push origin master')
+		call g:VEPlatform.copyfile($MYVIMRC,'vim')
 	else "can not find vim directory 
 		call system('git clone https://github.com/tracyone/vim.git')
-		call g:VEPlatform.copyfile('_vimrc','vim')
-		cd ./vim/
-		call system('git add _vimrc')
-		call system('git commit -m \"update\"')
-		call system('git push origin master')
+		call g:VEPlatform.copyfile($MYVIMRC,'vim')
 	endif
+	cd ./vim/
+	if g:iswindows==1
+		call system('git add _vimrc')
+	else
+		call system('git add .vimrc')
+	endif
+	call system('git commit -m \"update\"')
+	execute ":!git push origin master"
 	cd ../..
 endfunc
 nmap <Leader>dc :call Updatevimrc()<cr>
