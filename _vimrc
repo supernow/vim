@@ -349,6 +349,7 @@ func! Uploadvimrc()
 	let xx=finddir('vim','.')
 	call system('git config --global user.name \"tracyone\"')
 	call system('git config --global user.email \"tracyone@live.cn\"')
+	execute ":!git config --global credential.helper 'cache --timeout=3600'"
 	if xx=='vim' "find it 
 		call g:VEPlatform.copyfile($MYVIMRC,'vim')
 	else "can not find vim directory 
