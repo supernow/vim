@@ -2,7 +2,7 @@
 "@brief      config file of vim and gvim for both windows and linux
 "@date       2012-12-30 11:01:30
 "@author     tracyone,tracyone@live.cn
-"@lastchange 2013-06-13/19:56:59
+"@lastchange 2013-06-15/23:05:12
 "@note:		Prior to use, in the case of windows vim convert this file's 
 "			format into dos,while convert it into unix format in the case 
 "			of linux vim
@@ -336,6 +336,37 @@ nmap <m-6> <esc>6gt
 nmap <m-7> <esc>7gt
 nmap <m-8> <esc>8gt
 nmap <m-9> <esc>9gt
+
+func! Updatevimrc()
+	cd $VIM
+	call system('git clone https://github.com/tracyone/vim.git')
+	call g:VEPlatform.copyfile('./vim/_vimrc',$VIM)
+	cd ..
+endfunc
+func! Uploadvimrc()
+	cd $VIM
+	pwd
+	let xx=finddir('vim','.')
+	call system('git config --global user.name \"tracyone\"')
+	call system('git config --global user.email \"tracyone@live.cn\"')
+	if xx=='vim' "find it 
+		call g:VEPlatform.copyfile('_vimrc','vim')
+		cd ./vim/
+		call system('git add _vimrc')
+		call system('git commit -m "update"')
+		call system('git push origin master')
+	else "can not find vim directory 
+		call system('git clone https://github.com/tracyone/vim.git')
+		call g:VEPlatform.copyfile('_vimrc','vim')
+		cd ./vim/
+		call system('git add _vimrc')
+		call system('git commit -m \"update\"')
+		call system('git push origin master')
+	endif
+	cd ../..
+endfunc
+nmap <Leader>dc :call Updatevimrc()<cr>
+nmap <Leader>uc :call Uploadvimrc()<cr>
 " {{{Visual mode pressing * or # searches for the current selection
 " Super useful! From an idea by Michael Naumann
 vnoremap <silent> * :call VisualSelection('f')<CR>
@@ -449,7 +480,7 @@ Bundle 'ShowMarks7'
 Bundle 'wesleyche/SrcExpl'
 Bundle 'surround.vim'
 Bundle 'majutsushi/tagbar'
-Bundle 'unite.vim'
+Bundle 'Shougo/unite.vim'
 Bundle 'L9'
 Bundle 'ZenCoding.vim'
 Bundle 'vimwiki'
@@ -552,48 +583,51 @@ if has("cscope")
 endif
 	set cscopeverbose 
 " show msg when any other cscope db added
-nmap <Leader>s :cs find s <C-R>=expand("<cword>")<CR><CR>:cw 7<cr>
-nmap <Leader>g :cs find g <C-R>=expand("<cword>")<CR><CR>:cw 7<cr>
-nmap <Leader>d :cs find d <C-R>=expand("<cword>")<CR> <C-R>=expand("%")<CR><CR>:cw 7<cr>
-nmap <Leader>c :cs find c <C-R>=expand("<cword>")<CR><CR>:cw 7<cr>
-nmap <Leader>t :cs find t <C-R>=expand("<cword>")<CR><CR>:cw 7<cr>
-nmap <Leader>e :cs find e <C-R>=expand("<cword>")<CR><CR>:cw 7<cr>
-nmap <Leader>f :cs find f <C-R>=expand("<cfile>")<CR><CR>:cw 7<cr>
-nmap <Leader>i :cs find i ^<C-R>=expand("<cfile>")<CR>$<CR>:cw 7<cr>
+func! Cscopemap()
+	nmap <Leader>s :cs find s <C-R>=expand("<cword>")<CR><CR>:cw 7<cr>
+	nmap <Leader>g :cs find g <C-R>=expand("<cword>")<CR><CR>:cw 7<cr>
+	nmap <Leader>d :cs find d <C-R>=expand("<cword>")<CR> <C-R>=expand("%")<CR><CR>:cw 7<cr>
+	nmap <Leader>c :cs find c <C-R>=expand("<cword>")<CR><CR>:cw 7<cr>
+	nmap <Leader>t :cs find t <C-R>=expand("<cword>")<CR><CR>:cw 7<cr>
+	nmap <Leader>e :cs find e <C-R>=expand("<cword>")<CR><CR>:cw 7<cr>
+	nmap <Leader>f :cs find f <C-R>=expand("<cfile>")<CR><CR>:cw 7<cr>
+	nmap <Leader>i :cs find i ^<C-R>=expand("<cfile>")<CR>$<CR>:cw 7<cr>
 
-nmap <C-@>s :split<CR>:cs find s <C-R>=expand("<cword>")<CR><CR>
-nmap <C-@>g :split<CR>:cs find g <C-R>=expand("<cword>")<CR><CR>
-nmap <C-@>d :split<CR>:cs find d <C-R>=expand("<cword>")<CR> <C-R>=expand("%")<CR><CR>
-nmap <C-@>c :split<CR>:cs find c <C-R>=expand("<cword>")<CR><CR>
-nmap <C-@>t :split<CR>:cs find t <C-R>=expand("<cword>")<CR><CR>
-nmap <C-@>e :split<CR>:cs find e <C-R>=expand("<cword>")<CR><CR>
-nmap <C-@>f :split<CR>:cs find f <C-R>=expand("<cfile>")<CR><CR>
-nmap <C-@>i :split<CR>:cs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
+	nmap <C-@>s :split<CR>:cs find s <C-R>=expand("<cword>")<CR><CR>
+	nmap <C-@>g :split<CR>:cs find g <C-R>=expand("<cword>")<CR><CR>
+	nmap <C-@>d :split<CR>:cs find d <C-R>=expand("<cword>")<CR> <C-R>=expand("%")<CR><CR>
+	nmap <C-@>c :split<CR>:cs find c <C-R>=expand("<cword>")<CR><CR>
+	nmap <C-@>t :split<CR>:cs find t <C-R>=expand("<cword>")<CR><CR>
+	nmap <C-@>e :split<CR>:cs find e <C-R>=expand("<cword>")<CR><CR>
+	nmap <C-@>f :split<CR>:cs find f <C-R>=expand("<cfile>")<CR><CR>
+	nmap <C-@>i :split<CR>:cs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
 
-nmap <C-@><C-@>s :vert split<CR>:cs find s <C-R>=expand("<cword>")<CR><CR>
-nmap <C-@><C-@>g :vert split<CR>:cs find g <C-R>=expand("<cword>")<CR><CR>
-nmap <C-@><C-@>d :vert split<CR>:cs find d <C-R>=expand("<cword>")<CR> <C-R>=expand("%")<CR><CR>
-nmap <C-@><C-@>c :vert split<CR>:cs find c <C-R>=expand("<cword>")<CR><CR>
-nmap <C-@><C-@>t :vert split<CR>:cs find t <C-R>=expand("<cword>")<CR><CR>
-nmap <C-@><C-@>e :vert split<CR>:cs find e <C-R>=expand("<cword>")<CR><CR>
-nmap <C-@><C-@>f :vert split<CR>:cs find f <C-R>=expand("<cfile>")<CR><CR>
-nmap <C-@><C-@>i :vert split<CR>:cs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
+	nmap <C-@><C-@>s :vert split<CR>:cs find s <C-R>=expand("<cword>")<CR><CR>
+	nmap <C-@><C-@>g :vert split<CR>:cs find g <C-R>=expand("<cword>")<CR><CR>
+	nmap <C-@><C-@>d :vert split<CR>:cs find d <C-R>=expand("<cword>")<CR> <C-R>=expand("%")<CR><CR>
+	nmap <C-@><C-@>c :vert split<CR>:cs find c <C-R>=expand("<cword>")<CR><CR>
+	nmap <C-@><C-@>t :vert split<CR>:cs find t <C-R>=expand("<cword>")<CR><CR>
+	nmap <C-@><C-@>e :vert split<CR>:cs find e <C-R>=expand("<cword>")<CR><CR>
+	nmap <C-@><C-@>f :vert split<CR>:cs find f <C-R>=expand("<cfile>")<CR><CR>
+	nmap <C-@><C-@>i :vert split<CR>:cs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
 
-nmap <C-\>s :cs find s 
-nmap <C-\>g :cs find g 
-nmap <C-\>c :cs find c 
-nmap <C-\>t :cs find t 
-nmap <C-\>e :cs find e 
-nmap <C-\>f :cs find f 
-nmap <C-\>i :cs find i 
-nmap <C-\>d :cs find d 
-
-if g:iswindows==1 
-	nmap <leader>u :call Do_CsTag()<cr>
-else
-	nmap <leader>u :call CreateCscopeTags()<cr>
-endif
+	nmap <C-\>s :cs find s 
+	nmap <C-\>g :cs find g 
+	nmap <C-\>c :cs find c 
+	nmap <C-\>t :cs find t 
+	nmap <C-\>e :cs find e 
+	nmap <C-\>f :cs find f 
+	nmap <C-\>i :cs find i 
+	nmap <C-\>d :cs find d 
+	if g:iswindows==1 
+		nmap <leader>u :call Do_CsTag()<cr>
+	else
+		nmap <leader>u :call CreateCscopeTags()<cr>
+	endif
 nmap <leader>a :cs add cscope.out<cr>:CCTreeLoadDB cscope.out<cr>
+endfunc
+au FileType c,cpp,asm call Cscopemap()
+
 "kill the connection of current dir 
 if has("cscope") && filereadable("cscope.out")
 	nmap <leader>k :cs kill cscope.out<cr> 
@@ -1118,7 +1152,8 @@ if(has("gui_running"))
 	else
 		au GUIEnter * simalt~x "maximize window
 		set guifont=Consolas:h14:cANSI
-		set gfw=Yahei_Mono:h14.5:cGB2312
+		"set gfw=Yahei_Mono:h14.5:cGB2312
+		set gfw=YaHei_Consolas_Hybrid:h14.5:cGB2312
 	endif
 	set guioptions-=b
 	"set guioptions-=m "whether use menu
