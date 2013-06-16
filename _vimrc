@@ -831,7 +831,7 @@ if g:use_ycm==0
 	endif
 	let g:neocomplcache_include_paths = {
 				\ 'cpp' : '.,d:/MinGw/lib/gcc/mingw32/4.6.2/include/c++',
-				\ 'c' : '.,d:/MinGW/lib/gcc/mingw32/4.6.2/include,c:/Program Files/MinGw/include'
+				\ 'c' : '.,d:/MinGW/lib/gcc/mingw32/4.6.2/include,d:/MinGw/include'
 				\ }
 	let g:neocomplcache_include_patterns = {
 				\ 'cpp' : '^\s*#\s*include',
