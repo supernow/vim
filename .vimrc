@@ -99,7 +99,7 @@ nmap <TAB> za
 "highlight PmenuThumb guibg=Black
 " If using a dark background within the editing area and syntax highlighting
 " turn on this option as well
-set background=dark
+set background=light
 
 nmap <F6> :call Dosunix()<cr>
 func! Dosunix()
