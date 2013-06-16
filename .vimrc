@@ -2,7 +2,7 @@
 "@brief      config file of vim and gvim for both windows and linux
 "@date       2012-12-30 11:01:30
 "@author     tracyone,tracyone@live.cn
-"@lastchange 2013-06-16/02:03:49
+"@lastchange 2013-06-16/17:57:16
 "@note:		Prior to use, in the case of windows vim convert this file's 
 "			format into dos,while convert it into unix format in the case 
 "			of linux vim
@@ -338,10 +338,20 @@ nmap <m-8> <esc>8gt
 nmap <m-9> <esc>9gt
 
 func! Updatevimrc()
-	cd $VIM
-	call system('git clone https://github.com/tracyone/vim.git')
+	if g:iswindows==1
+		cd $VIM
+	else
+		cd ~
+	endif
+	let xx=finddir('vim','.')
+	if xx=='vim' "find it 
+		cd .vim/
+		call system('git pull origin master')
+		cd ..
+	else
+		call system('git clone https://github.com/tracyone/vim.git')
+	endif
 	call g:VEPlatform.copyfile('./vim/_vimrc',$VIM)
-	cd ..
 endfunc
 func! Uploadvimrc()
 	if g:iswindows==1
@@ -369,7 +379,6 @@ func! Uploadvimrc()
 	let g:commit_string='git commit -m '.'"'.strftime("%Y-%m-%d %H:%M:%S").'"'
 	call system(g:commit_string)
 	execute ":!git push origin master"
-	cd ../..
 endfunc
 nmap <Leader>dc :call Updatevimrc()<cr>
 nmap <Leader>uc :call Uploadvimrc()<cr>
