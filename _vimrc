@@ -2,7 +2,7 @@
 "@brief      config file of vim and gvim for both windows and linux
 "@date       2012-12-30 11:01:30
 "@author     tracyone,tracyone@live.cn
-"@lastchange 2013-06-16/10:24:45
+"@lastchange 2013-06-16/17:57:16
 "@note:		Prior to use, in the case of windows vim convert this file's 
 "			format into dos,while convert it into unix format in the case 
 "			of linux vim
@@ -99,7 +99,7 @@ nmap <TAB> za
 "highlight PmenuThumb guibg=Black
 " If using a dark background within the editing area and syntax highlighting
 " turn on this option as well
-set background=dark
+set background=light
 
 nmap <F6> :call Dosunix()<cr>
 func! Dosunix()
@@ -831,7 +831,7 @@ if g:use_ycm==0
 	endif
 	let g:neocomplcache_include_paths = {
 				\ 'cpp' : '.,d:/MinGw/lib/gcc/mingw32/4.6.2/include/c++',
-				\ 'c' : '.,d:/MinGW/lib/gcc/mingw32/4.6.2/include,d:/MinGw/include'
+				\ 'c' : '.,d:/MinGW/lib/gcc/mingw32/4.6.2/include,c:/Program Files/MinGw/include'
 				\ }
 	let g:neocomplcache_include_patterns = {
 				\ 'cpp' : '^\s*#\s*include',
