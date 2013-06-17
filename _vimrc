@@ -2,7 +2,7 @@
 "@brief      config file of vim and gvim for both windows and linux
 "@date       2012-12-30 11:01:30
 "@author     tracyone,tracyone@live.cn
-"@lastchange 2013-06-16/17:57:16
+"@lastchange 2013-06-17/21:32:24
 "@note:		Prior to use, in the case of windows vim convert this file's 
 "			format into dos,while convert it into unix format in the case 
 "			of linux vim
@@ -29,6 +29,7 @@ if (has("win32")) || has("win64")
 	set filetype=dos
 	set ffs=dos,unix,mac
 	behave  xterm
+	let &cdpath = ',' . getcwd()
 	"set path=
 	let $VIMFILES = $VIM.'/vimfiles'
 	let g:iswindows=1 "windows flags
@@ -215,7 +216,7 @@ set whichwrap=b,h,l,<,>,[,]
 set clipboard+=unnamed
 
 "change to directory of file in buffer
-set autochdir
+"set autochdir
 
 "statusline
 set statusline+=%<%f%m%r%h%w%{tagbar#currenttag('[%s]','')}
@@ -337,7 +338,7 @@ nmap <m-7> <esc>7gt
 nmap <m-8> <esc>8gt
 nmap <m-9> <esc>9gt
 
-func! Updatevimrc()
+func! Getvimrc()
 	if g:iswindows==1
 		cd $VIM
 	else
@@ -380,8 +381,6 @@ func! Uploadvimrc()
 	call system(g:commit_string)
 	execute ":!git push origin master"
 endfunc
-nmap <Leader>dc :call Updatevimrc()<cr>
-nmap <Leader>uc :call Uploadvimrc()<cr>
 " {{{Visual mode pressing * or # searches for the current selection
 " Super useful! From an idea by Michael Naumann
 vnoremap <silent> * :call VisualSelection('f')<CR>
@@ -568,21 +567,21 @@ let g:tagbar_compact = 1
 let g:tagbar_systemenc='cp936'
 "}}}
 "{{{cscope
-au VimEnter *.c,*.cpp,*.s,*.cc,*.h exec "silent! cs add cscope.out"
+exec "silent! cs add cscope.out"
 if $CSCOPE_DB != "" "tpyically it is a include db 
-	au VimEnter *.c,*.cpp,*.s,*.cc,*.h exec "silent! cs add $CSCOPE_DB"
+	exec "silent! cs add $CSCOPE_DB"
 endif
 if $CSCOPE_DB1 != ""
-	au VimEnter *.c,*.cpp,*.s,*.cc,*.h exec "silent! cs add $CSCOPE_DB1"
+	exec "silent! cs add $CSCOPE_DB1"
 endif
 if $CSCOPE_DB2 != ""
-	au VimEnter *.c,*.cpp,*.s,*.cc,*.h exec "silent! cs add $CSCOPE_DB2"
+	exec "silent! cs add $CSCOPE_DB2"
 endif
 if $CSCOPE_DB3 != ""
-	au VimEnter *.c,*.cpp,*.s,*.cc,*.h exec "silent! cs add $CSCOPE_DB3"
+	exec "silent! cs add $CSCOPE_DB3"
 endif
 if filereadable('ccglue.out') "this guy is more efficiency 
-	au VimEnter *.c,*.cpp,*.s,*.cc,*.h exec "silent! CCTreeLoadXRefDBFromDisk ccglue.out"
+	exec "silent! CCTreeLoadXRefDBFromDisk ccglue.out"
 endif
 if has("cscope")
 	" use both cscope and ctag for 'ctrl-]', ':ta', and 'vim -t'
@@ -598,51 +597,47 @@ if has("cscope")
 endif
 	set cscopeverbose 
 " show msg when any other cscope db added
-func! Cscopemap()
-	nmap <Leader>s :cs find s <C-R>=expand("<cword>")<CR><CR>:cw 7<cr>
-	nmap <Leader>g :cs find g <C-R>=expand("<cword>")<CR><CR>:cw 7<cr>
-	nmap <Leader>d :cs find d <C-R>=expand("<cword>")<CR> <C-R>=expand("%")<CR><CR>:cw 7<cr>
-	nmap <Leader>c :cs find c <C-R>=expand("<cword>")<CR><CR>:cw 7<cr>
-	nmap <Leader>t :cs find t <C-R>=expand("<cword>")<CR><CR>:cw 7<cr>
-	nmap <Leader>e :cs find e <C-R>=expand("<cword>")<CR><CR>:cw 7<cr>
-	nmap <Leader>f :cs find f <C-R>=expand("<cfile>")<CR><CR>:cw 7<cr>
-	nmap <Leader>i :cs find i ^<C-R>=expand("<cfile>")<CR>$<CR>:cw 7<cr>
+nmap <Leader>s :cs find s <C-R>=expand("<cword>")<CR><CR>:cw 7<cr>
+nmap <Leader>g :cs find g <C-R>=expand("<cword>")<CR><CR>:cw 7<cr>
+nmap <Leader>d :cs find d <C-R>=expand("<cword>")<CR> <C-R>=expand("%")<CR><CR>:cw 7<cr>
+nmap <Leader>c :cs find c <C-R>=expand("<cword>")<CR><CR>:cw 7<cr>
+nmap <Leader>t :cs find t <C-R>=expand("<cword>")<CR><CR>:cw 7<cr>
+nmap <Leader>e :cs find e <C-R>=expand("<cword>")<CR><CR>:cw 7<cr>
+nmap <Leader>f :cs find f <C-R>=expand("<cfile>")<CR><CR>:cw 7<cr>
+nmap <Leader>i :cs find i ^<C-R>=expand("<cfile>")<CR>$<CR>:cw 7<cr>
 
-	nmap <C-@>s :split<CR>:cs find s <C-R>=expand("<cword>")<CR><CR>
-	nmap <C-@>g :split<CR>:cs find g <C-R>=expand("<cword>")<CR><CR>
-	nmap <C-@>d :split<CR>:cs find d <C-R>=expand("<cword>")<CR> <C-R>=expand("%")<CR><CR>
-	nmap <C-@>c :split<CR>:cs find c <C-R>=expand("<cword>")<CR><CR>
-	nmap <C-@>t :split<CR>:cs find t <C-R>=expand("<cword>")<CR><CR>
-	nmap <C-@>e :split<CR>:cs find e <C-R>=expand("<cword>")<CR><CR>
-	nmap <C-@>f :split<CR>:cs find f <C-R>=expand("<cfile>")<CR><CR>
-	nmap <C-@>i :split<CR>:cs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
+nmap <C-@>s :split<CR>:cs find s <C-R>=expand("<cword>")<CR><CR>
+nmap <C-@>g :split<CR>:cs find g <C-R>=expand("<cword>")<CR><CR>
+nmap <C-@>d :split<CR>:cs find d <C-R>=expand("<cword>")<CR> <C-R>=expand("%")<CR><CR>
+nmap <C-@>c :split<CR>:cs find c <C-R>=expand("<cword>")<CR><CR>
+nmap <C-@>t :split<CR>:cs find t <C-R>=expand("<cword>")<CR><CR>
+nmap <C-@>e :split<CR>:cs find e <C-R>=expand("<cword>")<CR><CR>
+nmap <C-@>f :split<CR>:cs find f <C-R>=expand("<cfile>")<CR><CR>
+nmap <C-@>i :split<CR>:cs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
 
-	nmap <C-@><C-@>s :vert split<CR>:cs find s <C-R>=expand("<cword>")<CR><CR>
-	nmap <C-@><C-@>g :vert split<CR>:cs find g <C-R>=expand("<cword>")<CR><CR>
-	nmap <C-@><C-@>d :vert split<CR>:cs find d <C-R>=expand("<cword>")<CR> <C-R>=expand("%")<CR><CR>
-	nmap <C-@><C-@>c :vert split<CR>:cs find c <C-R>=expand("<cword>")<CR><CR>
-	nmap <C-@><C-@>t :vert split<CR>:cs find t <C-R>=expand("<cword>")<CR><CR>
-	nmap <C-@><C-@>e :vert split<CR>:cs find e <C-R>=expand("<cword>")<CR><CR>
-	nmap <C-@><C-@>f :vert split<CR>:cs find f <C-R>=expand("<cfile>")<CR><CR>
-	nmap <C-@><C-@>i :vert split<CR>:cs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
+nmap <C-@><C-@>s :vert split<CR>:cs find s <C-R>=expand("<cword>")<CR><CR>
+nmap <C-@><C-@>g :vert split<CR>:cs find g <C-R>=expand("<cword>")<CR><CR>
+nmap <C-@><C-@>d :vert split<CR>:cs find d <C-R>=expand("<cword>")<CR> <C-R>=expand("%")<CR><CR>
+nmap <C-@><C-@>c :vert split<CR>:cs find c <C-R>=expand("<cword>")<CR><CR>
+nmap <C-@><C-@>t :vert split<CR>:cs find t <C-R>=expand("<cword>")<CR><CR>
+nmap <C-@><C-@>e :vert split<CR>:cs find e <C-R>=expand("<cword>")<CR><CR>
+nmap <C-@><C-@>f :vert split<CR>:cs find f <C-R>=expand("<cfile>")<CR><CR>
+nmap <C-@><C-@>i :vert split<CR>:cs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
 
-	nmap <C-\>s :cs find s 
-	nmap <C-\>g :cs find g 
-	nmap <C-\>c :cs find c 
-	nmap <C-\>t :cs find t 
-	nmap <C-\>e :cs find e 
-	nmap <C-\>f :cs find f 
-	nmap <C-\>i :cs find i 
-	nmap <C-\>d :cs find d 
-	if g:iswindows==1 
-		nmap <leader>u :call Do_CsTag()<cr>
-	else
-		nmap <leader>u :call CreateCscopeTags()<cr>
-	endif
+nmap <C-\>s :cs find s 
+nmap <C-\>g :cs find g 
+nmap <C-\>c :cs find c 
+nmap <C-\>t :cs find t 
+nmap <C-\>e :cs find e 
+nmap <C-\>f :cs find f 
+nmap <C-\>i :cs find i 
+nmap <C-\>d :cs find d 
+if g:iswindows==1 
+	nmap <leader>u :call Do_CsTag()<cr>
+else
+	nmap <leader>u :call CreateCscopeTags()<cr>
+endif
 nmap <leader>a :cs add cscope.out<cr>:CCTreeLoadDB cscope.out<cr>
-endfunc
-au FileType c,cpp,asm call Cscopemap()
-
 "kill the connection of current dir 
 if has("cscope") && filereadable("cscope.out")
 	nmap <leader>k :cs kill cscope.out<cr> 
@@ -790,60 +785,158 @@ let g:SrcExpl_updateTagsCmd = "ctags --sort=foldcase -R ."
 "}}}
 "{{{neocomplcache or neocomplete
 "neocomplete is a new plugin develop by the same author,it required lua
-"feature and it is more intelligen of course...but is is unstable..so we
-"use neocomplcache
+"feature and it is more intelligen of course
 if g:use_ycm==0
 	let g:acp_enableAtStartup = 0
-	" Use neocomplcache.
-	let g:neocomplcache_enable_at_startup = 1
-	" Use smartcase.
-	let g:neocomplcache_enable_smart_case = 1
-	" Set minimum syntax keyword length.
-	let g:neocomplcache_min_syntax_length = 3
-	"neocomplcache selects the first candidate
-	let g:neocomplcache_enable_auto_select = 0
-	" Enable heavy features.
-	" Use camel case completion.
-	"let g:neocomplcache_enable_camel_case_completion = 1
-	" Use underbar completion.
-	"let g:neocomplcache_enable_underbar_completion = 1
-	let g:neocomplcache_auto_completion_start_length = 2
-	let g:neocomplcache_manual_completion_start_length = 2
-	let g:neocomplcache_min_keyword_length = 3
-	let g:neocomplcache_enable_ignore_case = 1
-	"fuzzy complete
-	let g:neocomplcache_enable_fuzzy_completion=1
-	"Define dictionary,in editplus's official website can find many dict with
-	"stx suffix
-	let g:neocomplcache_dictionary_filetype_lists = {
-				\ 'default' : '',
-				\ 'cpp' : $VIMFILES.'/bundle/dict/cpp.dict',
-				\ 'html' : $VIMFILES.'/bundle/dict/html.dict',
-				\ 'c' : $VIMFILES.'/bundle/dict/c.dict',
-				\ 'sh' : $VIMFILES.'/bundle/dict/bash.dict',
-				\ 'dosbatch' : $VIMFILES.'/bundle/dict/batch.dict',
-				\ 'tex' : $VIMFILES.'/bundle/dict/latex.dict',
-				\ 'vim' : $VIMFILES.'/bundle/dict/vim.dict.txt',
-				\ 'verilog' : $VIMFILES.'/bundle/dict/verilog.dict'
-				\ }
-	if !exists("g:neocomplcache_include_paths")
-		let g:neocomplcache_include_paths = {}
-	endif
-	let g:neocomplcache_include_paths = {
-				\ 'cpp' : '.,d:/MinGw/lib/gcc/mingw32/4.6.2/include/c++',
-				\ 'c' : '.,d:/MinGW/lib/gcc/mingw32/4.6.2/include,c:/Program Files/MinGw/include'
-				\ }
-	let g:neocomplcache_include_patterns = {
-				\ 'cpp' : '^\s*#\s*include',
-				\ 'c' : '^\s*#\s*include'
-				\ }
-	" Define keyword.
-	if !exists('g:neocomplcache_keyword_patterns')
-		let g:neocomplcache_keyword_patterns = {}
-	endif
-	let g:neocomplcache_keyword_patterns['default'] = '\h\w*'
+	if has("patch885") && has('lua')
+		" Use neocomplete.
+		let g:neocomplete#enable_at_startup = 1
+		" Use smartcase.
+		let g:neocomplete#enable_smart_case = 1
+		" Set minimum syntax keyword length.
+		let g:neocomplete#sources#syntax#min_keyword_length = 3
+		let g:neocomplete#lock_buffer_name_pattern = '\*ku\*'
 
-	autocmd BufReadPost,BufEnter,BufWritePost :NeoComplCacheCachingBuffer <buffer>:echo "Caching done."<CR>
+		" Define dictionary.
+		let g:neocomplete#sources#dictionary#dictionaries = {
+					\ 'default' : '',
+					\ 'vimshell' : $HOME.'/.vimshell_hist',
+					\ 'scheme' : $HOME.'/.gosh_completions'
+					\ }
+
+		" Define keyword.
+		if !exists('g:neocomplete#keyword_patterns')
+			let g:neocomplete#keyword_patterns = {}
+		endif
+		let g:neocomplete#keyword_patterns['default'] = '\h\w*'
+
+		" Plugin key-mappings.
+		inoremap <expr><C-g>     neocomplete#undo_completion()
+		inoremap <expr><C-l>     neocomplete#complete_common_string()
+
+		" Recommended key-mappings.
+		" <CR>: close popup and save indent.
+		inoremap <silent> <CR> <C-r>=<SID>my_cr_function()<CR>
+		function! s:my_cr_function()
+			return neocomplete#smart_close_popup() . "\<CR>"
+			" For no inserting <CR> key.
+			"return pumvisible() ? neocomplete#close_popup() : "\<CR>"
+		endfunction
+		" <TAB>: completion.
+		inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
+		" <C-h>, <BS>: close popup and delete backword char.
+		inoremap <expr><C-h> neocomplete#smart_close_popup()."\<C-h>"
+		inoremap <expr><BS> neocomplete#smart_close_popup()."\<C-h>"
+		inoremap <expr><C-y>  neocomplete#close_popup()
+		inoremap <expr><C-e>  neocomplete#cancel_popup()
+		" Close popup by <Space>.
+		"inoremap <expr><Space> pumvisible() ? neocomplete#close_popup() : "\<Space>"
+
+		" For cursor moving in insert mode(Not recommended)
+		"inoremap <expr><Left>  neocomplete#close_popup() . "\<Left>"
+		"inoremap <expr><Right> neocomplete#close_popup() . "\<Right>"
+		"inoremap <expr><Up>    neocomplete#close_popup() . "\<Up>"
+		"inoremap <expr><Down>  neocomplete#close_popup() . "\<Down>"
+		" Or set this.
+		"let g:neocomplete#enable_cursor_hold_i = 1
+		" Or set this.
+		"let g:neocomplete#enable_insert_char_pre = 1
+
+		" AutoComplPop like behavior.
+		"let g:neocomplete#enable_auto_select = 1
+
+		" Shell like behavior(not recommended).
+		"set completeopt+=longest
+		"let g:neocomplete#enable_auto_select = 1
+		"let g:neocomplete#disable_auto_complete = 1
+		"inoremap <expr><TAB>  pumvisible() ? "\<Down>" : "\<C-x>\<C-u>"
+		" Enable heavy omni completion.
+		if !exists('g:neocomplete#sources#omni#input_patterns')
+			let g:neocomplete#sources#omni#input_patterns = {}
+		endif
+		let g:neocomplete#sources#omni#input_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
+		let g:neocomplete#sources#omni#input_patterns.c = '[^.[:digit:] *\t]\%(\.\|->\)'
+		let g:neocomplete#sources#omni#input_patterns.cpp = '[^.[:digit:] *\t]\%(\.\|->\)\|\h\w*::'
+
+		" For perlomni.vim setting.
+		" https://github.com/c9s/perlomni.vim
+		let g:neocomplete#sources#omni#input_patterns.perl = '\h\w*->\h\w*\|\h\w*::'
+	else
+		" Use neocomplcache.
+		let g:neocomplcache_enable_at_startup = 1
+		" Use smartcase.
+		let g:neocomplcache_enable_smart_case = 1
+		" Set minimum syntax keyword length.
+		let g:neocomplcache_min_syntax_length = 3
+		"neocomplcache selects the first candidate
+		let g:neocomplcache_enable_auto_select = 0
+		" Enable heavy features.
+		" Use camel case completion.
+		"let g:neocomplcache_enable_camel_case_completion = 1
+		" Use underbar completion.
+		"let g:neocomplcache_enable_underbar_completion = 1
+		let g:neocomplcache_auto_completion_start_length = 2
+		let g:neocomplcache_manual_completion_start_length = 2
+		let g:neocomplcache_min_keyword_length = 3
+		let g:neocomplcache_enable_ignore_case = 1
+		"fuzzy complete
+		let g:neocomplcache_enable_fuzzy_completion=1
+		"Define dictionary,in editplus's official website can find many dict with
+		"stx suffix
+		let g:neocomplcache_dictionary_filetype_lists = {
+					\ 'default' : '',
+					\ 'cpp' : $VIMFILES.'/bundle/dict/cpp.dict',
+					\ 'html' : $VIMFILES.'/bundle/dict/html.dict',
+					\ 'c' : $VIMFILES.'/bundle/dict/c.dict',
+					\ 'sh' : $VIMFILES.'/bundle/dict/bash.dict',
+					\ 'dosbatch' : $VIMFILES.'/bundle/dict/batch.dict',
+					\ 'tex' : $VIMFILES.'/bundle/dict/latex.dict',
+					\ 'vim' : $VIMFILES.'/bundle/dict/vim.dict.txt',
+					\ 'verilog' : $VIMFILES.'/bundle/dict/verilog.dict'
+					\ }
+		if !exists("g:neocomplcache_include_paths")
+			let g:neocomplcache_include_paths = {}
+		endif
+		let g:neocomplcache_include_paths = {
+					\ 'cpp' : '.,d:/MinGw/lib/gcc/mingw32/4.6.2/include/c++',
+					\ 'c' : '.,d:/MinGW/lib/gcc/mingw32/4.6.2/include,c:/Program Files/MinGw/include'
+					\ }
+		let g:neocomplcache_include_patterns = {
+					\ 'cpp' : '^\s*#\s*include',
+					\ 'c' : '^\s*#\s*include'
+					\ }
+		" Define keyword.
+		if !exists('g:neocomplcache_keyword_patterns')
+			let g:neocomplcache_keyword_patterns = {}
+		endif
+		let g:neocomplcache_keyword_patterns['default'] = '\h\w*'
+
+		autocmd BufReadPost,BufEnter,BufWritePost :NeoComplCacheCachingBuffer <buffer>:echo "Caching done."<CR>
+
+		" Enable heavy omni completion.
+		if !exists('g:neocomplcache_omni_patterns')
+			let g:neocomplcache_omni_patterns = {}
+		endif
+		let g:neocomplcache_omni_patterns.ruby = '[^. *\t]\.\h\w*\|\h\w*::'
+		let g:neocomplcache_omni_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
+		let g:neocomplcache_omni_patterns.c = '\%(\.\|->\)\h\w*'
+		let g:neocomplcache_omni_patterns.cpp = '\h\w*\%(\.\|->\)\h\w*\|\h\w*::'
+		" Plugin key-mappings.
+		inoremap <expr><C-g>     neocomplcache#undo_completion()
+		inoremap <expr><C-l>     neocomplcache#complete_common_string()
+		" <TAB>: completion.
+		inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
+		" <C-h>, <BS>: close popup and delete backword char.
+		inoremap <expr><BS> neocomplcache#smart_close_popup()."\<C-h>"
+		inoremap <expr><C-y>  neocomplcache#close_popup()
+		inoremap <expr><C-e>  neocomplcache#cancel_popup()
+		" For cursor moving in insert mode(Not recommended)
+		"inoremap <expr><Left>  neocomplcache#close_popup() . "\<Left>"
+		"inoremap <expr><Right> neocomplcache#close_popup() . "\<Right>"
+		"inoremap <expr><Up>    neocomplcache#close_popup() . "\<Up>"
+		"inoremap <expr><Down>  neocomplcache#close_popup() . "\<Down>"
+		imap <expr> `  pumvisible() ? "\<Plug>(neocomplcache_start_unite_quick_match)" : '`'
+	endif
 	autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
 	autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
 	autocmd FileType html setlocal omnifunc=htmlcomplete#CompleteTags
@@ -852,30 +945,6 @@ if g:use_ycm==0
 	autocmd FileType php setlocal omnifunc=phpcomplete#CompletePHP
 	autocmd FileType c setlocal omnifunc=ccomplete#Complete
 	autocmd FileType ruby setlocal omnifunc=rubycomplete#Complete
-
-	" Enable heavy omni completion.
-	if !exists('g:neocomplcache_omni_patterns')
-		let g:neocomplcache_omni_patterns = {}
-	endif
-	let g:neocomplcache_omni_patterns.ruby = '[^. *\t]\.\h\w*\|\h\w*::'
-	let g:neocomplcache_omni_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
-	let g:neocomplcache_omni_patterns.c = '\%(\.\|->\)\h\w*'
-	let g:neocomplcache_omni_patterns.cpp = '\h\w*\%(\.\|->\)\h\w*\|\h\w*::'
-	" Plugin key-mappings.
-	inoremap <expr><C-g>     neocomplcache#undo_completion()
-	inoremap <expr><C-l>     neocomplcache#complete_common_string()
-	" <TAB>: completion.
-	inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
-	" <C-h>, <BS>: close popup and delete backword char.
-	inoremap <expr><BS> neocomplcache#smart_close_popup()."\<C-h>"
-	inoremap <expr><C-y>  neocomplcache#close_popup()
-	inoremap <expr><C-e>  neocomplcache#cancel_popup()
-	" For cursor moving in insert mode(Not recommended)
-	"inoremap <expr><Left>  neocomplcache#close_popup() . "\<Left>"
-	"inoremap <expr><Right> neocomplcache#close_popup() . "\<Right>"
-	"inoremap <expr><Up>    neocomplcache#close_popup() . "\<Up>"
-	"inoremap <expr><Down>  neocomplcache#close_popup() . "\<Down>"
-	imap <expr> `  pumvisible() ? "\<Plug>(neocomplcache_start_unite_quick_match)" : '`'
 endif
 inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
 "}}}
