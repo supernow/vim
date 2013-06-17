@@ -467,12 +467,11 @@ endif
 " vim-scripts repos
 Bundle 'a.vim'
 Bundle 'tracyone/dict'
-Bundle 'Align'
+Bundle 'tracyone/Align'
 Bundle 'tracyone/calendar'
-Bundle 'Colour-Sampler-Pack'
+Bundle 'tracyone/Colour-Sampler-Pack'
 Bundle 'tracyone/ConqueShell'
-Bundle 'amiorin/ctrlp-z'
-Bundle 'ctrlp.vim'
+Bundle 'kien/ctrlp.vim'
 Bundle 'delimitMate.vim'
 Bundle 'FuzzyFinder'
 Bundle 'genutils'
@@ -483,6 +482,7 @@ else
 endif
 if g:use_ycm==0
 	Bundle 'Shougo/neocomplcache'
+	Bundle 'Shougo/neocomplete'
 	"Bundle 'Shougo/neosnippet'
 	"Bundle 'honza/vim-snippets'
 else
@@ -496,7 +496,7 @@ Bundle 'surround.vim'
 Bundle 'majutsushi/tagbar'
 Bundle 'Shougo/unite.vim'
 Bundle 'L9'
-Bundle 'ZenCoding.vim'
+Bundle 'mattn/zencoding-vim'
 Bundle 'vimwiki'
 Bundle 'matrix.vim--Yang'
 Bundle 'adah1972/fencview'
@@ -511,7 +511,6 @@ Bundle 'hallison/vim-markdown'
 Bundle 'TeTrIs.vim'
 Bundle 'tracyone/mark.vim'
 Bundle 'tracyone/MyVimHelp'
-Bundle 'sunuslee/vim-plugin-random-colorscheme-picker' 
 Bundle 'scrooloose/syntastic'
 if g:iswindows == 1
 	Bundle 'tracyone/pyclewn' 
@@ -800,8 +799,14 @@ if g:use_ycm==0
 		" Define dictionary.
 		let g:neocomplete#sources#dictionary#dictionaries = {
 					\ 'default' : '',
-					\ 'vimshell' : $HOME.'/.vimshell_hist',
-					\ 'scheme' : $HOME.'/.gosh_completions'
+					\ 'cpp' : $VIMFILES.'/bundle/dict/cpp.dict',
+					\ 'html' : $VIMFILES.'/bundle/dict/html.dict',
+					\ 'c' : $VIMFILES.'/bundle/dict/c.dict',
+					\ 'sh' : $VIMFILES.'/bundle/dict/bash.dict',
+					\ 'dosbatch' : $VIMFILES.'/bundle/dict/batch.dict',
+					\ 'tex' : $VIMFILES.'/bundle/dict/latex.dict',
+					\ 'vim' : $VIMFILES.'/bundle/dict/vim.dict.txt',
+					\ 'verilog' : $VIMFILES.'/bundle/dict/verilog.dict'
 					\ }
 
 		" Define keyword.
@@ -816,12 +821,6 @@ if g:use_ycm==0
 
 		" Recommended key-mappings.
 		" <CR>: close popup and save indent.
-		inoremap <silent> <CR> <C-r>=<SID>my_cr_function()<CR>
-		function! s:my_cr_function()
-			return neocomplete#smart_close_popup() . "\<CR>"
-			" For no inserting <CR> key.
-			"return pumvisible() ? neocomplete#close_popup() : "\<CR>"
-		endfunction
 		" <TAB>: completion.
 		inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
 		" <C-h>, <BS>: close popup and delete backword char.
@@ -829,14 +828,6 @@ if g:use_ycm==0
 		inoremap <expr><BS> neocomplete#smart_close_popup()."\<C-h>"
 		inoremap <expr><C-y>  neocomplete#close_popup()
 		inoremap <expr><C-e>  neocomplete#cancel_popup()
-		" Close popup by <Space>.
-		"inoremap <expr><Space> pumvisible() ? neocomplete#close_popup() : "\<Space>"
-
-		" For cursor moving in insert mode(Not recommended)
-		"inoremap <expr><Left>  neocomplete#close_popup() . "\<Left>"
-		"inoremap <expr><Right> neocomplete#close_popup() . "\<Right>"
-		"inoremap <expr><Up>    neocomplete#close_popup() . "\<Up>"
-		"inoremap <expr><Down>  neocomplete#close_popup() . "\<Down>"
 		" Or set this.
 		"let g:neocomplete#enable_cursor_hold_i = 1
 		" Or set this.
@@ -845,11 +836,7 @@ if g:use_ycm==0
 		" AutoComplPop like behavior.
 		"let g:neocomplete#enable_auto_select = 1
 
-		" Shell like behavior(not recommended).
-		"set completeopt+=longest
-		"let g:neocomplete#enable_auto_select = 1
-		"let g:neocomplete#disable_auto_complete = 1
-		"inoremap <expr><TAB>  pumvisible() ? "\<Down>" : "\<C-x>\<C-u>"
+		"imap <expr> `  pumvisible() ? "\<Plug>(neocomplete_start_unite_quick_match)" : '`'
 		" Enable heavy omni completion.
 		if !exists('g:neocomplete#sources#omni#input_patterns')
 			let g:neocomplete#sources#omni#input_patterns = {}
@@ -1236,8 +1223,7 @@ if(has("gui_running"))
 	else
 		au GUIEnter * simalt~x "maximize window
 		set guifont=Consolas:h14:cANSI
-		"set gfw=Yahei_Mono:h14.5:cGB2312
-		set gfw=YaHei_Consolas_Hybrid:h14.5:cGB2312
+		set gfw=YaHei_Mono:h12:cGB2312
 	endif
 	set guioptions-=b
 	"set guioptions-=m "whether use menu
