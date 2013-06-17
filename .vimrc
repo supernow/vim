@@ -29,6 +29,7 @@ if (has("win32")) || has("win64")
 	set filetype=dos
 	set ffs=dos,unix,mac
 	behave  xterm
+	let &cdpath = ',' . getcwd()
 	"set path=
 	let $VIMFILES = $VIM.'/vimfiles'
 	let g:iswindows=1 "windows flags
@@ -215,7 +216,7 @@ set whichwrap=b,h,l,<,>,[,]
 set clipboard+=unnamed
 
 "change to directory of file in buffer
-set autochdir
+"set autochdir
 
 "statusline
 set statusline+=%<%f%m%r%h%w%{tagbar#currenttag('[%s]','')}
@@ -568,21 +569,21 @@ let g:tagbar_compact = 1
 let g:tagbar_systemenc='cp936'
 "}}}
 "{{{cscope
-au VimEnter *.c,*.cpp,*.s,*.cc,*.h exec "silent! cs add cscope.out"
+exec "silent! cs add cscope.out"
 if $CSCOPE_DB != "" "tpyically it is a include db 
-	au VimEnter *.c,*.cpp,*.s,*.cc,*.h exec "silent! cs add $CSCOPE_DB"
+	exec "silent! cs add $CSCOPE_DB"
 endif
 if $CSCOPE_DB1 != ""
-	au VimEnter *.c,*.cpp,*.s,*.cc,*.h exec "silent! cs add $CSCOPE_DB1"
+	exec "silent! cs add $CSCOPE_DB1"
 endif
 if $CSCOPE_DB2 != ""
-	au VimEnter *.c,*.cpp,*.s,*.cc,*.h exec "silent! cs add $CSCOPE_DB2"
+	exec "silent! cs add $CSCOPE_DB2"
 endif
 if $CSCOPE_DB3 != ""
-	au VimEnter *.c,*.cpp,*.s,*.cc,*.h exec "silent! cs add $CSCOPE_DB3"
+	exec "silent! cs add $CSCOPE_DB3"
 endif
 if filereadable('ccglue.out') "this guy is more efficiency 
-	au VimEnter *.c,*.cpp,*.s,*.cc,*.h exec "silent! CCTreeLoadXRefDBFromDisk ccglue.out"
+	exec "silent! CCTreeLoadXRefDBFromDisk ccglue.out"
 endif
 if has("cscope")
 	" use both cscope and ctag for 'ctrl-]', ':ta', and 'vim -t'
@@ -598,51 +599,47 @@ if has("cscope")
 endif
 	set cscopeverbose 
 " show msg when any other cscope db added
-func! Cscopemap()
-	nmap <Leader>s :cs find s <C-R>=expand("<cword>")<CR><CR>:cw 7<cr>
-	nmap <Leader>g :cs find g <C-R>=expand("<cword>")<CR><CR>:cw 7<cr>
-	nmap <Leader>d :cs find d <C-R>=expand("<cword>")<CR> <C-R>=expand("%")<CR><CR>:cw 7<cr>
-	nmap <Leader>c :cs find c <C-R>=expand("<cword>")<CR><CR>:cw 7<cr>
-	nmap <Leader>t :cs find t <C-R>=expand("<cword>")<CR><CR>:cw 7<cr>
-	nmap <Leader>e :cs find e <C-R>=expand("<cword>")<CR><CR>:cw 7<cr>
-	nmap <Leader>f :cs find f <C-R>=expand("<cfile>")<CR><CR>:cw 7<cr>
-	nmap <Leader>i :cs find i ^<C-R>=expand("<cfile>")<CR>$<CR>:cw 7<cr>
+nmap <Leader>s :cs find s <C-R>=expand("<cword>")<CR><CR>:cw 7<cr>
+nmap <Leader>g :cs find g <C-R>=expand("<cword>")<CR><CR>:cw 7<cr>
+nmap <Leader>d :cs find d <C-R>=expand("<cword>")<CR> <C-R>=expand("%")<CR><CR>:cw 7<cr>
+nmap <Leader>c :cs find c <C-R>=expand("<cword>")<CR><CR>:cw 7<cr>
+nmap <Leader>t :cs find t <C-R>=expand("<cword>")<CR><CR>:cw 7<cr>
+nmap <Leader>e :cs find e <C-R>=expand("<cword>")<CR><CR>:cw 7<cr>
+nmap <Leader>f :cs find f <C-R>=expand("<cfile>")<CR><CR>:cw 7<cr>
+nmap <Leader>i :cs find i ^<C-R>=expand("<cfile>")<CR>$<CR>:cw 7<cr>
 
-	nmap <C-@>s :split<CR>:cs find s <C-R>=expand("<cword>")<CR><CR>
-	nmap <C-@>g :split<CR>:cs find g <C-R>=expand("<cword>")<CR><CR>
-	nmap <C-@>d :split<CR>:cs find d <C-R>=expand("<cword>")<CR> <C-R>=expand("%")<CR><CR>
-	nmap <C-@>c :split<CR>:cs find c <C-R>=expand("<cword>")<CR><CR>
-	nmap <C-@>t :split<CR>:cs find t <C-R>=expand("<cword>")<CR><CR>
-	nmap <C-@>e :split<CR>:cs find e <C-R>=expand("<cword>")<CR><CR>
-	nmap <C-@>f :split<CR>:cs find f <C-R>=expand("<cfile>")<CR><CR>
-	nmap <C-@>i :split<CR>:cs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
+nmap <C-@>s :split<CR>:cs find s <C-R>=expand("<cword>")<CR><CR>
+nmap <C-@>g :split<CR>:cs find g <C-R>=expand("<cword>")<CR><CR>
+nmap <C-@>d :split<CR>:cs find d <C-R>=expand("<cword>")<CR> <C-R>=expand("%")<CR><CR>
+nmap <C-@>c :split<CR>:cs find c <C-R>=expand("<cword>")<CR><CR>
+nmap <C-@>t :split<CR>:cs find t <C-R>=expand("<cword>")<CR><CR>
+nmap <C-@>e :split<CR>:cs find e <C-R>=expand("<cword>")<CR><CR>
+nmap <C-@>f :split<CR>:cs find f <C-R>=expand("<cfile>")<CR><CR>
+nmap <C-@>i :split<CR>:cs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
 
-	nmap <C-@><C-@>s :vert split<CR>:cs find s <C-R>=expand("<cword>")<CR><CR>
-	nmap <C-@><C-@>g :vert split<CR>:cs find g <C-R>=expand("<cword>")<CR><CR>
-	nmap <C-@><C-@>d :vert split<CR>:cs find d <C-R>=expand("<cword>")<CR> <C-R>=expand("%")<CR><CR>
-	nmap <C-@><C-@>c :vert split<CR>:cs find c <C-R>=expand("<cword>")<CR><CR>
-	nmap <C-@><C-@>t :vert split<CR>:cs find t <C-R>=expand("<cword>")<CR><CR>
-	nmap <C-@><C-@>e :vert split<CR>:cs find e <C-R>=expand("<cword>")<CR><CR>
-	nmap <C-@><C-@>f :vert split<CR>:cs find f <C-R>=expand("<cfile>")<CR><CR>
-	nmap <C-@><C-@>i :vert split<CR>:cs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
+nmap <C-@><C-@>s :vert split<CR>:cs find s <C-R>=expand("<cword>")<CR><CR>
+nmap <C-@><C-@>g :vert split<CR>:cs find g <C-R>=expand("<cword>")<CR><CR>
+nmap <C-@><C-@>d :vert split<CR>:cs find d <C-R>=expand("<cword>")<CR> <C-R>=expand("%")<CR><CR>
+nmap <C-@><C-@>c :vert split<CR>:cs find c <C-R>=expand("<cword>")<CR><CR>
+nmap <C-@><C-@>t :vert split<CR>:cs find t <C-R>=expand("<cword>")<CR><CR>
+nmap <C-@><C-@>e :vert split<CR>:cs find e <C-R>=expand("<cword>")<CR><CR>
+nmap <C-@><C-@>f :vert split<CR>:cs find f <C-R>=expand("<cfile>")<CR><CR>
+nmap <C-@><C-@>i :vert split<CR>:cs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
 
-	nmap <C-\>s :cs find s 
-	nmap <C-\>g :cs find g 
-	nmap <C-\>c :cs find c 
-	nmap <C-\>t :cs find t 
-	nmap <C-\>e :cs find e 
-	nmap <C-\>f :cs find f 
-	nmap <C-\>i :cs find i 
-	nmap <C-\>d :cs find d 
-	if g:iswindows==1 
-		nmap <leader>u :call Do_CsTag()<cr>
-	else
-		nmap <leader>u :call CreateCscopeTags()<cr>
-	endif
+nmap <C-\>s :cs find s 
+nmap <C-\>g :cs find g 
+nmap <C-\>c :cs find c 
+nmap <C-\>t :cs find t 
+nmap <C-\>e :cs find e 
+nmap <C-\>f :cs find f 
+nmap <C-\>i :cs find i 
+nmap <C-\>d :cs find d 
+if g:iswindows==1 
+	nmap <leader>u :call Do_CsTag()<cr>
+else
+	nmap <leader>u :call CreateCscopeTags()<cr>
+endif
 nmap <leader>a :cs add cscope.out<cr>:CCTreeLoadDB cscope.out<cr>
-endfunc
-au FileType c,cpp,asm call Cscopemap()
-
 "kill the connection of current dir 
 if has("cscope") && filereadable("cscope.out")
 	nmap <leader>k :cs kill cscope.out<cr> 
