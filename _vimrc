@@ -2,7 +2,7 @@
 "@brief      config file of vim and gvim for both windows and linux
 "@date       2012-12-30 11:01:30
 "@author     tracyone,tracyone@live.cn
-"@lastchange 2013-06-18/09:07:47
+"@lastchange 2013-06-18/10:41:57
 "@note:		Prior to use, in the case of windows vim convert this file's 
 "			format into dos,while convert it into unix format in the case 
 "			of linux vim
@@ -29,7 +29,6 @@ if (has("win32")) || has("win64")
 	set filetype=dos
 	set ffs=dos,unix,mac
 	behave  xterm
-	let &cdpath = ',' . getcwd()
 	"set path=
 	let $VIMFILES = $VIM.'/vimfiles'
 	let g:iswindows=1 "windows flags
