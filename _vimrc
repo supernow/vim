@@ -2,7 +2,7 @@
 "@brief      config file of vim and gvim for both windows and linux
 "@date       2012-12-30 11:01:30
 "@author     tracyone,tracyone@live.cn
-"@lastchange 2013-06-17/21:32:24
+"@lastchange 2013-06-18/09:07:47
 "@note:		Prior to use, in the case of windows vim convert this file's 
 "			format into dos,while convert it into unix format in the case 
 "			of linux vim
@@ -478,11 +478,19 @@ Bundle 'genutils'
 if g:iswindows==0 && has("patch584")
 	let g:use_ycm=1
 else
+	if has("patch885") && has('lua')
+		let g:use_neocomplete=1
+	else
+		let g:use_neocomplete=0
+	endif
 	let g:use_ycm=0
 endif
 if g:use_ycm==0
-	Bundle 'Shougo/neocomplcache'
-	Bundle 'Shougo/neocomplete'
+	if g:use_neocomplete==1
+		Bundle 'Shougo/neocomplete'
+	else
+		Bundle 'Shougo/neocomplcache'
+	endif
 	"Bundle 'Shougo/neosnippet'
 	"Bundle 'honza/vim-snippets'
 else
@@ -786,8 +794,8 @@ let g:SrcExpl_updateTagsCmd = "ctags --sort=foldcase -R ."
 "neocomplete is a new plugin develop by the same author,it required lua
 "feature and it is more intelligen of course
 if g:use_ycm==0
-	let g:acp_enableAtStartup = 0
-	if has("patch885") && has('lua')
+	if g:use_neocomplete==1
+		let g:acp_enableAtStartup = 0
 		" Use neocomplete.
 		let g:neocomplete#enable_at_startup = 1
 		" Use smartcase.
@@ -849,6 +857,7 @@ if g:use_ycm==0
 		" https://github.com/c9s/perlomni.vim
 		let g:neocomplete#sources#omni#input_patterns.perl = '\h\w*->\h\w*\|\h\w*::'
 	else
+		let g:acp_enableAtStartup = 0
 		" Use neocomplcache.
 		let g:neocomplcache_enable_at_startup = 1
 		" Use smartcase.
@@ -886,7 +895,7 @@ if g:use_ycm==0
 		endif
 		let g:neocomplcache_include_paths = {
 					\ 'cpp' : '.,d:/MinGw/lib/gcc/mingw32/4.6.2/include/c++',
-					\ 'c' : '.,d:/MinGW/lib/gcc/mingw32/4.6.2/include,c:/Program Files/MinGw/include'
+					\ 'c' : '.,d:/MinGW/lib/gcc/mingw32/4.6.2/include,d:/MinGw/include'
 					\ }
 		let g:neocomplcache_include_patterns = {
 					\ 'cpp' : '^\s*#\s*include',
