@@ -2,7 +2,7 @@
 "@brief      config file of vim and gvim for both windows and linux
 "@date       2012-12-30 11:01:30
 "@author     tracyone,tracyone@live.cn
-"@lastchange 2013-06-18/10:41:57
+"@lastchange 2013-06-18/11:48:42
 "@note:		Prior to use, in the case of windows vim convert this file's 
 "			format into dos,while convert it into unix format in the case 
 "			of linux vim
@@ -496,7 +496,7 @@ else
 	Bundle 'Valloric/YouCompleteMe'
 endif
 Bundle 'The-NERD-Commenter'
-Bundle 'scrooloose/nerdtree'
+Bundle 'tracyone/nerdtree'
 Bundle 'ShowMarks7'
 Bundle 'wesleyche/SrcExpl'
 Bundle 'surround.vim'
@@ -645,9 +645,7 @@ else
 endif
 nmap <leader>a :cs add cscope.out<cr>:CCTreeLoadDB cscope.out<cr>
 "kill the connection of current dir 
-if has("cscope") && filereadable("cscope.out")
-	nmap <leader>k :cs kill cscope.out<cr> 
-endif
+nmap <leader>k :cs kill cscope.out<cr> 
 function! CreateCscopeTags()
 	if has("cscope") && filereadable("cscope.out")
 		cs kill cscope.out "kill the cscope.out in current dir only 
@@ -725,7 +723,7 @@ function! Do_CsTag()
 		if(g:iswindows!=1)
 			silent! execute "!find . -name \"*.[chsS]\" > ./cscope.files"
 		else
-			silent! execute "!dir /s/b *.c,*.cpp,*.h,*.java,*.cs >> cscope.files"
+			silent! execute "!dir /s/b *.c,*.cpp,*.h,*.java,*.cs,*.s,*.asm >> cscope.files"
 		endif
 		silent! execute "!cscope -Rbkq -i cscope.files"
 		"silent! execute "!ccglue -S cscope.out -o ccglue.out"   "don not know how to use
@@ -742,7 +740,7 @@ endfunction
 "}}}
 "{{{srcexpl.vim
 " // The switch of the Source Explorer                                         
-map <F8> :SrcExplToggle<CR>
+map <F8> :silent! SrcExplToggle<CR>
 imap <F8> <ESC>:SrcExplToggle<CR>i
 "                                                                              
 " // Set the height of Source Explorer window                                  
@@ -755,16 +753,17 @@ let g:SrcExpl_refreshTime = 100
 let g:SrcExpl_jumpKey = "<ENTER>"
 "                                                                              
 " // Set "Space" key for back from the definition context                      
-"let g:SrcExpl_gobackKey = "<SPACE>"
+let g:SrcExpl_gobackKey = ""
 "                                                                              
 " // In order to Avoid conflicts, the Source Explorer should know what plugins 
 " // are using buffers. And you need add their bufname into the list below     
 " // according to the command ":buffers!"                                      
 let g:SrcExpl_pluginList = [
 			\ "__Tag_List__",
+			\ "__TagBar__",
 			\ "_NERD_tree_",
 			\ "Source_Explorer",
-			\ "*unite*"
+			\ "[unite] - *"
 			\ ]
 "
 " // Enable/Disable the local definition searching, and note that this is not  
@@ -782,10 +781,10 @@ let g:SrcExpl_updateTagsCmd = "ctags --sort=foldcase -R ."
 " // Set "<F12>" key for updating the tags file artificially                   
 "let g:SrcExpl_updateTagsKey = "<F3>"
 " // Set "<F3>" key for displaying the previous definition in the jump list 
- let g:SrcExpl_prevDefKey = "<c-p>" 
+ let g:SrcExpl_prevDefKey = "" 
 
  " // Set "<F4>" key for displaying the next definition in the jump list 
- let g:SrcExpl_nextDefKey = "<C-n>" 
+ let g:SrcExpl_nextDefKey = "" 
 
                                                                              
 "}}}
@@ -1206,7 +1205,7 @@ let g:fencview_auto_patterns='*.txt,*.htm{l\=},*.c,*.cpp,*.s,*.vim'
 let g:NERDMenuMode=0
 "rename multi file name
 map <F2> :Ren<cr>
-map <F11> :VE<cr><cr>
+map <F11> :silent! VE<cr><cr>
 let g:startupfile="first_statup.txt"
 if g:iswindows==1
 	let g:start_path=$VIM.'/first_statup.txt'
@@ -1231,7 +1230,7 @@ if(has("gui_running"))
 	else
 		au GUIEnter * simalt~x "maximize window
 		set guifont=Consolas:h14:cANSI
-		set gfw=YaHei_Mono:h12:cGB2312
+		set gfw=YaHei_Mono:h12.5:cGB2312
 	endif
 	set guioptions-=b
 	"set guioptions-=m "whether use menu
