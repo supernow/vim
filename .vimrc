@@ -2,7 +2,7 @@
 "@brief      config file of vim and gvim for both windows and linux
 "@date       2012-12-30 11:01:30
 "@author     tracyone,tracyone@live.cn
-"@lastchange 2013-06-16/17:57:16
+"@lastchange 2013-06-18/11:48:42
 "@note:		Prior to use, in the case of windows vim convert this file's 
 "			format into dos,while convert it into unix format in the case 
 "			of linux vim
@@ -29,7 +29,6 @@ if (has("win32")) || has("win64")
 	set filetype=dos
 	set ffs=dos,unix,mac
 	behave  xterm
-	let &cdpath = ',' . getcwd()
 	"set path=
 	let $VIMFILES = $VIM.'/vimfiles'
 	let g:iswindows=1 "windows flags
@@ -467,36 +466,44 @@ endif
 " vim-scripts repos
 Bundle 'a.vim'
 Bundle 'tracyone/dict'
-Bundle 'Align'
+Bundle 'tracyone/Align'
 Bundle 'tracyone/calendar'
-Bundle 'Colour-Sampler-Pack'
+Bundle 'tracyone/Colour-Sampler-Pack'
 Bundle 'tracyone/ConqueShell'
-Bundle 'amiorin/ctrlp-z'
-Bundle 'ctrlp.vim'
+Bundle 'kien/ctrlp.vim'
 Bundle 'delimitMate.vim'
 Bundle 'FuzzyFinder'
 Bundle 'genutils'
 if g:iswindows==0 && has("patch584")
 	let g:use_ycm=1
 else
+	if has("patch885") && has('lua')
+		let g:use_neocomplete=1
+	else
+		let g:use_neocomplete=0
+	endif
 	let g:use_ycm=0
 endif
 if g:use_ycm==0
-	Bundle 'Shougo/neocomplcache'
+	if g:use_neocomplete==1
+		Bundle 'Shougo/neocomplete'
+	else
+		Bundle 'Shougo/neocomplcache'
+	endif
 	"Bundle 'Shougo/neosnippet'
 	"Bundle 'honza/vim-snippets'
 else
 	Bundle 'Valloric/YouCompleteMe'
 endif
 Bundle 'The-NERD-Commenter'
-Bundle 'scrooloose/nerdtree'
+Bundle 'tracyone/nerdtree'
 Bundle 'ShowMarks7'
 Bundle 'wesleyche/SrcExpl'
 Bundle 'surround.vim'
 Bundle 'majutsushi/tagbar'
 Bundle 'Shougo/unite.vim'
 Bundle 'L9'
-Bundle 'ZenCoding.vim'
+Bundle 'mattn/zencoding-vim'
 Bundle 'vimwiki'
 Bundle 'matrix.vim--Yang'
 Bundle 'adah1972/fencview'
@@ -511,7 +518,6 @@ Bundle 'hallison/vim-markdown'
 Bundle 'TeTrIs.vim'
 Bundle 'tracyone/mark.vim'
 Bundle 'tracyone/MyVimHelp'
-Bundle 'sunuslee/vim-plugin-random-colorscheme-picker' 
 Bundle 'scrooloose/syntastic'
 if g:iswindows == 1
 	Bundle 'tracyone/pyclewn' 
@@ -639,9 +645,7 @@ else
 endif
 nmap <leader>a :cs add cscope.out<cr>:CCTreeLoadDB cscope.out<cr>
 "kill the connection of current dir 
-if has("cscope") && filereadable("cscope.out")
-	nmap <leader>k :cs kill cscope.out<cr> 
-endif
+nmap <leader>k :cs kill cscope.out<cr> 
 function! CreateCscopeTags()
 	if has("cscope") && filereadable("cscope.out")
 		cs kill cscope.out "kill the cscope.out in current dir only 
@@ -719,7 +723,7 @@ function! Do_CsTag()
 		if(g:iswindows!=1)
 			silent! execute "!find . -name \"*.[chsS]\" > ./cscope.files"
 		else
-			silent! execute "!dir /s/b *.c,*.cpp,*.h,*.java,*.cs >> cscope.files"
+			silent! execute "!dir /s/b *.c,*.cpp,*.h,*.java,*.cs,*.s,*.asm >> cscope.files"
 		endif
 		silent! execute "!cscope -Rbkq -i cscope.files"
 		"silent! execute "!ccglue -S cscope.out -o ccglue.out"   "don not know how to use
@@ -736,7 +740,7 @@ endfunction
 "}}}
 "{{{srcexpl.vim
 " // The switch of the Source Explorer                                         
-map <F8> :SrcExplToggle<CR>
+map <F8> :silent! SrcExplToggle<CR>
 imap <F8> <ESC>:SrcExplToggle<CR>i
 "                                                                              
 " // Set the height of Source Explorer window                                  
@@ -749,16 +753,17 @@ let g:SrcExpl_refreshTime = 100
 let g:SrcExpl_jumpKey = "<ENTER>"
 "                                                                              
 " // Set "Space" key for back from the definition context                      
-"let g:SrcExpl_gobackKey = "<SPACE>"
+let g:SrcExpl_gobackKey = ""
 "                                                                              
 " // In order to Avoid conflicts, the Source Explorer should know what plugins 
 " // are using buffers. And you need add their bufname into the list below     
 " // according to the command ":buffers!"                                      
 let g:SrcExpl_pluginList = [
 			\ "__Tag_List__",
+			\ "__TagBar__",
 			\ "_NERD_tree_",
 			\ "Source_Explorer",
-			\ "*unite*"
+			\ "[unite] - *"
 			\ ]
 "
 " // Enable/Disable the local definition searching, and note that this is not  
@@ -776,10 +781,10 @@ let g:SrcExpl_updateTagsCmd = "ctags --sort=foldcase -R ."
 " // Set "<F12>" key for updating the tags file artificially                   
 "let g:SrcExpl_updateTagsKey = "<F3>"
 " // Set "<F3>" key for displaying the previous definition in the jump list 
- let g:SrcExpl_prevDefKey = "<c-p>" 
+ let g:SrcExpl_prevDefKey = "" 
 
  " // Set "<F4>" key for displaying the next definition in the jump list 
- let g:SrcExpl_nextDefKey = "<C-n>" 
+ let g:SrcExpl_nextDefKey = "" 
 
                                                                              
 "}}}
@@ -787,8 +792,8 @@ let g:SrcExpl_updateTagsCmd = "ctags --sort=foldcase -R ."
 "neocomplete is a new plugin develop by the same author,it required lua
 "feature and it is more intelligen of course
 if g:use_ycm==0
-	let g:acp_enableAtStartup = 0
-	if has("patch885") && has('lua')
+	if g:use_neocomplete==1
+		let g:acp_enableAtStartup = 0
 		" Use neocomplete.
 		let g:neocomplete#enable_at_startup = 1
 		" Use smartcase.
@@ -800,8 +805,14 @@ if g:use_ycm==0
 		" Define dictionary.
 		let g:neocomplete#sources#dictionary#dictionaries = {
 					\ 'default' : '',
-					\ 'vimshell' : $HOME.'/.vimshell_hist',
-					\ 'scheme' : $HOME.'/.gosh_completions'
+					\ 'cpp' : $VIMFILES.'/bundle/dict/cpp.dict',
+					\ 'html' : $VIMFILES.'/bundle/dict/html.dict',
+					\ 'c' : $VIMFILES.'/bundle/dict/c.dict',
+					\ 'sh' : $VIMFILES.'/bundle/dict/bash.dict',
+					\ 'dosbatch' : $VIMFILES.'/bundle/dict/batch.dict',
+					\ 'tex' : $VIMFILES.'/bundle/dict/latex.dict',
+					\ 'vim' : $VIMFILES.'/bundle/dict/vim.dict.txt',
+					\ 'verilog' : $VIMFILES.'/bundle/dict/verilog.dict'
 					\ }
 
 		" Define keyword.
@@ -816,12 +827,6 @@ if g:use_ycm==0
 
 		" Recommended key-mappings.
 		" <CR>: close popup and save indent.
-		inoremap <silent> <CR> <C-r>=<SID>my_cr_function()<CR>
-		function! s:my_cr_function()
-			return neocomplete#smart_close_popup() . "\<CR>"
-			" For no inserting <CR> key.
-			"return pumvisible() ? neocomplete#close_popup() : "\<CR>"
-		endfunction
 		" <TAB>: completion.
 		inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
 		" <C-h>, <BS>: close popup and delete backword char.
@@ -829,14 +834,6 @@ if g:use_ycm==0
 		inoremap <expr><BS> neocomplete#smart_close_popup()."\<C-h>"
 		inoremap <expr><C-y>  neocomplete#close_popup()
 		inoremap <expr><C-e>  neocomplete#cancel_popup()
-		" Close popup by <Space>.
-		"inoremap <expr><Space> pumvisible() ? neocomplete#close_popup() : "\<Space>"
-
-		" For cursor moving in insert mode(Not recommended)
-		"inoremap <expr><Left>  neocomplete#close_popup() . "\<Left>"
-		"inoremap <expr><Right> neocomplete#close_popup() . "\<Right>"
-		"inoremap <expr><Up>    neocomplete#close_popup() . "\<Up>"
-		"inoremap <expr><Down>  neocomplete#close_popup() . "\<Down>"
 		" Or set this.
 		"let g:neocomplete#enable_cursor_hold_i = 1
 		" Or set this.
@@ -845,11 +842,7 @@ if g:use_ycm==0
 		" AutoComplPop like behavior.
 		"let g:neocomplete#enable_auto_select = 1
 
-		" Shell like behavior(not recommended).
-		"set completeopt+=longest
-		"let g:neocomplete#enable_auto_select = 1
-		"let g:neocomplete#disable_auto_complete = 1
-		"inoremap <expr><TAB>  pumvisible() ? "\<Down>" : "\<C-x>\<C-u>"
+		"imap <expr> `  pumvisible() ? "\<Plug>(neocomplete_start_unite_quick_match)" : '`'
 		" Enable heavy omni completion.
 		if !exists('g:neocomplete#sources#omni#input_patterns')
 			let g:neocomplete#sources#omni#input_patterns = {}
@@ -862,6 +855,7 @@ if g:use_ycm==0
 		" https://github.com/c9s/perlomni.vim
 		let g:neocomplete#sources#omni#input_patterns.perl = '\h\w*->\h\w*\|\h\w*::'
 	else
+		let g:acp_enableAtStartup = 0
 		" Use neocomplcache.
 		let g:neocomplcache_enable_at_startup = 1
 		" Use smartcase.
@@ -899,7 +893,7 @@ if g:use_ycm==0
 		endif
 		let g:neocomplcache_include_paths = {
 					\ 'cpp' : '.,d:/MinGw/lib/gcc/mingw32/4.6.2/include/c++',
-					\ 'c' : '.,d:/MinGW/lib/gcc/mingw32/4.6.2/include,c:/Program Files/MinGw/include'
+					\ 'c' : '.,d:/MinGW/lib/gcc/mingw32/4.6.2/include,d:/MinGw/include'
 					\ }
 		let g:neocomplcache_include_patterns = {
 					\ 'cpp' : '^\s*#\s*include',
@@ -1211,7 +1205,7 @@ let g:fencview_auto_patterns='*.txt,*.htm{l\=},*.c,*.cpp,*.s,*.vim'
 let g:NERDMenuMode=0
 "rename multi file name
 map <F2> :Ren<cr>
-map <F11> :VE<cr><cr>
+map <F11> :silent! VE<cr><cr>
 let g:startupfile="first_statup.txt"
 if g:iswindows==1
 	let g:start_path=$VIM.'/first_statup.txt'
@@ -1236,8 +1230,7 @@ if(has("gui_running"))
 	else
 		au GUIEnter * simalt~x "maximize window
 		set guifont=Consolas:h14:cANSI
-		"set gfw=Yahei_Mono:h14.5:cGB2312
-		set gfw=YaHei_Consolas_Hybrid:h14.5:cGB2312
+		set gfw=YaHei_Mono:h12.5:cGB2312
 	endif
 	set guioptions-=b
 	"set guioptions-=m "whether use menu
