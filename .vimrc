@@ -2,7 +2,7 @@
 "@brief      config file of vim and gvim for both windows and linux
 "@date       2012-12-30 11:01:30
 "@author     tracyone,tracyone@live.cn
-"@lastchange 2013-06-20/22:01:12
+"@lastchange 2013-06-20/23:31:12
 "@note:		Prior to use, in the case of windows vim convert this file's 
 "			format into dos,while convert it into unix format in the case 
 "			of linux vim
@@ -12,7 +12,7 @@ set encoding=utf-8
 if has("win32") || has("win64")
 	set fileencoding=utf-8
 else
-	set fileencoding=gbk
+	set fileencoding=utf-8
 endif
 set fileencodings=ucs-bom,utf-8,cp936,gb1830,big5,euc-jp,euc-kr,latin1
 set termencoding=utf-8
@@ -34,7 +34,7 @@ if (has("win32")) || has("win64")
 	let g:iswindows=1 "windows flags
 elseif has("unix")
 	set filetype=unix
-	set ffs=unix,dos
+	set ffs=unix
 	set keywordprg=""
 	behave xterm
 	set shell=bash
