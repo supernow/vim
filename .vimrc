@@ -2,7 +2,7 @@
 "@brief      config file of vim and gvim for both windows and linux
 "@date       2012-12-30 11:01:30
 "@author     tracyone,tracyone@live.cn
-"@lastchange 2013-06-18/11:48:42
+"@lastchange 2013-06-20/22:01:12
 "@note:		Prior to use, in the case of windows vim convert this file's 
 "			format into dos,while convert it into unix format in the case 
 "			of linux vim
@@ -245,7 +245,6 @@ au BufRead,BufNewFile *.xdc set filetype=javascript
 au BufRead,BufNewFile *.mk set filetype=make
 "}}}
 "key mapping{{{
-
 ""key map timeouts
 "set notimeout 
 "set timeoutlen=4000
@@ -262,7 +261,49 @@ let mapleader=","
 nmap <leader>vc :tabedit $MYVIMRC<cr>
 "update the _vimrc
 nmap <leader>so :source $MYVIMRC<CR>:e<CR>
-
+function Get_pattern_at_cursor(pat)
+  let col = col('.') - 1
+  let line = getline('.')
+  let ebeg = -1
+  let cont = match(line, a:pat, 0)
+  while (ebeg >= 0 || (0 <= cont) && (cont <= col))
+    let contn = matchend(line, a:pat, cont)
+    if (cont <= col) && (col < contn)
+      let ebeg = match(line, a:pat, cont)
+      let elen = contn - ebeg
+      break
+    else
+      let cont = match(line, a:pat, contn)
+    endif
+  endwhile
+  if ebeg >= 0
+    return strpart(line, ebeg, elen)
+  else
+    return ""
+  endif
+endfunction
+function! Open_url()
+  let s:url = Get_pattern_at_cursor('\v(https?://|ftp://|file:/{3}|www\.)(\w|[.-])+(:\d+)?(/(\w|[~@#$%^&+=/.?:-])+)?')
+  if s:url == ""
+    echohl WarningMsg
+    echomsg '在光标处未发现URL！'
+    echohl None
+  else
+    echo '打开URL：' . s:url
+    if has("win32") || has("win64")
+" start 不是程序，所以无效。并且，cmd 只能使用双引号
+" call system("start '" . s:url . "'")
+      call system("cmd /q /c start \"" . s:url . "\"")
+    elseif has("mac")
+      call system("open '" . s:url . "'")
+    else
+" call system("gnome-open " . s:url)
+      call system("setsid firefox '" . s:url . "' &")
+    endif
+  endif
+  unlet s:url
+endfunction
+nmap <leader>o :call Open_url()<cr>
 "clear search result
 noremap <a-q> :nohls<CR>
 
@@ -1073,9 +1114,16 @@ let g:CCTreeKeyDepthMinus = '<C-\>-'
 "}}}
 "{{{vimwiki
 let g:vimwiki_use_mouse = 1
+if g:iswindows==1
 let g:vimwiki_list = [{'path': 'c:/vimwiki/',
 \ 'path_html': 'c:/vimwiki/html/',
 \ 'html_header': 'c:/vimwiki/template/header.tpl',}] 
+else
+let g:vimwiki_list = [{'path': '~/vimwiki/',
+\ 'path_html': '~/vimwiki/html/',
+\ 'html_header': '~/vimwiki/template/header.tpl',}] 
+endif
+
 let g:vimwiki_use_calendar=1 "use calendar plugin 
 "}}}
 "{{{calendar
