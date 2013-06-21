@@ -286,20 +286,17 @@ function! Open_url()
   let s:url = Get_pattern_at_cursor('\v(https?://|ftp://|file:/{3}|www\.)(\w|[.-])+(:\d+)?(/(\w|[~@#$%^&+=/.?:-])+)?')
   if s:url == ""
     echohl WarningMsg
-    echomsg '在光标处未发现URL！'
+    echomsg 'It is not a URL on current cursor！'
     echohl None
   else
-    echo '打开URL：' . s:url
-    if has("win32") || has("win64")
-" start 不是程序，所以无效。并且，cmd 只能使用双引号
-" call system("start '" . s:url . "'")
-      call system("cmd /q /c start \"" . s:url . "\"")
-    elseif has("mac")
-      call system("open '" . s:url . "'")
-    else
-" call system("gnome-open " . s:url)
-      call system("setsid firefox '" . s:url . "' &")
-    endif
+    echo 'Open URL：' . s:url
+	if has("win32") || has("win64")
+		call system("cmd /C start " . s:url)
+	elseif has("mac")
+		call system("open '" . s:url . "'")
+	else
+		call system("setsid firefox '" . s:url . "' &")
+	endif
   endif
   unlet s:url
 endfunction
