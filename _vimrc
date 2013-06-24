@@ -2,7 +2,7 @@
 "@brief      config file of vim and gvim for both windows and linux
 "@date       2012-12-30 11:01:30
 "@author     tracyone,tracyone@live.cn
-"@lastchange 2013-06-20/23:31:12
+"@lastchange 2013-06-24/11:13:08
 "@note:		Prior to use, in the case of windows vim convert this file's 
 "			format into dos,while convert it into unix format in the case 
 "			of linux vim
@@ -383,7 +383,7 @@ func! Getvimrc()
 	endif
 	let xx=finddir('vim','.')
 	if xx=='vim' "find it 
-		cd .vim/
+		cd ./vim
 		call system('git pull origin master')
 		cd ..
 	else
