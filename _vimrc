@@ -642,7 +642,7 @@ endif
 	set cscopeverbose 
 " show msg when any other cscope db added
 nmap <Leader>s :cs find s <C-R>=expand("<cword>")<CR><CR>:cw 7<cr>
-nmap <Leader>g :cs find g <C-R>=expand("<cword>")<CR><CR>:cw 7<cr>
+nmap <Leader>g :cs find g <C-R>=expand("<cword>")<CR><CR>
 nmap <Leader>d :cs find d <C-R>=expand("<cword>")<CR> <C-R>=expand("%")<CR><CR>:cw 7<cr>
 nmap <Leader>c :cs find c <C-R>=expand("<cword>")<CR><CR>:cw 7<cr>
 nmap <Leader>t :cs find t <C-R>=expand("<cword>")<CR><CR>:cw 7<cr>
@@ -1147,7 +1147,7 @@ let g:ctrlp_working_path_mode = 'w'
 " Ctrl-P ignore target dirs so VIM doesn't have to! Yay!
 let g:ctrlp_custom_ignore = {
     \ 'dir': '\.git$\|\.hg$\|\.svn$\|target$\|built$\|.build$\|node_modules\|\.sass-cache',
-    \ 'file': '\.ttc$',
+    \ 'file': '\v\.(exe|so|dll|o)$',
     \ }
 let g:ctrlp_extensions = ['tag', 'buffertag', 'dir', 'bookmarkdir']
 "}}}
