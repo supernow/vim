@@ -241,8 +241,8 @@ au BufRead,BufNewFile *.bld set filetype=javascript
 
 "automatic recognition xdc file as javascript
 au BufRead,BufNewFile *.xdc set filetype=javascript
-
 au BufRead,BufNewFile *.mk set filetype=make
+au BufRead,BufNewFile *.veo set filetype=verilog
 "}}}
 "key mapping{{{
 ""key map timeouts
@@ -1243,7 +1243,11 @@ if g:use_ycm==1
 endif
 "}}}
 "{{{VimExplorer
-let g:VEConf_systemEncoding = 'cp936'
+if g:iswindows==1
+	let g:VEConf_systemEncoding = 'cp936'
+else
+	let g:VEConf_systemEncoding = 'gbk'
+endif
 "}}}
 "let g:loaded_indentLine=0
 "let g:indentLine_color_gui = '#A4E57E'
