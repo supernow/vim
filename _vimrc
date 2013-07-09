@@ -2,7 +2,7 @@
 "@brief      config file of vim and gvim for both windows and linux
 "@date       2012-12-30 11:01:30
 "@author     tracyone,tracyone@live.cn
-"@lastchange 2013-07-05/13:54:17
+"@lastchange 2013-07-09/18:12:27
 "@note:		Prior to use, in the case of windows vim convert this file's 
 "			format into dos,while convert it into unix format in the case 
 "			of linux vim
@@ -243,6 +243,9 @@ au BufRead,BufNewFile *.bld set filetype=javascript
 au BufRead,BufNewFile *.xdc set filetype=javascript
 au BufRead,BufNewFile *.mk set filetype=make
 au BufRead,BufNewFile *.veo set filetype=verilog
+au FileType verilog set tabstop=3
+au FileType verilog set shiftwidth=3
+au FileType verilog set softtabstop=3
 "}}}
 "key mapping{{{
 ""key map timeouts
@@ -261,7 +264,7 @@ let mapleader=","
 nmap <leader>vc :tabedit $MYVIMRC<cr>
 "update the _vimrc
 nmap <leader>so :source $MYVIMRC<CR>:e<CR>
-function Get_pattern_at_cursor(pat)
+function! Get_pattern_at_cursor(pat)
   let col = col('.') - 1
   let line = getline('.')
   let ebeg = -1
