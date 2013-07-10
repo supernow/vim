@@ -50,7 +50,7 @@ endif
 "folding type: "manual", "indent", "expr", "marker" or "syntax"
 set foldenable                  " enable folding
 autocmd FileType c,cpp set foldmethod=syntax 
-autocmd FileType verilog set foldmethod=manual 
+autocmd FileType verilog set foldmethod=indent 
 set foldlevel=100         " start out with everything folded
 set foldopen=block,hor,insert,jump,mark,percent,quickfix,search,tag,undo
 set foldcolumn=1
