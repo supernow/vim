@@ -2,7 +2,7 @@
 "@brief      config file of vim and gvim for both windows and linux
 "@date       2012-12-30 11:01:30
 "@author     tracyone,tracyone@live.cn
-"@lastchange 2013-07-09/18:12:27
+"@lastchange 2013-07-11/23:06:15
 "@note:		Prior to use, in the case of windows vim convert this file's 
 "			format into dos,while convert it into unix format in the case 
 "			of linux vim
@@ -50,7 +50,7 @@ endif
 "folding type: "manual", "indent", "expr", "marker" or "syntax"
 set foldenable                  " enable folding
 autocmd FileType c,cpp set foldmethod=syntax 
-autocmd FileType verilog set foldmethod=indent 
+autocmd FileType verilog set foldmethod=manual 
 set foldlevel=100         " start out with everything folded
 set foldopen=block,hor,insert,jump,mark,percent,quickfix,search,tag,undo
 set foldcolumn=1
@@ -223,12 +223,12 @@ set statusline+=%=[FORMAT=%{(&fenc!=''?&fenc:&enc)}:%{&ff}:%Y]\ [ASCII=\%03.3b]\
 set statusline+=%{strftime(\"%y/%m/%d\-\%H:%M\")}
 "0, 1 or 2; when to use a status line for the last window
 set laststatus=2 "always show status
-hi StatusLine guifg=Black guibg=White gui=none
-highlight StatusLineNC guifg=LightGrey guibg=LightSlateGrey	
-if version >= 700 
-	au InsertEnter * hi StatusLine guibg=#818D29 guifg=#FCFCFC gui=none
-	au InsertLeave * hi StatusLine guifg=Black guibg=White gui=none
-endif
+"hi StatusLine guifg=Black guibg=White gui=none
+"highlight StatusLineNC guifg=LightGrey guibg=LightSlateGrey	
+"if version >= 700 
+	"au InsertEnter * hi StatusLine guibg=#818D29 guifg=#FCFCFC gui=none
+	"au InsertLeave * hi StatusLine guifg=Black guibg=White gui=none
+"endif
 "always show the tabline
 set stal=2
 nmap <F7> a<C-R>=strftime("%Y-%m-%d/%H:%M:%S")<CR><ESC>
@@ -510,7 +510,6 @@ Bundle 'tracyone/dict'
 Bundle 'tracyone/Align'
 Bundle 'tracyone/calendar'
 Bundle 'tracyone/Colour-Sampler-Pack'
-Bundle 'tracyone/ConqueShell'
 Bundle 'kien/ctrlp.vim'
 Bundle 'delimitMate.vim'
 Bundle 'FuzzyFinder'
@@ -560,6 +559,8 @@ Bundle 'TeTrIs.vim'
 Bundle 'tracyone/mark.vim'
 Bundle 'tracyone/MyVimHelp'
 Bundle 'scrooloose/syntastic'
+Bundle 'Shougo/vimproc.vim'
+Bundle 'Shougo/vimshell.vim'
 if g:iswindows == 1
 	Bundle 'tracyone/pyclewn' 
 else
@@ -1029,32 +1030,6 @@ map <F12> :NERDTreeToggle .<CR>
 "map <2-LeftMouse>  *N "double click highlight the current cursor word 
 imap <F12> <ESC> :NERDTreeToggle<CR>
 "}}}
-"{{{conqueterm.vim
-"ConqueTerm        <command>: open in current window<command> 
-"ConqueTermSplit    <command>:horizontal split window<command> 
-"ConqueTermVSplit <command>:vertical split window<command> 
-"ConqueTermTab    <command>:open in tab<command>
-if g:iswindows==1
-    let g:ConqueTerm_PyVersion = 3
-else
-    let g:ConqueTerm_PyVersion = 2
-endif
-let g:ConqueTerm_FastMode = 0        " enable fast mode 
-let g:ConqueTerm_Color=0          " diable terminal colors 
-let g:ConqueTerm_CloseOnEnd = 1      " close buffer when program exits 
-let g:ConqueTerm_InsertOnEnter = 1
-let g:ConqueTerm_StartMessages = 0
-let g:ConqueTerm_PromptRegex = '^\w\+@[0-9A-Za-z_.-]\+:[0-9A-Za-z_./\~,:-]\+\$'
-let g:ConqueTerm_Syntax = 'conque'
-let g:ConqueTerm_CodePage=0
-let g:ConqueTerm_CWInsert = 1
-if (has("win32")) || has("win64")
-	map <F4> :ConqueTermSplit cmd.exe<cr> 
-else
-	map <F4> :ConqueTermSplit bash<cr> 
-endif
-
-"}}}
 "{{{a.vim
 ":A switches to the header file corresponding to the current file being  edited (or vise versa)
 ":AS splits and switches
@@ -1251,6 +1226,43 @@ if g:iswindows==1
 else
 	let g:VEConf_systemEncoding = 'gbk'
 endif
+"}}}
+"{{{vimshell
+let g:vimshell_user_prompt = 'fnamemodify(getcwd(), ":~")'
+"let g:vimshell_right_prompt = 'vcs#info("(%s)-[%b]", "(%s)-[%b|%a]")'
+let g:vimshell_enable_smart_case = 1
+
+if has('win32') || has('win64')
+	" Display user name on Windows.
+	let g:vimshell_prompt = $USERNAME."% "
+else
+	" Display user name on Linux.
+	let g:vimshell_prompt = $USER."% "
+endif
+
+" Initialize execute file list.
+let g:vimshell_execute_file_list = {}
+call vimshell#set_execute_file('txt,vim,c,h,cpp,d,xml,java', 'vim')
+let g:vimshell_execute_file_list['rb'] = 'ruby'
+let g:vimshell_execute_file_list['pl'] = 'perl'
+let g:vimshell_execute_file_list['py'] = 'python'
+call vimshell#set_execute_file('html,xhtml', 'gexe firefox')
+
+autocmd FileType vimshell
+			\ call vimshell#altercmd#define('g', 'git')
+			\| call vimshell#altercmd#define('i', 'iexe')
+			\| call vimshell#altercmd#define('l', 'll')
+			\| call vimshell#altercmd#define('ll', 'ls -l')
+			\| call vimshell#hook#add('chpwd', 'my_chpwd', 'g:my_chpwd')
+
+function! g:my_chpwd(args, context)
+	call vimshell#execute('ls')
+endfunction
+
+autocmd FileType int-* call s:interactive_settings()
+function! s:interactive_settings()
+endfunction
+map <F4> :VimShellPop<cr>
 "}}}
 "let g:loaded_indentLine=0
 "let g:indentLine_color_gui = '#A4E57E'
