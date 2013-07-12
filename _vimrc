@@ -506,6 +506,7 @@ endif
 " Bundle 'tpope/vim-rails.git'
 " vim-scripts repos
 Bundle 'a.vim'
+Bundle 'SirVer/ultisnips'
 Bundle 'tracyone/dict'
 Bundle 'tracyone/Align'
 Bundle 'tracyone/calendar'
@@ -1264,6 +1265,16 @@ autocmd FileType int-* call s:interactive_settings()
 function! s:interactive_settings()
 endfunction
 map <F4> :VimShellPop<cr>
+"}}}
+"{{{UltiSnips
+let g:UltiSnipsUsePythonVersion = 3
+let g:UltiSnipsExpandTrigger='<c-k>'
+let g:UltiSnipsListSnippets='<c-tab>'
+let g:UltiSnipsJumpForwardTrigger='<c-j>'
+let g:UltiSnipsJumpBackwardTrigger='<c-k>'
+let g:UltiSnipsExpandTrigger="<c-k>"
+let g:UltiSnipsJumpForwardTrigger="<c-k>"
+"let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
 "}}}
 "let g:loaded_indentLine=0
 "let g:indentLine_color_gui = '#A4E57E'
