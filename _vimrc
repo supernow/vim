@@ -2,7 +2,7 @@
 "@brief      config file of vim and gvim for both windows and linux
 "@date       2012-12-30 11:01:30
 "@author     tracyone,tracyone@live.cn
-"@lastchange 2013-07-11/23:06:15
+"@lastchange 2013-07-12/21:59:42
 "@note:		Prior to use, in the case of windows vim convert this file's 
 "			format into dos,while convert it into unix format in the case 
 "			of linux vim
@@ -387,10 +387,10 @@ func! Getvimrc()
 	let xx=finddir('vim','.')
 	if xx=='vim' "find it 
 		cd ./vim
-		call system('git pull origin master')
+		execute "VimProcBang git pull origin master"
 		cd ..
 	else
-		call system('git clone https://github.com/tracyone/vim.git')
+		execute "VimProcBang git clone https://github.com/tracyone/vim.git"
 	endif
 	call g:VEPlatform.copyfile('./vim/_vimrc',$VIM)
 endfunc
@@ -402,8 +402,8 @@ func! Uploadvimrc()
 	endif
 	pwd
 	let xx=finddir('vim','.')
-	call system('git config --global user.name \"tracyone\"')
-	call system('git config --global user.email \"tracyone@live.cn\"')
+	execute "VimProcBang git config --global user.name \"tracyone\""
+	execute "VimProcBang git config --global user.email \"tracyone@live.cn\""
 	"execute ":!git config --global credential.helper \"cache --timeout=360000\""
 	if xx=='vim' "find it 
 		call g:VEPlatform.copyfile($MYVIMRC,'vim')
@@ -413,13 +413,13 @@ func! Uploadvimrc()
 	endif
 	cd ./vim/
 	if g:iswindows==1
-		call system('git add _vimrc')
+		execute "VimProcBang git add _vimrc"
 	else
-		call system('git add .vimrc')
+		execute "VimProcBang git add .vimrc"
 	endif
 	let g:commit_string='git commit -m '.'"'.strftime("%Y-%m-%d %H:%M:%S").'"'
 	call system(g:commit_string)
-	execute ":!git push origin master"
+	execute "VimProcBang git push origin master"
 endfunc
 " {{{Visual mode pressing * or # searches for the current selection
 " Super useful! From an idea by Michael Naumann
@@ -758,17 +758,17 @@ function! Do_CsTag()
 		endif
 	endif
 	if(executable('ctags'))
-		silent! execute "!ctags -R --c-types=+p --fields=+S *"
-		silent! execute "!ctags -R --c++-kinds=+p --fields=+iaS --extra=+q ."
+		silent! execute "VimProcBang ctags -R --c-types=+p --fields=+S *"
+		silent! execute "VimProcBang ctags -R --c++-kinds=+p --fields=+iaS --extra=+q ."
 	endif
 	if(executable('cscope') && has("cscope") )
 		if(g:iswindows!=1)
-			silent! execute "!find . -name \"*.[chsS]\" > ./cscope.files"
+			silent! execute "VimProcBang find . -name \"*.[chsS]\" > ./cscope.files"
 		else
-			silent! execute "!dir /s/b *.c,*.cpp,*.h,*.java,*.cs,*.s,*.asm >> cscope.files"
+			silent! execute "VimProcBang dir /s/b *.c,*.cpp,*.h,*.java,*.cs,*.s,*.asm >> cscope.files"
 		endif
-		silent! execute "!cscope -Rbkq -i cscope.files"
-		"silent! execute "!ccglue -S cscope.out -o ccglue.out"   "don not know how to use
+		silent! execute "VimProcBang cscope -Rbkq -i cscope.files"
+		"silent! execute "VimProcBang ccglue -S cscope.out -o ccglue.out"   "don not know how to use
 		execute "normal :"
 		if filereadable("cscope.out")
 			execute "cs add cscope.out"
@@ -1252,12 +1252,13 @@ autocmd FileType vimshell
 			\ call vimshell#altercmd#define('g', 'git')
 			\| call vimshell#altercmd#define('i', 'iexe')
 			\| call vimshell#altercmd#define('l', 'll')
-			\| call vimshell#altercmd#define('ll', 'ls -l')
-			\| call vimshell#hook#add('chpwd', 'my_chpwd', 'g:my_chpwd')
+			\| call vimshell#altercmd#define('ls', 'ls --encoding=utf8')
+			\| call vimshell#altercmd#define('ll', 'ls -l --encoding=utf8')
+			"\| call vimshell#hook#add('chpwd', 'my_chpwd', 'g:my_chpwd')
 
-function! g:my_chpwd(args, context)
-	call vimshell#execute('ls')
-endfunction
+"function! g:my_chpwd(args, context)
+	"call vimshell#execute('ls')
+"endfunction
 
 autocmd FileType int-* call s:interactive_settings()
 function! s:interactive_settings()
