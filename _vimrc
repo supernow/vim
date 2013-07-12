@@ -742,7 +742,7 @@ function! Do_CsTag()
 		endif
 		if(csoutdeleted!=0)
 			echohl WarningMsg | echo "I cannot delete the cscope.out,try again" | echohl None
-			echo "kill the cscope connection" 
+			echo "kill the cscope connection"
 			if has("cscope") && filereadable("cscope.out")
 				silent! execute "cs kill cscope.out"
 			endif
@@ -758,17 +758,17 @@ function! Do_CsTag()
 		endif
 	endif
 	if(executable('ctags'))
-		silent! execute "VimProcBang ctags -R --c-types=+p --fields=+S *"
-		silent! execute "VimProcBang ctags -R --c++-kinds=+p --fields=+iaS --extra=+q ."
+		silent! execute "!ctags -R --c-types=+p --fields=+S *"
+		silent! execute "!ctags -R --c++-kinds=+p --fields=+iaS --extra=+q ."
 	endif
 	if(executable('cscope') && has("cscope") )
 		if(g:iswindows!=1)
-			silent! execute "VimProcBang find . -name \"*.[chsS]\" > ./cscope.files"
+			silent! execute "!find . -name \"*.[chsS]\" > ./cscope.files"
 		else
-			silent! execute "VimProcBang dir /s/b *.c,*.cpp,*.h,*.java,*.cs,*.s,*.asm >> cscope.files"
+			silent! execute "!dir /s/b *.c,*.cpp,*.h,*.java,*.cs,*.s,*.asm >> cscope.files"
 		endif
-		silent! execute "VimProcBang cscope -Rbkq -i cscope.files"
-		"silent! execute "VimProcBang ccglue -S cscope.out -o ccglue.out"   "don not know how to use
+		silent! execute "!cscope -Rbkq -i cscope.files"
+		"silent! execute "!ccglue -S cscope.out -o ccglue.out" "don not know how to use
 		execute "normal :"
 		if filereadable("cscope.out")
 			execute "cs add cscope.out"
