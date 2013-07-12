@@ -385,12 +385,12 @@ func! Getvimrc()
 		cd ~
 	endif
 	let xx=finddir('vim','.')
-	if xx=='vim' "find it 
+	if xx=='vim' "find it
 		cd ./vim
-		execute "!git pull origin master"
+		call system('git pull origin master')
 		cd ..
 	else
-		execute "VimProcBang git clone https://github.com/tracyone/vim.git"
+		call system('git clone https://github.com/tracyone/vim.git')
 	endif
 	call g:VEPlatform.copyfile('./vim/_vimrc',$VIM)
 endfunc
@@ -402,24 +402,24 @@ func! Uploadvimrc()
 	endif
 	pwd
 	let xx=finddir('vim','.')
-	execute "VimProcBang git config --global user.name \"tracyone\""
-	execute "VimProcBang git config --global user.email \"tracyone@live.cn\""
+	call system('git config --global user.name \"tracyone\"')
+	call system('git config --global user.email \"tracyone@live.cn\"')
 	"execute ":!git config --global credential.helper \"cache --timeout=360000\""
-	if xx=='vim' "find it 
+	if xx=='vim' "find it
 		call g:VEPlatform.copyfile($MYVIMRC,'vim')
-	else "can not find vim directory 
+	else "can not find vim directory
 		call system('git clone https://github.com/tracyone/vim.git')
 		call g:VEPlatform.copyfile($MYVIMRC,'vim')
 	endif
 	cd ./vim/
 	if g:iswindows==1
-		execute "VimProcBang git add _vimrc"
+		call system('git add _vimrc')
 	else
-		execute "VimProcBang git add .vimrc"
+		call system('git add .vimrc')
 	endif
 	let g:commit_string='git commit -m '.'"'.strftime("%Y-%m-%d %H:%M:%S").'"'
 	call system(g:commit_string)
-	execute "!:git push origin master"
+	execute ":!git push origin master"
 endfunc
 " {{{Visual mode pressing * or # searches for the current selection
 " Super useful! From an idea by Michael Naumann
