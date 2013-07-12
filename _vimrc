@@ -387,10 +387,10 @@ func! Getvimrc()
 	let xx=finddir('vim','.')
 	if xx=='vim' "find it 
 		cd ./vim
-		execute "VimShellInteractive git pull origin master"
+		execute "!git pull origin master"
 		cd ..
 	else
-		execute "VimShellInteractive git clone https://github.com/tracyone/vim.git"
+		execute "VimProcBang git clone https://github.com/tracyone/vim.git"
 	endif
 	call g:VEPlatform.copyfile('./vim/_vimrc',$VIM)
 endfunc
@@ -402,8 +402,8 @@ func! Uploadvimrc()
 	endif
 	pwd
 	let xx=finddir('vim','.')
-	execute "VimShellInteractive git config --global user.name \"tracyone\""
-	execute "VimShellInteractive git config --global user.email \"tracyone@live.cn\""
+	execute "VimProcBang git config --global user.name \"tracyone\""
+	execute "VimProcBang git config --global user.email \"tracyone@live.cn\""
 	"execute ":!git config --global credential.helper \"cache --timeout=360000\""
 	if xx=='vim' "find it 
 		call g:VEPlatform.copyfile($MYVIMRC,'vim')
@@ -413,13 +413,13 @@ func! Uploadvimrc()
 	endif
 	cd ./vim/
 	if g:iswindows==1
-		execute "VimShellInteractive git add _vimrc"
+		execute "VimProcBang git add _vimrc"
 	else
-		execute "VimShellInteractive git add .vimrc"
+		execute "VimProcBang git add .vimrc"
 	endif
 	let g:commit_string='git commit -m '.'"'.strftime("%Y-%m-%d %H:%M:%S").'"'
 	call system(g:commit_string)
-	execute "VimShellInteractive git push origin master"
+	execute "!:git push origin master"
 endfunc
 " {{{Visual mode pressing * or # searches for the current selection
 " Super useful! From an idea by Michael Naumann
@@ -758,17 +758,17 @@ function! Do_CsTag()
 		endif
 	endif
 	if(executable('ctags'))
-		silent! execute "VimShellInteractive ctags -R --c-types=+p --fields=+S *"
-		silent! execute "VimShellInteractive ctags -R --c++-kinds=+p --fields=+iaS --extra=+q ."
+		silent! execute "VimProcBang ctags -R --c-types=+p --fields=+S *"
+		silent! execute "VimProcBang ctags -R --c++-kinds=+p --fields=+iaS --extra=+q ."
 	endif
 	if(executable('cscope') && has("cscope") )
 		if(g:iswindows!=1)
-			silent! execute "VimShellInteractive find . -name \"*.[chsS]\" > ./cscope.files"
+			silent! execute "VimProcBang find . -name \"*.[chsS]\" > ./cscope.files"
 		else
-			silent! execute "VimShellInteractive dir /s/b *.c,*.cpp,*.h,*.java,*.cs,*.s,*.asm >> cscope.files"
+			silent! execute "VimProcBang dir /s/b *.c,*.cpp,*.h,*.java,*.cs,*.s,*.asm >> cscope.files"
 		endif
-		silent! execute "VimShellInteractive cscope -Rbkq -i cscope.files"
-		"silent! execute "VimShellInteractive ccglue -S cscope.out -o ccglue.out"   "don not know how to use
+		silent! execute "VimProcBang cscope -Rbkq -i cscope.files"
+		"silent! execute "VimProcBang ccglue -S cscope.out -o ccglue.out"   "don not know how to use
 		execute "normal :"
 		if filereadable("cscope.out")
 			execute "cs add cscope.out"
