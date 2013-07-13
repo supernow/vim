@@ -10,14 +10,14 @@
 "encode {{{
 set encoding=utf-8
 if has("win32") || has("win64")
-	set fileencoding=utf-8
+    set fileencoding=utf-8
 else
-	set fileencoding=utf-8
+    set fileencoding=utf-8
 endif
 set fileencodings=ucs-bom,utf-8,cp936,gb1830,big5,euc-jp,euc-kr,latin1
 set termencoding=utf-8
 if v:lang=~? '^\(zh\)\|\(ja\)\|\(ko\)'
-	set ambiwidth=double
+    set ambiwidth=double
 endif
 source $VIMRUNTIME/delmenu.vim
 lan mes en_US.UTF-8
@@ -25,23 +25,23 @@ lan mes en_US.UTF-8
 "}}}
 "system check{{{
 if (has("win32")) || has("win64")
-	let $HOME=$VIM
-	set filetype=dos
-	set ffs=dos,unix,mac
-	behave  xterm
-	"set path=
-	let $VIMFILES = $VIM.'/vimfiles'
-	let g:iswindows=1 "windows flags
+    let $HOME=$VIM
+    set filetype=dos
+    set ffs=dos,unix,mac
+    behave  xterm
+    "set path=
+    let $VIMFILES = $VIM.'/vimfiles'
+    let g:iswindows=1 "windows flags
 elseif has("unix")
-	set filetype=unix
-	set ffs=unix
-	set keywordprg=""
-	behave xterm
-	set shell=bash
-	runtime! debian.vim
-	set path=.,/usr/include/ "c++ is in /usr/include/c++/...
-	let $VIMFILES = $HOME.'/.vim'
-	let g:iswindows=0
+    set filetype=unix
+    set ffs=unix
+    set keywordprg=""
+    behave xterm
+    set shell=bash
+    runtime! debian.vim
+    set path=.,/usr/include/ "c++ is in /usr/include/c++/...
+    let $VIMFILES = $HOME.'/.vim'
+    let g:iswindows=0
 elseif has("mac")
 endif
 "}}}
@@ -55,37 +55,37 @@ set foldlevel=100         " start out with everything folded
 set foldopen=block,hor,insert,jump,mark,percent,quickfix,search,tag,undo
 set foldcolumn=1
 function! MyFoldText()
-	let line = getline(v:foldstart)
-	if match( line, '^[ \t]*\(\/\*\|\/\/\)[*/\\]*[ \t]*$' ) == 0
-		let initial = substitute( line, '^\([ \t]\)*\(\/\*\|\/\/\)\(.*\)', '\1\2', '' )
-		let linenum = v:foldstart + 1
-		while linenum < v:foldend
-			let line = getline( linenum )
-			let comment_content = substitute( line, '^\([ \t\/\*]*\)\(.*\)$', '\2', 'g' )
-			if comment_content != ''
-				break
-			endif
-			let linenum = linenum + 1
-		endwhile
-		let sub = initial . ' ' . comment_content
-	else
-		let sub = line
-		let startbrace = substitute( line, '^.*{[ \t]*$', '{', 'g')
-		if startbrace == '{'
-			let line = getline(v:foldend)
-			let endbrace = substitute( line, '^[ \t]*}\(.*\)$', '}', 'g')
-			if endbrace == '}'
-				let sub = sub.substitute( line, '^[ \t]*}\(.*\)$', '...}\1', 'g')
-			endif
-		endif
-	endif
-	let n = v:foldend - v:foldstart + 1
-	let info = " " . n . " lines"
-	let sub = sub . "                                                                                                                  "
-	let num_w = getwinvar( 0, '&number' ) * getwinvar( 0, '&numberwidth' )
-	let fold_w = getwinvar( 0, '&foldcolumn' )
-	let sub = strpart( sub, 0, winwidth(0) - strlen( info ) - num_w - fold_w - 1 )
-	return sub . info
+    let line = getline(v:foldstart)
+    if match( line, '^[ \t]*\(\/\*\|\/\/\)[*/\\]*[ \t]*$' ) == 0
+        let initial = substitute( line, '^\([ \t]\)*\(\/\*\|\/\/\)\(.*\)', '\1\2', '' )
+        let linenum = v:foldstart + 1
+        while linenum < v:foldend
+            let line = getline( linenum )
+            let comment_content = substitute( line, '^\([ \t\/\*]*\)\(.*\)$', '\2', 'g' )
+            if comment_content != ''
+                break
+            endif
+            let linenum = linenum + 1
+        endwhile
+        let sub = initial . ' ' . comment_content
+    else
+        let sub = line
+        let startbrace = substitute( line, '^.*{[ \t]*$', '{', 'g')
+        if startbrace == '{'
+            let line = getline(v:foldend)
+            let endbrace = substitute( line, '^[ \t]*}\(.*\)$', '}', 'g')
+            if endbrace == '}'
+                let sub = sub.substitute( line, '^[ \t]*}\(.*\)$', '...}\1', 'g')
+            endif
+        endif
+    endif
+    let n = v:foldend - v:foldstart + 1
+    let info = " " . n . " lines"
+    let sub = sub . "                                                                                                                  "
+    let num_w = getwinvar( 0, '&number' ) * getwinvar( 0, '&numberwidth' )
+    let fold_w = getwinvar( 0, '&foldcolumn' )
+    let sub = strpart( sub, 0, winwidth(0) - strlen( info ) - num_w - fold_w - 1 )
+    return sub . info
 endfunction
 set foldtext=MyFoldText()
 autocmd FileType vim set foldmethod=marker 
@@ -103,11 +103,11 @@ set background=light
 
 nmap <F6> :call Dosunix()<cr>
 func! Dosunix()
-	if &ff == 'unix'
-		exec "se ff=dos"
-	else
-		exec "se ff=unix"
-	endif
+    if &ff == 'unix'
+        exec "se ff=dos"
+    else
+        exec "se ff=unix"
+    endif
 endfunc
 "display unprintable characters by set list
 "set list
@@ -125,12 +125,12 @@ set backupext=.bak  "backup file'a suffix
 
 set directory=$HOME/vimbackup  "swp file's directory
 if !isdirectory(&directory)
-	call mkdir(&directory, "p")
+    call mkdir(&directory, "p")
 endif
 
 set backupdir=$HOME/vimbackup  "backup file's directory
 if !isdirectory(&backupdir)
-	call mkdir(&backupdir, "p")
+    call mkdir(&backupdir, "p")
 endif
 "}}}
 
@@ -174,6 +174,7 @@ set smartindent "do clever autoindenting
 "enable specific indenting for C code
 set cindent
 
+set expandtab  "instad tab with space 
 "number of spaces a <Tab> in the text stands for
 set tabstop=4
 
@@ -226,8 +227,8 @@ set laststatus=2 "always show status
 "hi StatusLine guifg=Black guibg=White gui=none
 "highlight StatusLineNC guifg=LightGrey guibg=LightSlateGrey	
 "if version >= 700 
-	"au InsertEnter * hi StatusLine guibg=#818D29 guifg=#FCFCFC gui=none
-	"au InsertLeave * hi StatusLine guifg=Black guibg=White gui=none
+"au InsertEnter * hi StatusLine guibg=#818D29 guifg=#FCFCFC gui=none
+"au InsertLeave * hi StatusLine guifg=Black guibg=White gui=none
 "endif
 "always show the tabline
 set stal=2
@@ -265,43 +266,43 @@ nmap <leader>vc :tabedit $MYVIMRC<cr>
 "update the _vimrc
 nmap <leader>so :source $MYVIMRC<CR>:e<CR>
 function! Get_pattern_at_cursor(pat)
-  let col = col('.') - 1
-  let line = getline('.')
-  let ebeg = -1
-  let cont = match(line, a:pat, 0)
-  while (ebeg >= 0 || (0 <= cont) && (cont <= col))
-    let contn = matchend(line, a:pat, cont)
-    if (cont <= col) && (col < contn)
-      let ebeg = match(line, a:pat, cont)
-      let elen = contn - ebeg
-      break
+    let col = col('.') - 1
+    let line = getline('.')
+    let ebeg = -1
+    let cont = match(line, a:pat, 0)
+    while (ebeg >= 0 || (0 <= cont) && (cont <= col))
+        let contn = matchend(line, a:pat, cont)
+        if (cont <= col) && (col < contn)
+            let ebeg = match(line, a:pat, cont)
+            let elen = contn - ebeg
+            break
+        else
+            let cont = match(line, a:pat, contn)
+        endif
+    endwhile
+    if ebeg >= 0
+        return strpart(line, ebeg, elen)
     else
-      let cont = match(line, a:pat, contn)
+        return ""
     endif
-  endwhile
-  if ebeg >= 0
-    return strpart(line, ebeg, elen)
-  else
-    return ""
-  endif
 endfunction
 function! Open_url()
-  let s:url = Get_pattern_at_cursor('\v(https?://|ftp://|file:/{3}|www\.)(\w|[.-])+(:\d+)?(/(\w|[~@#$%^&+=/.?:-])+)?')
-  if s:url == ""
-    echohl WarningMsg
-    echomsg 'It is not a URL on current cursor！'
-    echohl None
-  else
-    echo 'Open URL：' . s:url
-	if has("win32") || has("win64")
-		call system("cmd /C start " . s:url)
-	elseif has("mac")
-		call system("open '" . s:url . "'")
-	else
-		call system("setsid firefox '" . s:url . "' &")
-	endif
-  endif
-  unlet s:url
+    let s:url = Get_pattern_at_cursor('\v(https?://|ftp://|file:/{3}|www\.)(\w|[.-])+(:\d+)?(/(\w|[~@#$%^&+=/.?:-])+)?')
+    if s:url == ""
+        echohl WarningMsg
+        echomsg 'It is not a URL on current cursor！'
+        echohl None
+    else
+        echo 'Open URL：' . s:url
+        if has("win32") || has("win64")
+            call system("cmd /C start " . s:url)
+        elseif has("mac")
+            call system("open '" . s:url . "'")
+        else
+            call system("setsid firefox '" . s:url . "' &")
+        endif
+    endif
+    unlet s:url
 endfunction
 nmap <leader>o :call Open_url()<cr>
 "clear search result
@@ -359,9 +360,9 @@ nmap <c-h> :%s/<C-R>=expand("<cword>")<cr>/
 map <F5> :call Do_make()<CR>
 
 function! Do_make()
-	set makeprg=make
-	execute "silent make"
-	execute "copen"
+    set makeprg=make
+    execute "silent make"
+    execute "copen"
 endfunction 
 
 "compile and run open quickfix if wrong
@@ -379,47 +380,47 @@ nmap <m-8> <esc>8gt
 nmap <m-9> <esc>9gt
 
 func! Getvimrc()
-	if g:iswindows==1
-		cd $VIM
-	else
-		cd ~
-	endif
-	let xx=finddir('vim','.')
-	if xx=='vim' "find it
-		cd ./vim
-		call system('git pull origin master')
-		cd ..
-	else
-		call system('git clone https://github.com/tracyone/vim.git')
-	endif
-	call g:VEPlatform.copyfile('./vim/_vimrc',$VIM)
+    if g:iswindows==1
+        cd $VIM
+    else
+        cd ~
+    endif
+    let xx=finddir('vim','.')
+    if xx=='vim' "find it
+        cd ./vim
+        call system('git pull origin master')
+        cd ..
+    else
+        call system('git clone https://github.com/tracyone/vim.git')
+    endif
+    call g:VEPlatform.copyfile('./vim/_vimrc',$VIM)
 endfunc
 func! Uploadvimrc()
-	if g:iswindows==1
-		cd $VIM
-	else
-		cd ~
-	endif
-	pwd
-	let xx=finddir('vim','.')
-	call system('git config --global user.name \"tracyone\"')
-	call system('git config --global user.email \"tracyone@live.cn\"')
-	"execute ":!git config --global credential.helper \"cache --timeout=360000\""
-	if xx=='vim' "find it
-		call g:VEPlatform.copyfile($MYVIMRC,'vim')
-	else "can not find vim directory
-		call system('git clone https://github.com/tracyone/vim.git')
-		call g:VEPlatform.copyfile($MYVIMRC,'vim')
-	endif
-	cd ./vim/
-	if g:iswindows==1
-		call system('git add _vimrc')
-	else
-		call system('git add .vimrc')
-	endif
-	let g:commit_string='git commit -m '.'"'.strftime("%Y-%m-%d %H:%M:%S").'"'
-	call system(g:commit_string)
-	execute ":!git push origin master"
+    if g:iswindows==1
+        cd $VIM
+    else
+        cd ~
+    endif
+    pwd
+    let xx=finddir('vim','.')
+    call system('git config --global user.name \"tracyone\"')
+    call system('git config --global user.email \"tracyone@live.cn\"')
+    "execute ":!git config --global credential.helper \"cache --timeout=360000\""
+    if xx=='vim' "find it
+        call g:VEPlatform.copyfile($MYVIMRC,'vim')
+    else "can not find vim directory
+        call system('git clone https://github.com/tracyone/vim.git')
+        call g:VEPlatform.copyfile($MYVIMRC,'vim')
+    endif
+    cd ./vim/
+    if g:iswindows==1
+        call system('git add _vimrc')
+    else
+        call system('git add .vimrc')
+    endif
+    let g:commit_string='git commit -m '.'"'.strftime("%Y-%m-%d %H:%M:%S").'"'
+    call system(g:commit_string)
+    execute ":!git push origin master"
 endfunc
 " {{{Visual mode pressing * or # searches for the current selection
 " Super useful! From an idea by Michael Naumann
@@ -427,30 +428,30 @@ vnoremap <silent> * :call VisualSelection('f')<CR>
 vnoremap <silent> # :call VisualSelection('b')<CR>
 
 function! VisualSelection(direction) range
-	let l:saved_reg = @"
-	execute "normal! vgvy"
+    let l:saved_reg = @"
+    execute "normal! vgvy"
 
-	let l:pattern = escape(@", '\\/.*$^~[]')
-	let l:pattern = substitute(l:pattern, "\n$", "", "")
+    let l:pattern = escape(@", '\\/.*$^~[]')
+    let l:pattern = substitute(l:pattern, "\n$", "", "")
 
-	if a:direction == 'b'
-		execute "normal ?" . l:pattern . "^M"
-	elseif a:direction == 'gv'
-		call CmdLine("vimgrep " . '/'. l:pattern . '/' . ' **/*.')
-	elseif a:direction == 'replace'
-		call CmdLine("%s" . '/'. l:pattern . '/')
-	elseif a:direction == 'f'
-		execute "normal /" . l:pattern . "^M"
-	endif
+    if a:direction == 'b'
+        execute "normal ?" . l:pattern . "^M"
+    elseif a:direction == 'gv'
+        call CmdLine("vimgrep " . '/'. l:pattern . '/' . ' **/*.')
+    elseif a:direction == 'replace'
+        call CmdLine("%s" . '/'. l:pattern . '/')
+    elseif a:direction == 'f'
+        execute "normal /" . l:pattern . "^M"
+    endif
 
-	let @/ = l:pattern
-	let @" = l:saved_reg
+    let @/ = l:pattern
+    let @" = l:saved_reg
 endfunction
 
 function! CmdLine(str)
-	exe "menu Foo.Bar :" . a:str
-	emenu Foo.Bar
-	unmenu Foo
+    exe "menu Foo.Bar :" . a:str
+    emenu Foo.Bar
+    unmenu Foo
 endfunction
 "}}}
 "}}}
@@ -466,35 +467,35 @@ syntax on
 "{{{vundle
 "
 func! Vundle()
-	if g:iswindows==1 
-		set rtp+=$VIM\\vimfiles\\bundle\\vundle
-	else
-		set rtp+=~/.vim/bundle/vundle/
-	endif
-	" let Vundle manage Vundle
-	" required! 
-	if g:iswindows==1
-		silent! :execute "call vundle#rc('$VIM/vimfiles/bundle')"
-	else
-		silent! :execute "call vundle#rc()"
-	endif
-	silent! :execute "Bundle 'gmarik/vundle'"
+    if g:iswindows==1 
+        set rtp+=$VIM\\vimfiles\\bundle\\vundle
+    else
+        set rtp+=~/.vim/bundle/vundle/
+    endif
+    " let Vundle manage Vundle
+    " required! 
+    if g:iswindows==1
+        silent! :execute "call vundle#rc('$VIM/vimfiles/bundle')"
+    else
+        silent! :execute "call vundle#rc()"
+    endif
+    silent! :execute "Bundle 'gmarik/vundle'"
 endfunc
 execute "call Vundle()"
 let g:justvundled = exists(':Bundle')
 if g:justvundled == 0
     if has('win32')
-		cd $VIM
-		call mkdir($VIM."\\vimfiles\\bundle\\vundle","p")
+        cd $VIM
+        call mkdir($VIM."\\vimfiles\\bundle\\vundle","p")
         call system('git clone https://github.com/gmarik/vundle.git .\vimfiles\bundle\vundle')
-		cd -
-		execute "silent! call Vundle()"
+        cd -
+        execute "silent! call Vundle()"
     else
         call system('mkdir -p ~/.vim/bundle/vundle')
         call system('git clone https://github.com/gmarik/vundle.git ~/.vim/bundle/vundle')
-		execute "silent! call Vundle()"
+        execute "silent! call Vundle()"
     endif
-	:helptags $VIMFILES\bundle\vundle\doc\
+    :helptags $VIMFILES\bundle\vundle\doc\
 endif
 
 " My Bundles here:
@@ -516,25 +517,25 @@ Bundle 'delimitMate.vim'
 Bundle 'FuzzyFinder'
 Bundle 'genutils'
 if g:iswindows==0 && has("patch584")
-	let g:use_ycm=1
+    let g:use_ycm=1
 else
-	if has("patch885") && has('lua')
-		let g:use_neocomplete=1
-	else
-		let g:use_neocomplete=0
-	endif
-	let g:use_ycm=0
+    if has("patch885") && has('lua')
+        let g:use_neocomplete=1
+    else
+        let g:use_neocomplete=0
+    endif
+    let g:use_ycm=0
 endif
 if g:use_ycm==0
-	if g:use_neocomplete==1
-		Bundle 'Shougo/neocomplete'
-	else
-		Bundle 'Shougo/neocomplcache'
-	endif
-	"Bundle 'Shougo/neosnippet'
-	"Bundle 'honza/vim-snippets'
+    if g:use_neocomplete==1
+        Bundle 'Shougo/neocomplete'
+    else
+        Bundle 'Shougo/neocomplcache'
+    endif
+    "Bundle 'Shougo/neosnippet'
+    "Bundle 'honza/vim-snippets'
 else
-	Bundle 'Valloric/YouCompleteMe'
+    Bundle 'Valloric/YouCompleteMe'
 endif
 Bundle 'The-NERD-Commenter'
 Bundle 'tracyone/nerdtree'
@@ -562,15 +563,16 @@ Bundle 'tracyone/MyVimHelp'
 Bundle 'scrooloose/syntastic'
 Bundle 'Shougo/vimproc.vim'
 Bundle 'Shougo/vimshell.vim'
+Bundle 'Yggdroot/indentLine'
 if g:iswindows == 1
-	Bundle 'tracyone/pyclewn' 
+    Bundle 'tracyone/pyclewn' 
 else
-	Bundle 'tracyone/pyclewn_linux' 
+    Bundle 'tracyone/pyclewn_linux' 
 endif
 " non github reposo
 " Bundle 'git://git.wincent.com/command-t.git'
 " ...
- 
+
 "
 " Brief help
 " :BundleList          - list configured bundles
@@ -618,33 +620,33 @@ let g:tagbar_systemenc='cp936'
 "{{{cscope
 exec "silent! cs add cscope.out"
 if $CSCOPE_DB != "" "tpyically it is a include db 
-	exec "silent! cs add $CSCOPE_DB"
+    exec "silent! cs add $CSCOPE_DB"
 endif
 if $CSCOPE_DB1 != ""
-	exec "silent! cs add $CSCOPE_DB1"
+    exec "silent! cs add $CSCOPE_DB1"
 endif
 if $CSCOPE_DB2 != ""
-	exec "silent! cs add $CSCOPE_DB2"
+    exec "silent! cs add $CSCOPE_DB2"
 endif
 if $CSCOPE_DB3 != ""
-	exec "silent! cs add $CSCOPE_DB3"
+    exec "silent! cs add $CSCOPE_DB3"
 endif
 if filereadable('ccglue.out') "this guy is more efficiency 
-	exec "silent! CCTreeLoadXRefDBFromDisk ccglue.out"
+    exec "silent! CCTreeLoadXRefDBFromDisk ccglue.out"
 endif
 if has("cscope")
-	" use both cscope and ctag for 'ctrl-]', ':ta', and 'vim -t'
-	set cscopetag
-	set csprg=cscope
-	" check cscope for definition of a symbol before checking ctags: set to 1
-	" if you want the reverse search order.
-	set csto=0
-	set cscopequickfix=s-,c-,d-,i-,t-,e-,i-,g-
-	" add any cscope database in current directory
-	" else add the database pointed to by environment variable 
-	set cscopetagorder=0
+    " use both cscope and ctag for 'ctrl-]', ':ta', and 'vim -t'
+    set cscopetag
+    set csprg=cscope
+    " check cscope for definition of a symbol before checking ctags: set to 1
+    " if you want the reverse search order.
+    set csto=0
+    set cscopequickfix=s-,c-,d-,i-,t-,e-,i-,g-
+    " add any cscope database in current directory
+    " else add the database pointed to by environment variable 
+    set cscopetagorder=0
 endif
-	set cscopeverbose 
+set cscopeverbose 
 " show msg when any other cscope db added
 nmap <Leader>s :cs find s <C-R>=expand("<cword>")<CR><CR>:cw 7<cr>
 nmap <Leader>g :cs find g <C-R>=expand("<cword>")<CR><CR>
@@ -682,105 +684,105 @@ nmap <C-\>f :cs find f
 nmap <C-\>i :cs find i 
 nmap <C-\>d :cs find d 
 if g:iswindows==1 
-	nmap <leader>u :call Do_CsTag()<cr>
+    nmap <leader>u :call Do_CsTag()<cr>
 else
-	nmap <leader>u :call CreateCscopeTags()<cr>
+    nmap <leader>u :call CreateCscopeTags()<cr>
 endif
 nmap <leader>a :cs add cscope.out<cr>:CCTreeLoadDB cscope.out<cr>
 "kill the connection of current dir 
 nmap <leader>k :cs kill cscope.out<cr> 
 function! CreateCscopeTags()
-	if has("cscope") && filereadable("cscope.out")
-		cs kill cscope.out "kill the cscope.out in current dir only 
-	endif
-	if filereadable("cscope.files")
-		call delete("cscope.files")
-		call delete("cscope.out")
-		call delete("tags")
-		execute "echo \"Updating cscope.files...\r\"" 
-	else
-		execute "echo \"Creating cscope.files...\r\"" 
-	endif
-	call system("touch cscope.files")
-	call system("find $PWD -name \"*.[chsS]\" > ./cscope.files")
-	call system("cscope -Rbckq -i cscope.files")
-	call system("ctags -R")
-	execute "echo \"finish!\"" 
-	if filereadable("cscope.out")
-		execute "cs add cscope.out"
-		execute "CCTreeLoadDB cscope.out"
-	else
-endfunction
-function! Do_CsTag()
-	let dir = getcwd()
-	if filereadable("tags")
-		if(g:iswindows==1)
-			let tagsdeleted=delete(dir."\\"."tags")
-		else
-			let tagsdeleted=delete("./"."tags")
-		endif
-		if(tagsdeleted!=0)
-			echohl WarningMsg | echo "Fail to do tags! I cannot delete the tags" | echohl None
-			return
-		endif
-	endif
-	if filereadable("cscope.files")
-		if(g:iswindows==1)
-			let csfilesdeleted=delete(dir."\\"."cscope.files")
-		else
-			let csfilesdeleted=delete("./"."cscope.files")
-		endif
-		if(csfilesdeleted!=0)
-			echohl WarningMsg | echo "Fail to do cscope! I cannot delete the cscope.files" | echohl None
-			return
-		endif
-	endif
-	if filereadable("cscope.out")
-		if(g:iswindows==1)
-			let csoutdeleted=delete(dir."\\"."cscope.out")
-		else
-			let csoutdeleted=delete("./"."cscope.out")
-		endif
-		if(csoutdeleted!=0)
-			echohl WarningMsg | echo "I cannot delete the cscope.out,try again" | echohl None
-			echo "kill the cscope connection"
-			if has("cscope") && filereadable("cscope.out")
-				silent! execute "cs kill cscope.out"
-			endif
-			if(g:iswindows==1)
-				let csoutdeleted=delete(dir."\\"."cscope.out")
-			else
-				let csoutdeleted=delete("./"."cscope.out")
-			endif
-		endif
-		if(csoutdeleted!=0)
-			echohl WarningMsg | echo "I still cannot delete the cscope.out,failed to do cscope" | echohl None
-			return
-		endif
-	endif
-	if(executable('ctags'))
-		silent! execute "!ctags -R --c-types=+p --fields=+S *"
-		silent! execute "!ctags -R --c++-kinds=+p --fields=+iaS --extra=+q ."
-	endif
-	if(executable('cscope') && has("cscope") )
-		if(g:iswindows!=1)
-			silent! execute "!find . -name \"*.[chsS]\" > ./cscope.files"
-		else
-			silent! execute "!dir /s/b *.c,*.cpp,*.h,*.java,*.cs,*.s,*.asm >> cscope.files"
-		endif
-		silent! execute "!cscope -Rbkq -i cscope.files"
-		"silent! execute "!ccglue -S cscope.out -o ccglue.out" "don not know how to use
-		execute "normal :"
-		if filereadable("cscope.out")
-			execute "cs add cscope.out"
-			execute "CCTreeLoadDB cscope.out"
-			"execute "CCTreeLoadXRefDBFromDisk ccglue.out"
-		else
-			echohl WarningMsg | echo "No cscope.out" | echohl None
-		endif
-	endif
-endfunction
-"}}}
+    if has("cscope") && filereadable("cscope.out")
+        cs kill cscope.out "kill the cscope.out in current dir only 
+    endif
+    if filereadable("cscope.files")
+        call delete("cscope.files")
+        call delete("cscope.out")
+        call delete("tags")
+        execute "echo \"Updating cscope.files...\r\"" 
+    else
+        execute "echo \"Creating cscope.files...\r\"" 
+    endif
+    call system("touch cscope.files")
+    call system("find $PWD -name \"*.[chsS]\" > ./cscope.files")
+    call system("cscope -Rbckq -i cscope.files")
+    call system("ctags -R")
+    execute "echo \"finish!\"" 
+    if filereadable("cscope.out")
+        execute "cs add cscope.out"
+        execute "CCTreeLoadDB cscope.out"
+    else
+    endfunction
+    function! Do_CsTag()
+        let dir = getcwd()
+        if filereadable("tags")
+            if(g:iswindows==1)
+                let tagsdeleted=delete(dir."\\"."tags")
+            else
+                let tagsdeleted=delete("./"."tags")
+            endif
+            if(tagsdeleted!=0)
+                echohl WarningMsg | echo "Fail to do tags! I cannot delete the tags" | echohl None
+                return
+            endif
+        endif
+        if filereadable("cscope.files")
+            if(g:iswindows==1)
+                let csfilesdeleted=delete(dir."\\"."cscope.files")
+            else
+                let csfilesdeleted=delete("./"."cscope.files")
+            endif
+            if(csfilesdeleted!=0)
+                echohl WarningMsg | echo "Fail to do cscope! I cannot delete the cscope.files" | echohl None
+                return
+            endif
+        endif
+        if filereadable("cscope.out")
+            if(g:iswindows==1)
+                let csoutdeleted=delete(dir."\\"."cscope.out")
+            else
+                let csoutdeleted=delete("./"."cscope.out")
+            endif
+            if(csoutdeleted!=0)
+                echohl WarningMsg | echo "I cannot delete the cscope.out,try again" | echohl None
+                echo "kill the cscope connection"
+                if has("cscope") && filereadable("cscope.out")
+                    silent! execute "cs kill cscope.out"
+                endif
+                if(g:iswindows==1)
+                    let csoutdeleted=delete(dir."\\"."cscope.out")
+                else
+                    let csoutdeleted=delete("./"."cscope.out")
+                endif
+            endif
+            if(csoutdeleted!=0)
+                echohl WarningMsg | echo "I still cannot delete the cscope.out,failed to do cscope" | echohl None
+                return
+            endif
+        endif
+        if(executable('ctags'))
+            silent! execute "!ctags -R --c-types=+p --fields=+S *"
+            silent! execute "!ctags -R --c++-kinds=+p --fields=+iaS --extra=+q ."
+        endif
+        if(executable('cscope') && has("cscope") )
+            if(g:iswindows!=1)
+                silent! execute "!find . -name \"*.[chsS]\" > ./cscope.files"
+            else
+                silent! execute "!dir /s/b *.c,*.cpp,*.h,*.java,*.cs,*.s,*.asm >> cscope.files"
+            endif
+            silent! execute "!cscope -Rbkq -i cscope.files"
+            "silent! execute "!ccglue -S cscope.out -o ccglue.out" "don not know how to use
+            execute "normal :"
+            if filereadable("cscope.out")
+                execute "cs add cscope.out"
+                execute "CCTreeLoadDB cscope.out"
+                "execute "CCTreeLoadXRefDBFromDisk ccglue.out"
+            else
+                echohl WarningMsg | echo "No cscope.out" | echohl None
+            endif
+        endif
+    endfunction
+    "}}}
 "{{{srcexpl.vim
 " // The switch of the Source Explorer                                         
 map <F8> :silent! SrcExplToggle<CR>
@@ -802,12 +804,12 @@ let g:SrcExpl_gobackKey = ""
 " // are using buffers. And you need add their bufname into the list below     
 " // according to the command ":buffers!"                                      
 let g:SrcExpl_pluginList = [
-			\ "__Tag_List__",
-			\ "__TagBar__",
-			\ "_NERD_tree_",
-			\ "Source_Explorer",
-			\ "[unite] - *"
-			\ ]
+            \ "__Tag_List__",
+            \ "__TagBar__",
+            \ "_NERD_tree_",
+            \ "Source_Explorer",
+            \ "[unite] - *"
+            \ ]
 "
 " // Enable/Disable the local definition searching, and note that this is not  
 " // guaranteed to work, the Source Explorer doesn't check the syntax for now. 
@@ -824,164 +826,162 @@ let g:SrcExpl_updateTagsCmd = "ctags --sort=foldcase -R ."
 " // Set "<F12>" key for updating the tags file artificially                   
 "let g:SrcExpl_updateTagsKey = "<F3>"
 " // Set "<F3>" key for displaying the previous definition in the jump list 
- let g:SrcExpl_prevDefKey = "" 
+let g:SrcExpl_prevDefKey = "" 
 
- " // Set "<F4>" key for displaying the next definition in the jump list 
- let g:SrcExpl_nextDefKey = "" 
+" // Set "<F4>" key for displaying the next definition in the jump list 
+let g:SrcExpl_nextDefKey = "" 
 
-                                                                             
+
 "}}}
 "{{{neocomplcache or neocomplete
 "neocomplete is a new plugin develop by the same author,it required lua
 "feature and it is more intelligen of course
 if g:use_ycm==0
-	if g:use_neocomplete==1
-		let g:acp_enableAtStartup = 0
-		" Use neocomplete.
-		let g:neocomplete#enable_at_startup = 1
-		" Use smartcase.
-		let g:neocomplete#enable_smart_case = 1
-		" Set minimum syntax keyword length.
-		let g:neocomplete#sources#syntax#min_keyword_length = 3
-		let g:neocomplete#lock_buffer_name_pattern = '\*ku\*'
+    if g:use_neocomplete==1
+        let g:acp_enableAtStartup = 0
+        " Use neocomplete.
+        let g:neocomplete#enable_at_startup = 1
+        " Use smartcase.
+        let g:neocomplete#enable_smart_case = 1
+        " Set minimum syntax keyword length.
+        let g:neocomplete#sources#syntax#min_keyword_length = 3
+        let g:neocomplete#lock_buffer_name_pattern = '\*ku\*'
 
-		" Define dictionary.
-		let g:neocomplete#sources#dictionary#dictionaries = {
-					\ 'default' : '',
-					\ 'cpp' : $VIMFILES.'/bundle/dict/cpp.dict',
-					\ 'html' : $VIMFILES.'/bundle/dict/html.dict',
-					\ 'c' : $VIMFILES.'/bundle/dict/c.dict',
-					\ 'sh' : $VIMFILES.'/bundle/dict/bash.dict',
-					\ 'dosbatch' : $VIMFILES.'/bundle/dict/batch.dict',
-					\ 'tex' : $VIMFILES.'/bundle/dict/latex.dict',
-					\ 'vim' : $VIMFILES.'/bundle/dict/vim.dict.txt',
-					\ 'verilog' : $VIMFILES.'/bundle/dict/verilog.dict'
-					\ }
+        " Define dictionary.
+        let g:neocomplete#sources#dictionary#dictionaries = {
+                    \ 'default' : '',
+                    \ 'cpp' : $VIMFILES.'/bundle/dict/cpp.dict',
+                    \ 'html' : $VIMFILES.'/bundle/dict/html.dict',
+                    \ 'c' : $VIMFILES.'/bundle/dict/c.dict',
+                    \ 'sh' : $VIMFILES.'/bundle/dict/bash.dict',
+                    \ 'dosbatch' : $VIMFILES.'/bundle/dict/batch.dict',
+                    \ 'tex' : $VIMFILES.'/bundle/dict/latex.dict',
+                    \ 'vim' : $VIMFILES.'/bundle/dict/vim.dict.txt',
+                    \ 'verilog' : $VIMFILES.'/bundle/dict/verilog.dict'
+                    \ }
 
-		" Define keyword.
-		if !exists('g:neocomplete#keyword_patterns')
-			let g:neocomplete#keyword_patterns = {}
-		endif
-		let g:neocomplete#keyword_patterns['default'] = '\h\w*'
+        " Define keyword.
+        if !exists('g:neocomplete#keyword_patterns')
+            let g:neocomplete#keyword_patterns = {}
+        endif
+        let g:neocomplete#keyword_patterns['default'] = '\h\w*'
 
-		" Plugin key-mappings.
-		inoremap <expr><C-g>     neocomplete#undo_completion()
-		inoremap <expr><C-l>     neocomplete#complete_common_string()
+        " Plugin key-mappings.
+        inoremap <expr><C-g>     neocomplete#undo_completion()
+        inoremap <expr><C-l>     neocomplete#complete_common_string()
 
-		" Recommended key-mappings.
-		" <CR>: close popup and save indent.
-		" <TAB>: completion.
-		inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
-		" <C-h>, <BS>: close popup and delete backword char.
-		inoremap <expr><C-h> neocomplete#smart_close_popup()."\<C-h>"
-		inoremap <expr><BS> neocomplete#smart_close_popup()."\<C-h>"
-		inoremap <expr><C-y>  neocomplete#close_popup()
-		inoremap <expr><C-e>  neocomplete#cancel_popup()
-		" Or set this.
-		"let g:neocomplete#enable_cursor_hold_i = 1
-		" Or set this.
-		"let g:neocomplete#enable_insert_char_pre = 1
+        " Recommended key-mappings.
+        " <CR>: close popup and save indent.
+        " <TAB>: completion.
+        " <C-h>, <BS>: close popup and delete backword char.
+        inoremap <expr><C-h> neocomplete#smart_close_popup()."\<C-h>"
+        inoremap <expr><BS> neocomplete#smart_close_popup()."\<C-h>"
+        inoremap <expr><C-y>  neocomplete#close_popup()
+        inoremap <expr><C-e>  neocomplete#cancel_popup()
+        " Or set this.
+        "let g:neocomplete#enable_cursor_hold_i = 1
+        " Or set this.
+        "let g:neocomplete#enable_insert_char_pre = 1
 
-		" AutoComplPop like behavior.
-		"let g:neocomplete#enable_auto_select = 1
+        " AutoComplPop like behavior.
+        "let g:neocomplete#enable_auto_select = 1
 
-		"imap <expr> `  pumvisible() ? "\<Plug>(neocomplete_start_unite_quick_match)" : '`'
-		" Enable heavy omni completion.
-		if !exists('g:neocomplete#sources#omni#input_patterns')
-			let g:neocomplete#sources#omni#input_patterns = {}
-		endif
-		let g:neocomplete#sources#omni#input_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
-		let g:neocomplete#sources#omni#input_patterns.c = '[^.[:digit:] *\t]\%(\.\|->\)'
-		let g:neocomplete#sources#omni#input_patterns.cpp = '[^.[:digit:] *\t]\%(\.\|->\)\|\h\w*::'
+        "imap <expr> `  pumvisible() ? "\<Plug>(neocomplete_start_unite_quick_match)" : '`'
+        " Enable heavy omni completion.
+        if !exists('g:neocomplete#sources#omni#input_patterns')
+            let g:neocomplete#sources#omni#input_patterns = {}
+        endif
+        let g:neocomplete#sources#omni#input_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
+        let g:neocomplete#sources#omni#input_patterns.c = '[^.[:digit:] *\t]\%(\.\|->\)'
+        let g:neocomplete#sources#omni#input_patterns.cpp = '[^.[:digit:] *\t]\%(\.\|->\)\|\h\w*::'
 
-		" For perlomni.vim setting.
-		" https://github.com/c9s/perlomni.vim
-		let g:neocomplete#sources#omni#input_patterns.perl = '\h\w*->\h\w*\|\h\w*::'
-	else
-		let g:acp_enableAtStartup = 0
-		" Use neocomplcache.
-		let g:neocomplcache_enable_at_startup = 1
-		" Use smartcase.
-		let g:neocomplcache_enable_smart_case = 1
-		" Set minimum syntax keyword length.
-		let g:neocomplcache_min_syntax_length = 3
-		"neocomplcache selects the first candidate
-		let g:neocomplcache_enable_auto_select = 0
-		" Enable heavy features.
-		" Use camel case completion.
-		"let g:neocomplcache_enable_camel_case_completion = 1
-		" Use underbar completion.
-		"let g:neocomplcache_enable_underbar_completion = 1
-		let g:neocomplcache_auto_completion_start_length = 2
-		let g:neocomplcache_manual_completion_start_length = 2
-		let g:neocomplcache_min_keyword_length = 3
-		let g:neocomplcache_enable_ignore_case = 1
-		"fuzzy complete
-		let g:neocomplcache_enable_fuzzy_completion=1
-		"Define dictionary,in editplus's official website can find many dict with
-		"stx suffix
-		let g:neocomplcache_dictionary_filetype_lists = {
-					\ 'default' : '',
-					\ 'cpp' : $VIMFILES.'/bundle/dict/cpp.dict',
-					\ 'html' : $VIMFILES.'/bundle/dict/html.dict',
-					\ 'c' : $VIMFILES.'/bundle/dict/c.dict',
-					\ 'sh' : $VIMFILES.'/bundle/dict/bash.dict',
-					\ 'dosbatch' : $VIMFILES.'/bundle/dict/batch.dict',
-					\ 'tex' : $VIMFILES.'/bundle/dict/latex.dict',
-					\ 'vim' : $VIMFILES.'/bundle/dict/vim.dict.txt',
-					\ 'verilog' : $VIMFILES.'/bundle/dict/verilog.dict'
-					\ }
-		if !exists("g:neocomplcache_include_paths")
-			let g:neocomplcache_include_paths = {}
-		endif
-		let g:neocomplcache_include_paths = {
-					\ 'cpp' : '.,d:/MinGw/lib/gcc/mingw32/4.6.2/include/c++',
-					\ 'c' : '.,d:/MinGW/lib/gcc/mingw32/4.6.2/include,d:/MinGw/include'
-					\ }
-		let g:neocomplcache_include_patterns = {
-					\ 'cpp' : '^\s*#\s*include',
-					\ 'c' : '^\s*#\s*include'
-					\ }
-		" Define keyword.
-		if !exists('g:neocomplcache_keyword_patterns')
-			let g:neocomplcache_keyword_patterns = {}
-		endif
-		let g:neocomplcache_keyword_patterns['default'] = '\h\w*'
+        " For perlomni.vim setting.
+        " https://github.com/c9s/perlomni.vim
+        let g:neocomplete#sources#omni#input_patterns.perl = '\h\w*->\h\w*\|\h\w*::'
+    else
+        let g:acp_enableAtStartup = 0
+        " Use neocomplcache.
+        let g:neocomplcache_enable_at_startup = 1
+        " Use smartcase.
+        let g:neocomplcache_enable_smart_case = 1
+        " Set minimum syntax keyword length.
+        let g:neocomplcache_min_syntax_length = 3
+        "neocomplcache selects the first candidate
+        let g:neocomplcache_enable_auto_select = 0
+        " Enable heavy features.
+        " Use camel case completion.
+        "let g:neocomplcache_enable_camel_case_completion = 1
+        " Use underbar completion.
+        "let g:neocomplcache_enable_underbar_completion = 1
+        let g:neocomplcache_auto_completion_start_length = 2
+        let g:neocomplcache_manual_completion_start_length = 2
+        let g:neocomplcache_min_keyword_length = 3
+        let g:neocomplcache_enable_ignore_case = 1
+        "fuzzy complete
+        let g:neocomplcache_enable_fuzzy_completion=1
+        "Define dictionary,in editplus's official website can find many dict with
+        "stx suffix
+        let g:neocomplcache_dictionary_filetype_lists = {
+                    \ 'default' : '',
+                    \ 'cpp' : $VIMFILES.'/bundle/dict/cpp.dict',
+                    \ 'html' : $VIMFILES.'/bundle/dict/html.dict',
+                    \ 'c' : $VIMFILES.'/bundle/dict/c.dict',
+                    \ 'sh' : $VIMFILES.'/bundle/dict/bash.dict',
+                    \ 'dosbatch' : $VIMFILES.'/bundle/dict/batch.dict',
+                    \ 'tex' : $VIMFILES.'/bundle/dict/latex.dict',
+                    \ 'vim' : $VIMFILES.'/bundle/dict/vim.dict.txt',
+                    \ 'verilog' : $VIMFILES.'/bundle/dict/verilog.dict'
+                    \ }
+        if !exists("g:neocomplcache_include_paths")
+            let g:neocomplcache_include_paths = {}
+        endif
+        let g:neocomplcache_include_paths = {
+                    \ 'cpp' : '.,d:/MinGw/lib/gcc/mingw32/4.6.2/include/c++',
+                    \ 'c' : '.,d:/MinGW/lib/gcc/mingw32/4.6.2/include,d:/MinGw/include'
+                    \ }
+        let g:neocomplcache_include_patterns = {
+                    \ 'cpp' : '^\s*#\s*include',
+                    \ 'c' : '^\s*#\s*include'
+                    \ }
+        " Define keyword.
+        if !exists('g:neocomplcache_keyword_patterns')
+            let g:neocomplcache_keyword_patterns = {}
+        endif
+        let g:neocomplcache_keyword_patterns['default'] = '\h\w*'
 
-		autocmd BufReadPost,BufEnter,BufWritePost :NeoComplCacheCachingBuffer <buffer>:echo "Caching done."<CR>
+        autocmd BufReadPost,BufEnter,BufWritePost :NeoComplCacheCachingBuffer <buffer>:echo "Caching done."<CR>
 
-		" Enable heavy omni completion.
-		if !exists('g:neocomplcache_omni_patterns')
-			let g:neocomplcache_omni_patterns = {}
-		endif
-		let g:neocomplcache_omni_patterns.ruby = '[^. *\t]\.\h\w*\|\h\w*::'
-		let g:neocomplcache_omni_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
-		let g:neocomplcache_omni_patterns.c = '\%(\.\|->\)\h\w*'
-		let g:neocomplcache_omni_patterns.cpp = '\h\w*\%(\.\|->\)\h\w*\|\h\w*::'
-		" Plugin key-mappings.
-		inoremap <expr><C-g>     neocomplcache#undo_completion()
-		inoremap <expr><C-l>     neocomplcache#complete_common_string()
-		" <TAB>: completion.
-		inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
-		" <C-h>, <BS>: close popup and delete backword char.
-		inoremap <expr><BS> neocomplcache#smart_close_popup()."\<C-h>"
-		inoremap <expr><C-y>  neocomplcache#close_popup()
-		inoremap <expr><C-e>  neocomplcache#cancel_popup()
-		" For cursor moving in insert mode(Not recommended)
-		"inoremap <expr><Left>  neocomplcache#close_popup() . "\<Left>"
-		"inoremap <expr><Right> neocomplcache#close_popup() . "\<Right>"
-		"inoremap <expr><Up>    neocomplcache#close_popup() . "\<Up>"
-		"inoremap <expr><Down>  neocomplcache#close_popup() . "\<Down>"
-		imap <expr> `  pumvisible() ? "\<Plug>(neocomplcache_start_unite_quick_match)" : '`'
-	endif
-	autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
-	autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
-	autocmd FileType html setlocal omnifunc=htmlcomplete#CompleteTags
-	autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
-	autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
-	autocmd FileType php setlocal omnifunc=phpcomplete#CompletePHP
-	autocmd FileType c setlocal omnifunc=ccomplete#Complete
-	autocmd FileType ruby setlocal omnifunc=rubycomplete#Complete
+        " Enable heavy omni completion.
+        if !exists('g:neocomplcache_omni_patterns')
+            let g:neocomplcache_omni_patterns = {}
+        endif
+        let g:neocomplcache_omni_patterns.ruby = '[^. *\t]\.\h\w*\|\h\w*::'
+        let g:neocomplcache_omni_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
+        let g:neocomplcache_omni_patterns.c = '\%(\.\|->\)\h\w*'
+        let g:neocomplcache_omni_patterns.cpp = '\h\w*\%(\.\|->\)\h\w*\|\h\w*::'
+        " Plugin key-mappings.
+        inoremap <expr><C-g>     neocomplcache#undo_completion()
+        inoremap <expr><C-l>     neocomplcache#complete_common_string()
+        " <TAB>: completion.
+        " <C-h>, <BS>: close popup and delete backword char.
+        inoremap <expr><BS> neocomplcache#smart_close_popup()."\<C-h>"
+        inoremap <expr><C-y>  neocomplcache#close_popup()
+        inoremap <expr><C-e>  neocomplcache#cancel_popup()
+        " For cursor moving in insert mode(Not recommended)
+        "inoremap <expr><Left>  neocomplcache#close_popup() . "\<Left>"
+        "inoremap <expr><Right> neocomplcache#close_popup() . "\<Right>"
+        "inoremap <expr><Up>    neocomplcache#close_popup() . "\<Up>"
+        "inoremap <expr><Down>  neocomplcache#close_popup() . "\<Down>"
+        imap <expr> `  pumvisible() ? "\<Plug>(neocomplcache_start_unite_quick_match)" : '`'
+    endif
+    autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
+    autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
+    autocmd FileType html setlocal omnifunc=htmlcomplete#CompleteTags
+    autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
+    autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
+    autocmd FileType php setlocal omnifunc=phpcomplete#CompletePHP
+    autocmd FileType c setlocal omnifunc=ccomplete#Complete
+    autocmd FileType ruby setlocal omnifunc=rubycomplete#Complete
 endif
 inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
 "}}}
@@ -1000,14 +1000,14 @@ nnoremap  [unite]f  :<C-u>Unite source<CR>
 
 autocmd FileType unite call s:unite_my_settings()
 function! s:unite_my_settings()
-	" Overwrite settings.
+    " Overwrite settings.
 
-	nmap <buffer> <ESC>      <Plug>(unite_exit)
-	imap <buffer> jj      <Plug>(unite_insert_leave)
-	"imap <buffer> <C-w>     <Plug>(unite_delete_backward_path)
+    nmap <buffer> <ESC>      <Plug>(unite_exit)
+    imap <buffer> jj      <Plug>(unite_insert_leave)
+    "imap <buffer> <C-w>     <Plug>(unite_delete_backward_path)
 
-	" Start insert.
-	" let g:unite_enable_start_insert = 0
+    " Start insert.
+    " let g:unite_enable_start_insert = 0
 endfunction
 
 let g:unite_source_file_mru_limit = 200
@@ -1091,13 +1091,13 @@ let g:CCTreeKeyDepthMinus = '<C-\>-'
 "{{{vimwiki
 let g:vimwiki_use_mouse = 1
 if g:iswindows==1
-let g:vimwiki_list = [{'path': 'c:/vimwiki/',
-\ 'path_html': 'c:/vimwiki/html/',
-\ 'html_header': 'c:/vimwiki/template/header.tpl',}] 
+    let g:vimwiki_list = [{'path': 'c:/vimwiki/',
+                \ 'path_html': 'c:/vimwiki/html/',
+                \ 'html_header': 'c:/vimwiki/template/header.tpl',}] 
 else
-let g:vimwiki_list = [{'path': '~/vimwiki/',
-\ 'path_html': '~/vimwiki/html/',
-\ 'html_header': '~/vimwiki/template/header.tpl',}] 
+    let g:vimwiki_list = [{'path': '~/vimwiki/',
+                \ 'path_html': '~/vimwiki/html/',
+                \ 'html_header': '~/vimwiki/template/header.tpl',}] 
 endif
 
 let g:vimwiki_use_calendar=1 "use calendar plugin 
@@ -1125,60 +1125,60 @@ let g:ctrlp_working_path_mode = 'w'
 
 " Ctrl-P ignore target dirs so VIM doesn't have to! Yay!
 let g:ctrlp_custom_ignore = {
-    \ 'dir': '\.git$\|\.hg$\|\.svn$\|target$\|built$\|.build$\|node_modules\|\.sass-cache',
-    \ 'file': '\v\.(exe|so|dll|o)$',
-    \ }
+            \ 'dir': '\.git$\|\.hg$\|\.svn$\|target$\|built$\|.build$\|node_modules\|\.sass-cache',
+            \ 'file': '\v\.(exe|so|dll|o)$',
+            \ }
 let g:ctrlp_extensions = ['tag', 'buffertag', 'dir', 'bookmarkdir']
 "}}}
 "{{{pyclewn
 function! Pyclewnmap()
-	silent! nmap <tab> :C
-	exec "Cmapkeys"
-	 silent! :execute "Cdbgvar"
-	:execute "only"
-	:rightbelow 35vsplit (clewn)_console
-	:set syntax=cpp
-	:wincmd h
-	" watch
-	:rightbelow 5split (clewn)_dbgvar
-	:set syntax=cpp
-	:wincmd k
+    silent! nmap <tab> :C
+    exec "Cmapkeys"
+    silent! :execute "Cdbgvar"
+    :execute "only"
+    :rightbelow 35vsplit (clewn)_console
+    :set syntax=cpp
+    :wincmd h
+    " watch
+    :rightbelow 5split (clewn)_dbgvar
+    :set syntax=cpp
+    :wincmd k
 endfunction
 function! Pyclewnunmap()
-	nmap <TAB> za
-	exec "silent! Cunmapkeys"
-	silent!	bwipeout (clewn)_console
-	silent!	bdelete (clewn)_console
-	silent! bwipeout (clewn)_dbgvar
-	silent! ccl
+    nmap <TAB> za
+    exec "silent! Cunmapkeys"
+    silent!	bwipeout (clewn)_console
+    silent!	bdelete (clewn)_console
+    silent! bwipeout (clewn)_dbgvar
+    silent! ccl
 endfunction
 func! OpenClosedbgvar()
-if bufexists("(clewn)_dbgvar")
-	silent! bwipeout (clewn)_dbgvar
-else
-	:rightbelow 5split (clewn)_dbgvar
-	:set syntax=cpp
-endif
+    if bufexists("(clewn)_dbgvar")
+        silent! bwipeout (clewn)_dbgvar
+    else
+        :rightbelow 5split (clewn)_dbgvar
+        :set syntax=cpp
+    endif
 endfunc
 let g:openflag=0
 func! LoadProj()
-	if filereadable(".proj")
-		:silent! Pyclewn
-		:call Pyclewnmap()
-		:Csource .proj
-		:Cstart
-	else
-		echohl WarningMsg | echo "No .proj file!!You must create it first( use <leader>pc )\n" | echohl None
-		echohl WarningMsg | echo "wait for a second...starting Pyclewn.." | echohl None
-		:5sleep
-		:silent! Pyclewn
-		:call Pyclewnmap()
-	endif
+    if filereadable(".proj")
+        :silent! Pyclewn
+        :call Pyclewnmap()
+        :Csource .proj
+        :Cstart
+    else
+        echohl WarningMsg | echo "No .proj file!!You must create it first( use <leader>pc )\n" | echohl None
+        echohl WarningMsg | echo "wait for a second...starting Pyclewn.." | echohl None
+        :5sleep
+        :silent! Pyclewn
+        :call Pyclewnmap()
+    endif
 endfunc
 if g:iswindows==0
-	let g:pyclewn_args = "--args=-q --gdb=async --terminal=gnome-terminal,-x"
+    let g:pyclewn_args = "--args=-q --gdb=async --terminal=gnome-terminal,-x"
 else
-	let g:pyclewn_args = "--args=-q --gdb=async"
+    let g:pyclewn_args = "--args=-q --gdb=async"
 endif
 silent!	nmap <leader>pw :silent! Cdbgvar <C-R><C-W><CR>
 silent! nmap <leader>pf :silent! exe "Cfoldvar " . line(".")<CR>
@@ -1191,41 +1191,41 @@ nmap <leader>pc :Cproject .proj<cr>
 "it's very complicated to compile YouCompleteMe and libcang in windows,
 "and its efficiency is low..so we use it only in linux or mac.
 if g:use_ycm==1
-	let g:ycm_global_ycm_extra_conf = '~/.vim/bundle/YouCompleteMe/.ycm_extra_conf.py'
-	let g:ycm_complete_in_strings                           = 1
-	let g:ycm_complete_in_comments                          = 1
-	let g:ycm_max_diagnostics_to_display                    = 14
-	let g:ycm_collect_identifiers_from_comments_and_strings = 1
-	" let g:ycm_add_preview_to_completeopt                  = 1
-	let g:ycm_complete_in_comments_and_strings              = 1
-	let g:ycm_autoclose_preview_window_after_completion     = 1
-	let g:ycm_autoclose_preview_window_after_insertion      = 1
-	let g:ycm_filetypes_to_completely_ignore                = {}
-	let g:ycm_filetype_blacklist                            = {
-				\ 'notes'    : 1,
-				\ 'markdown' : 1,
-				\ 'python'   : 1,
-				\ 'conque_term' : 1,
-				\ 'vimwiki'  : 1
-				\}
-	let g:ycm_filetype_whitelist                            = {
-				\ '*'	   : 1
-				\}
-	" let g:ycm_filetype_specific_completion_to_disable     = {}
-	let g:ycm_allow_changing_updatetime                     = 0
-	let g:ycm_register_as_syntastic_checker                 = 1
-	let g:ycm_seed_identifiers_with_syntax                  = 1
-	"let g:ycm_key_invoke_completion                       = '<C-Space>'
-	" let g:ycm_key_detailed_diagnostics                    = '<leader>d'
-	let g:ycm_key_list_select_completion                    = ['<Down>']
-	let g:ycm_key_list_previous_completion                  = ['<Up>']
+    let g:ycm_global_ycm_extra_conf = '~/.vim/bundle/YouCompleteMe/.ycm_extra_conf.py'
+    let g:ycm_complete_in_strings                           = 1
+    let g:ycm_complete_in_comments                          = 1
+    let g:ycm_max_diagnostics_to_display                    = 14
+    let g:ycm_collect_identifiers_from_comments_and_strings = 1
+    " let g:ycm_add_preview_to_completeopt                  = 1
+    let g:ycm_complete_in_comments_and_strings              = 1
+    let g:ycm_autoclose_preview_window_after_completion     = 1
+    let g:ycm_autoclose_preview_window_after_insertion      = 1
+    let g:ycm_filetypes_to_completely_ignore                = {}
+    let g:ycm_filetype_blacklist                            = {
+                \ 'notes'    : 1,
+                \ 'markdown' : 1,
+                \ 'python'   : 1,
+                \ 'conque_term' : 1,
+                \ 'vimwiki'  : 1
+                \}
+    let g:ycm_filetype_whitelist                            = {
+                \ '*'	   : 1
+                \}
+    " let g:ycm_filetype_specific_completion_to_disable     = {}
+    let g:ycm_allow_changing_updatetime                     = 0
+    let g:ycm_register_as_syntastic_checker                 = 1
+    let g:ycm_seed_identifiers_with_syntax                  = 1
+    "let g:ycm_key_invoke_completion                       = '<C-Space>'
+    " let g:ycm_key_detailed_diagnostics                    = '<leader>d'
+    let g:ycm_key_list_select_completion                    = ['<Down>']
+    let g:ycm_key_list_previous_completion                  = ['<Up>']
 endif
 "}}}
 "{{{VimExplorer
 if g:iswindows==1
-	let g:VEConf_systemEncoding = 'cp936'
+    let g:VEConf_systemEncoding = 'cp936'
 else
-	let g:VEConf_systemEncoding = 'gbk'
+    let g:VEConf_systemEncoding = 'gbk'
 endif
 "}}}
 "{{{vimshell
@@ -1234,11 +1234,11 @@ let g:vimshell_user_prompt = '":: " . "(" . fnamemodify(getcwd(), ":~") . ")"'
 let g:vimshell_enable_smart_case = 1
 
 if has('win32') || has('win64')
-	" Display user name on Windows.
-	let g:vimshell_prompt = $USERNAME."% "
+    " Display user name on Windows.
+    let g:vimshell_prompt = $USERNAME."% "
 else
-	" Display user name on Linux.
-	let g:vimshell_prompt = $USER."% "
+    " Display user name on Linux.
+    let g:vimshell_prompt = $USER."% "
 endif
 
 " Initialize execute file list.
@@ -1250,15 +1250,15 @@ let g:vimshell_execute_file_list['py'] = 'python'
 call vimshell#set_execute_file('html,xhtml', 'gexe firefox')
 
 autocmd FileType vimshell
-			\ call vimshell#altercmd#define('g', 'git')
-			\| call vimshell#altercmd#define('i', 'iexe')
-			\| call vimshell#altercmd#define('l', 'll')
-			\| call vimshell#altercmd#define('ls', 'ls --encoding=utf8')
-			\| call vimshell#altercmd#define('ll', 'ls -l --encoding=utf8')
-			"\| call vimshell#hook#add('chpwd', 'my_chpwd', 'g:my_chpwd')
+            \ call vimshell#altercmd#define('g', 'git')
+            \| call vimshell#altercmd#define('i', 'iexe')
+            \| call vimshell#altercmd#define('l', 'll')
+            \| call vimshell#altercmd#define('ls', 'ls --encoding=utf8')
+            \| call vimshell#altercmd#define('ll', 'ls -l --encoding=utf8')
+"\| call vimshell#hook#add('chpwd', 'my_chpwd', 'g:my_chpwd')
 
 "function! g:my_chpwd(args, context)
-	"call vimshell#execute('ls')
+"call vimshell#execute('ls')
 "endfunction
 
 autocmd FileType int-* call s:interactive_settings()
@@ -1271,13 +1271,10 @@ let g:UltiSnipsUsePythonVersion = 3
 let g:UltiSnipsExpandTrigger='<c-k>'
 let g:UltiSnipsListSnippets='<c-tab>'
 let g:UltiSnipsJumpForwardTrigger='<c-j>'
-let g:UltiSnipsJumpBackwardTrigger='<c-k>'
-let g:UltiSnipsExpandTrigger="<c-k>"
-let g:UltiSnipsJumpForwardTrigger="<c-k>"
-"let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
+let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
+let g:UltiSnipsSnippetDirectories=["bundle\\ultisnips\\UltiSnips"]
 "}}}
 "let g:loaded_indentLine=0
-"let g:indentLine_color_gui = '#A4E57E'
 "let g:indentLine_enabled = 1
 let g:fencview_autodetect=0 "it is look like a conflict with c.vim 
 let g:fencview_auto_patterns='*.txt,*.htm{l\=},*.c,*.cpp,*.s,*.vim'
@@ -1287,142 +1284,142 @@ map <F2> :Ren<cr>
 map <F11> :silent! VE<cr><cr>
 let g:startupfile="first_statup.txt"
 if g:iswindows==1
-	let g:start_path=$VIM.'/first_statup.txt'
+    let g:start_path=$VIM.'/first_statup.txt'
 else
-	let g:start_path=$HOME.'/.first_statup'
+    let g:start_path=$HOME.'/.first_statup'
 endif
 if filereadable(g:start_path)
-	map <F1> :h MyVimHelp.txt<cr>
+    map <F1> :h MyVimHelp.txt<cr>
 else
-	execute writefile([g:startupfile], g:start_path)
-	execute "silent! h MyVimHelp.txt"
-	:only
-	map <F1> :h MyVimHelp.txt<cr>
+    execute writefile([g:startupfile], g:start_path)
+    execute "silent! h MyVimHelp.txt"
+    :only
+    map <F1> :h MyVimHelp.txt<cr>
 endif
 "}}}
 "gui releate{{{
 "list of flags that specify how the GUI works
 if(has("gui_running"))
-	if g:iswindows==0
-		au GUIEnter * call MaximizeWindow()
-		set guifont=Consolas\ 14
-	else
-		au GUIEnter * simalt~x "maximize window
-		set guifont=Consolas:h14:cANSI
-		set gfw=YaHei_Mono:h12.5:cGB2312
-	endif
-	set guioptions-=b
-	"set guioptions-=m "whether use menu
-	set guioptions+=r "whether show the rigth scroll bar
-	set guioptions-=l "whether show the left scroll bar
-	"set guioptions-=T "whether show toolbar or not
-	set guitablabel=%N\ %t  "do not show dir in tab
-	"set t_Co=256
-	"highlight the screen line of the cursor
-	"set cul
-	if has("toolbar")
-		if exists("*Do_toolbar_tmenu")
-			delfun Do_toolbar_tmenu
-		endif
-		fun Do_toolbar_tmenu()
-			tmenu ToolBar.Open		Open File
-			tmenu ToolBar.Save		Save File
-			tmenu ToolBar.SaveAll	Save All
-			tmenu ToolBar.Print		Print
-			tmenu ToolBar.Undo		Undo
-			tmenu ToolBar.Redo		Redo
-			tmenu ToolBar.Cut		Cut
-			tmenu ToolBar.Copy		Copy
-			tmenu ToolBar.Paste		Paste
-			tmenu ToolBar.Find		Find&Replace
-			tmenu ToolBar.FindNext	Find Next
-			tmenu ToolBar.FindPrev	Find Prev
-			tmenu ToolBar.Replace	Replace
-			tmenu ToolBar.LoadSesn	Load Session
-			tmenu ToolBar.SaveSesn	Save Session
-			tmenu ToolBar.RunScript	Run a Vim Script
-			tmenu ToolBar.Make		Make
-			tmenu ToolBar.Shell		Shell
-			tmenu ToolBar.RunCtags	ctags! -R
-			tmenu ToolBar.TagJump	Jump to next tag
-			tmenu ToolBar.Help		Help
-			tmenu ToolBar.FindHelp	Search Help
-		endfun
-		amenu ToolBar.-Sep- :
-		if g:iswindows==1
-			amenu icon=$VIMFILES/bundle/pyclewn/debug_icons/dbgrun.bmp ToolBar.Run :silent! Pyclewn<cr>:silent! call Pyclewnmap()<cr>
-			amenu icon=$VIMFILES/bundle/pyclewn/debug_icons/run.bmp ToolBar.Start :Cstart<cr>
-			amenu icon=$VIMFILES/bundle/pyclewn/debug_icons/stop.bmp ToolBar.Quit :call Pyclewnunmap()<cr>:Cquit<cr>:nbclose<cr>:call Pyclewnunmap()<cr>
-			amenu icon=$VIMFILES/bundle/pyclewn/debug_icons/dbgnext.bmp ToolBar.Next :Cnext<cr>
-			amenu icon=$VIMFILES/bundle/pyclewn/debug_icons/dbgstep.bmp ToolBar.Step :Cstep<cr>
-			amenu icon=$VIMFILES/bundle/pyclewn/debug_icons/dbgstepi.bmp ToolBar.Stepi :Cstepi<cr>
-			amenu icon=$VIMFILES/bundle/pyclewn/debug_icons/dbgrunto.bmp ToolBar.Runto :Ccontinue<cr>
-			amenu icon=$VIMFILES/bundle/pyclewn/debug_icons/dbgstepout.bmp ToolBar.Finish :Cfinish<cr>
-			amenu icon=$VIMFILES/bundle/pyclewn/debug_icons/dbgwindow.bmp ToolBar.Watch :call OpenClosedbgvar()<cr>
-			if filereadable(".proj")
-				amenu icon=$VIMFILES/bundle/pyclewn/debug_icons/project.bmp ToolBar.Project :silent! Pyclewn<cr>:call Pyclewnmap()<cr>:Csource .proj<cr>:Cstart<cr>
-			endif
-			amenu icon=$VIMFILES/bundle/pyclewn/debug_icons/filesaveas.bmp ToolBar.SaveProject :Cproject .proj<cr>
-		else
-			amenu icon=$VIMFILES/bundle/pyclewn_linux/debug_icons/dbgrun.png ToolBar.Run :silent! Pyclewn<cr>:silent! call Pyclewnmap()<cr>:Cinferiortty<cr>
-			amenu icon=$VIMFILES/bundle/pyclewn_linux/debug_icons/run.png ToolBar.Start :Cstart<cr>
-			amenu icon=$VIMFILES/bundle/pyclewn_linux/debug_icons/dbgstop.png ToolBar.Quit :call Pyclewnunmap()<cr>:Cquit<cr>:nbclose<cr>:call Pyclewnunmap()<cr>
-			amenu icon=$VIMFILES/bundle/pyclewn_linux/debug_icons/dbgnext.png ToolBar.Next :Cnext<cr>
-			amenu icon=$VIMFILES/bundle/pyclewn_linux/debug_icons/dbgstep.png ToolBar.Step :Cstep<cr>
-			amenu icon=$VIMFILES/bundle/pyclewn_linux/debug_icons/dbgstepi.png ToolBar.Stepi :Cstepi<cr>
-			amenu icon=$VIMFILES/bundle/pyclewn_linux/debug_icons/dbgrunto.png ToolBar.Runto :Ccontinue<cr>
-			amenu icon=$VIMFILES/bundle/pyclewn_linux/debug_icons/dbgstepout.png ToolBar.Finish :Cfinish<cr>
-			amenu icon=$VIMFILES/bundle/pyclewn_linux/debug_icons/dbgwindow.png ToolBar.Watch :call OpenClosedbgvar()<cr>
-			if filereadable(".proj")
-				amenu icon=$VIMFILES/bundle/pyclewn_linux/debug_icons/project.png ToolBar.Project :silent! Pyclewn<cr>:call Pyclewnmap()<cr>:Cinferiortty<cr>:Csource .proj<cr>:Cstart<cr>
-			endif
-			amenu icon=$VIMFILES/bundle/pyclewn_linux/debug_icons/filesaveas.png ToolBar.SaveProject :Cproject .proj<cr>
-		endif
-		tmenu ToolBar.Run Connect pyclewn-->Map keys-->Cfile <user input>
-		tmenu ToolBar.Start	Start debug(Cstart)
-		tmenu ToolBar.Quit Stop debug
-		tmenu ToolBar.Next	Next(Cnext)
-		tmenu ToolBar.Step	Step(Cstep)
-		tmenu ToolBar.Stepi	Stepi(Cstepi)
-		tmenu ToolBar.Finish Stepout(Cfinish)
-		tmenu ToolBar.Watch Open or close watch windows 
-		tmenu ToolBar.Runto	Continue(Cconinue)
-		tmenu ToolBar.Project Load project and start debug
-		tmenu ToolBar.SaveProject Save Project setting(save as .proj)
-endif
-"chose your colorscheme
-	let g:colorscheme_file='' "color thmem's name  
-	if g:iswindows == 0
-		let g:slash='/'
-		let g:love_path=$HOME.'/.love'
-	else
-		let g:slash='\'
-		let g:love_path=$HOME.'\love.txt'
-	endif
+    if g:iswindows==0
+        au GUIEnter * call MaximizeWindow()
+        set guifont=Consolas\ 14
+    else
+        au GUIEnter * simalt~x "maximize window
+        set guifont=Consolas:h14:cANSI
+        set gfw=YaHei_Mono:h12.5:cGB2312
+    endif
+    set guioptions-=b
+    "set guioptions-=m "whether use menu
+    set guioptions+=r "whether show the rigth scroll bar
+    set guioptions-=l "whether show the left scroll bar
+    "set guioptions-=T "whether show toolbar or not
+    set guitablabel=%N\ %t  "do not show dir in tab
+    "set t_Co=256
+    "highlight the screen line of the cursor
+    "set cul
+    if has("toolbar")
+        if exists("*Do_toolbar_tmenu")
+            delfun Do_toolbar_tmenu
+        endif
+        fun Do_toolbar_tmenu()
+            tmenu ToolBar.Open		Open File
+            tmenu ToolBar.Save		Save File
+            tmenu ToolBar.SaveAll	Save All
+            tmenu ToolBar.Print		Print
+            tmenu ToolBar.Undo		Undo
+            tmenu ToolBar.Redo		Redo
+            tmenu ToolBar.Cut		Cut
+            tmenu ToolBar.Copy		Copy
+            tmenu ToolBar.Paste		Paste
+            tmenu ToolBar.Find		Find&Replace
+            tmenu ToolBar.FindNext	Find Next
+            tmenu ToolBar.FindPrev	Find Prev
+            tmenu ToolBar.Replace	Replace
+            tmenu ToolBar.LoadSesn	Load Session
+            tmenu ToolBar.SaveSesn	Save Session
+            tmenu ToolBar.RunScript	Run a Vim Script
+            tmenu ToolBar.Make		Make
+            tmenu ToolBar.Shell		Shell
+            tmenu ToolBar.RunCtags	ctags! -R
+            tmenu ToolBar.TagJump	Jump to next tag
+            tmenu ToolBar.Help		Help
+            tmenu ToolBar.FindHelp	Search Help
+        endfun
+        amenu ToolBar.-Sep- :
+        if g:iswindows==1
+            amenu icon=$VIMFILES/bundle/pyclewn/debug_icons/dbgrun.bmp ToolBar.Run :silent! Pyclewn<cr>:silent! call Pyclewnmap()<cr>
+            amenu icon=$VIMFILES/bundle/pyclewn/debug_icons/run.bmp ToolBar.Start :Cstart<cr>
+            amenu icon=$VIMFILES/bundle/pyclewn/debug_icons/stop.bmp ToolBar.Quit :call Pyclewnunmap()<cr>:Cquit<cr>:nbclose<cr>:call Pyclewnunmap()<cr>
+            amenu icon=$VIMFILES/bundle/pyclewn/debug_icons/dbgnext.bmp ToolBar.Next :Cnext<cr>
+            amenu icon=$VIMFILES/bundle/pyclewn/debug_icons/dbgstep.bmp ToolBar.Step :Cstep<cr>
+            amenu icon=$VIMFILES/bundle/pyclewn/debug_icons/dbgstepi.bmp ToolBar.Stepi :Cstepi<cr>
+            amenu icon=$VIMFILES/bundle/pyclewn/debug_icons/dbgrunto.bmp ToolBar.Runto :Ccontinue<cr>
+            amenu icon=$VIMFILES/bundle/pyclewn/debug_icons/dbgstepout.bmp ToolBar.Finish :Cfinish<cr>
+            amenu icon=$VIMFILES/bundle/pyclewn/debug_icons/dbgwindow.bmp ToolBar.Watch :call OpenClosedbgvar()<cr>
+            if filereadable(".proj")
+                amenu icon=$VIMFILES/bundle/pyclewn/debug_icons/project.bmp ToolBar.Project :silent! Pyclewn<cr>:call Pyclewnmap()<cr>:Csource .proj<cr>:Cstart<cr>
+            endif
+            amenu icon=$VIMFILES/bundle/pyclewn/debug_icons/filesaveas.bmp ToolBar.SaveProject :Cproject .proj<cr>
+        else
+            amenu icon=$VIMFILES/bundle/pyclewn_linux/debug_icons/dbgrun.png ToolBar.Run :silent! Pyclewn<cr>:silent! call Pyclewnmap()<cr>:Cinferiortty<cr>
+            amenu icon=$VIMFILES/bundle/pyclewn_linux/debug_icons/run.png ToolBar.Start :Cstart<cr>
+            amenu icon=$VIMFILES/bundle/pyclewn_linux/debug_icons/dbgstop.png ToolBar.Quit :call Pyclewnunmap()<cr>:Cquit<cr>:nbclose<cr>:call Pyclewnunmap()<cr>
+            amenu icon=$VIMFILES/bundle/pyclewn_linux/debug_icons/dbgnext.png ToolBar.Next :Cnext<cr>
+            amenu icon=$VIMFILES/bundle/pyclewn_linux/debug_icons/dbgstep.png ToolBar.Step :Cstep<cr>
+            amenu icon=$VIMFILES/bundle/pyclewn_linux/debug_icons/dbgstepi.png ToolBar.Stepi :Cstepi<cr>
+            amenu icon=$VIMFILES/bundle/pyclewn_linux/debug_icons/dbgrunto.png ToolBar.Runto :Ccontinue<cr>
+            amenu icon=$VIMFILES/bundle/pyclewn_linux/debug_icons/dbgstepout.png ToolBar.Finish :Cfinish<cr>
+            amenu icon=$VIMFILES/bundle/pyclewn_linux/debug_icons/dbgwindow.png ToolBar.Watch :call OpenClosedbgvar()<cr>
+            if filereadable(".proj")
+                amenu icon=$VIMFILES/bundle/pyclewn_linux/debug_icons/project.png ToolBar.Project :silent! Pyclewn<cr>:call Pyclewnmap()<cr>:Cinferiortty<cr>:Csource .proj<cr>:Cstart<cr>
+            endif
+            amenu icon=$VIMFILES/bundle/pyclewn_linux/debug_icons/filesaveas.png ToolBar.SaveProject :Cproject .proj<cr>
+        endif
+        tmenu ToolBar.Run Connect pyclewn-->Map keys-->Cfile <user input>
+        tmenu ToolBar.Start	Start debug(Cstart)
+        tmenu ToolBar.Quit Stop debug
+        tmenu ToolBar.Next	Next(Cnext)
+        tmenu ToolBar.Step	Step(Cstep)
+        tmenu ToolBar.Stepi	Stepi(Cstepi)
+        tmenu ToolBar.Finish Stepout(Cfinish)
+        tmenu ToolBar.Watch Open or close watch windows 
+        tmenu ToolBar.Runto	Continue(Cconinue)
+        tmenu ToolBar.Project Load project and start debug
+        tmenu ToolBar.SaveProject Save Project setting(save as .proj)
+    endif
+    "chose your colorscheme
+    let g:colorscheme_file='' "color thmem's name  
+    if g:iswindows == 0
+        let g:slash='/'
+        let g:love_path=$HOME.'/.love'
+    else
+        let g:slash='\'
+        let g:love_path=$HOME.'\love.txt'
+    endif
 
-	command! Love call LoveCS()
-	function! LoveCS()
-		let g:colorscheme_file=g:colors_name
-		execute writefile([g:colorscheme_file], g:love_path)
-	endfunction
-	function! ApplyCS()
-		let cmd='colorscheme '.g:colorscheme_file
-		execute cmd
-	endfunction
+    command! Love call LoveCS()
+    function! LoveCS()
+        let g:colorscheme_file=g:colors_name
+        execute writefile([g:colorscheme_file], g:love_path)
+    endfunction
+    function! ApplyCS()
+        let cmd='colorscheme '.g:colorscheme_file
+        execute cmd
+    endfunction
 
-	let r=findfile(g:love_path)
-	if r != ''
-		let loves=readfile(g:love_path)
-		if len(loves) > 0
-			let g:colorscheme_file=loves[0]
-			call ApplyCS()
-		endif
-	else
-		colorscheme wombat256 "default setting 
-	endif
-	function! MaximizeWindow()
-		silent !wmctrl -r :ACTIVE: -b add,maximized_vert,maximized_horz
-	endfunction
+    let r=findfile(g:love_path)
+    if r != ''
+        let loves=readfile(g:love_path)
+        if len(loves) > 0
+            let g:colorscheme_file=loves[0]
+            call ApplyCS()
+        endif
+    else
+        colorscheme wombat256 "default setting 
+    endif
+    function! MaximizeWindow()
+        silent !wmctrl -r :ACTIVE: -b add,maximized_vert,maximized_horz
+    endfunction
 endif
 "}}}
 
