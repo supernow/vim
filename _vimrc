@@ -174,7 +174,8 @@ set smartindent "do clever autoindenting
 "enable specific indenting for C code
 set cindent
 
-set expandtab  "instad tab with space 
+set noexpandtab  "instead tab with space 
+au FileType c,cpp,java,vim set expandtab
 "number of spaces a <Tab> in the text stands for
 set tabstop=4
 
@@ -509,6 +510,7 @@ endif
 Bundle 'a.vim'
 Bundle 'SirVer/ultisnips'
 Bundle 'tracyone/dict'
+Bundle 'JazzCore/neocomplcache-ultisnips'
 Bundle 'tracyone/Align'
 Bundle 'tracyone/calendar'
 Bundle 'tracyone/Colour-Sampler-Pack'
@@ -1267,15 +1269,16 @@ endfunction
 map <F4> :VimShellPop<cr>
 "}}}
 "{{{UltiSnips
-let g:UltiSnipsUsePythonVersion = 3
-let g:UltiSnipsExpandTrigger='<c-k>'
-let g:UltiSnipsListSnippets='<c-tab>'
-let g:UltiSnipsJumpForwardTrigger='<c-j>'
-let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
-let g:UltiSnipsSnippetDirectories=["bundle\\ultisnips\\UltiSnips"]
+"let g:UltiSnipsUsePythonVersion = 3
+"let g:UltiSnipsExpandTrigger='<m-u>'
+"let g:UltiSnipsListSnippets='<c-tab>'
+"let g:UltiSnipsJumpForwardTrigger='<c-j>'
+"let g:UltiSnipsJumpBackwardTrigger='<c-k>'
+let g:UltiSnipsSnippetDirectories=["d:/UltiSnips"]
 "}}}
 "let g:loaded_indentLine=0
-"let g:indentLine_enabled = 1
+let g:indentLine_enabled = 1
+au FileType verilog let g:indentLine_enabled=0
 let g:fencview_autodetect=0 "it is look like a conflict with c.vim 
 let g:fencview_auto_patterns='*.txt,*.htm{l\=},*.c,*.cpp,*.s,*.vim'
 let g:NERDMenuMode=0
