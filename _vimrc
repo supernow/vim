@@ -237,14 +237,13 @@ nmap <F7> a<C-R>=strftime("%Y-%m-%d/%H:%M:%S")<CR><ESC>
 imap <F7> <C-R>=strftime("%Y-%m-%d/%H:%M:%S")<CR>
 "automatic recognition vt file as verilog 
 au BufRead,BufNewFile *.vt set filetype=verilog
-
 "automatic recognition bld file as javascript 
 au BufRead,BufNewFile *.bld set filetype=javascript
-
 "automatic recognition xdc file as javascript
 au BufRead,BufNewFile *.xdc set filetype=javascript
 au BufRead,BufNewFile *.mk set filetype=make
 au BufRead,BufNewFile *.veo set filetype=verilog
+au BufRead,BufNewFile * let $CurBufferDir=expand('%:p:h')
 au FileType verilog set tabstop=3
 au FileType verilog set shiftwidth=3
 au FileType verilog set softtabstop=3
@@ -1225,12 +1224,13 @@ if g:iswindows==1
 else
     let g:VEConf_systemEncoding = 'gbk'
 endif
+map <F11> :silent! VE $CurBufferDir<cr><cr>
 "}}}
 "{{{vimshell
 let g:vimshell_user_prompt = '":: " . "(" . fnamemodify(getcwd(), ":~") . ")"'
 "let g:vimshell_right_prompt = 'vcs#info("(%s)-[%b]", "(%s)-[%b|%a]")'
 let g:vimshell_enable_smart_case = 1
-
+let g:vimshell_editor_command="gvim"
 if has('win32') || has('win64')
     " Display user name on Windows.
     let g:vimshell_prompt = $USERNAME."% "
@@ -1246,7 +1246,9 @@ let g:vimshell_execute_file_list['rb'] = 'ruby'
 let g:vimshell_execute_file_list['pl'] = 'perl'
 let g:vimshell_execute_file_list['py'] = 'python'
 call vimshell#set_execute_file('html,xhtml', 'gexe firefox')
-
+imap <HOME> <Plug>(vimshell_move_head)
+imap <up> <Plug>(vimshell_history_neocomplete)
+imap <c-d> <Plug>(vimshell_exit)
 autocmd FileType vimshell
             \ call vimshell#altercmd#define('g', 'git')
             \| call vimshell#altercmd#define('i', 'iexe')
@@ -1263,7 +1265,7 @@ autocmd FileType vimshell
 autocmd FileType int-* call s:interactive_settings()
 function! s:interactive_settings()
 endfunction
-map <F4> :VimShellPop<cr>
+map <F4> :VimShellPop $CurBufferDir<cr>
 "}}}
 "{{{UltiSnips
 let g:UltiSnipsExpandTrigger="<c-j>"
@@ -1287,8 +1289,7 @@ let g:fencview_auto_patterns='*.txt,*.htm{l\=},*.c,*.cpp,*.s,*.vim'
 "}}}
 "{{{renamer
 "rename multi file name
-map <F2> :Ren<cr>
-map <F11> :silent! VE<cr><cr>
+map <F2> :Ren $CurBufferDir<cr>
 "}}}
 "{{{myvimhelp
 let g:startupfile="first_statup.txt"
