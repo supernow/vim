@@ -2,7 +2,7 @@
 "@brief      config file of vim and gvim for both windows and linux
 "@date       2012-12-30 11:01:30
 "@author     tracyone,tracyone@live.cn
-"@lastchange 2013-07-12/21:59:42
+"@lastchange 2013-07-14/17:46:06
 "@note:		Prior to use, in the case of windows vim convert this file's 
 "			format into dos,while convert it into unix format in the case 
 "			of linux vim
@@ -1247,7 +1247,6 @@ let g:vimshell_execute_file_list['pl'] = 'perl'
 let g:vimshell_execute_file_list['py'] = 'python'
 call vimshell#set_execute_file('html,xhtml', 'gexe firefox')
 imap <HOME> <Plug>(vimshell_move_head)
-imap <up> <Plug>(vimshell_history_neocomplete)
 imap <c-d> <Plug>(vimshell_exit)
 autocmd FileType vimshell
             \ call vimshell#altercmd#define('g', 'git')
