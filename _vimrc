@@ -138,6 +138,8 @@ set report=0  "Threshold for reporting number of lines changed
 
 "help doc dir
 "let helptags=$VIMFILES.'/doc'
+set modeline
+set modelines=5 " default numbers of lines to read for modeline instructions
 
 set helplang=en,cn  "set helplang=en
 "autoread when a file is changed from the outside
@@ -174,8 +176,9 @@ set smartindent "do clever autoindenting
 "enable specific indenting for C code
 set cindent
 
-set noexpandtab  "instead tab with space 
-au FileType c,cpp,java,vim set expandtab
+au FileType c,cpp,java,vim set expandtab "instead tab with space 
+au FileType make set noexpandtab
+
 "number of spaces a <Tab> in the text stands for
 set tabstop=4
 
@@ -559,7 +562,6 @@ Bundle 'tracyone/MyVimHelp'
 Bundle 'scrooloose/syntastic'
 Bundle 'Shougo/vimproc.vim'
 Bundle 'Shougo/vimshell.vim'
-Bundle 'Yggdroot/indentLine'
 if g:iswindows == 1
     Bundle 'tracyone/pyclewn' 
 else
@@ -1252,9 +1254,7 @@ autocmd FileType vimshell
             \ call vimshell#altercmd#define('g', 'git')
             \| call vimshell#altercmd#define('i', 'iexe')
             \| call vimshell#altercmd#define('l', 'll')
-            \| call vimshell#altercmd#define('ls', 'ls --encoding=utf8')
             \| call vimshell#altercmd#define('c', 'clear')
-            \| call vimshell#altercmd#define('ll', 'ls -l --encoding=utf8')
 "\| call vimshell#hook#add('chpwd', 'my_chpwd', 'g:my_chpwd')
 
 "function! g:my_chpwd(args, context)
@@ -1277,10 +1277,6 @@ au FileType c execute "UltiSnipsAddFiletypes c"
 au FileType cpp execute "UltiSnipsAddFiletypes cpp"
 au FileType verilog execute "UltiSnipsAddFiletypes verilog"
 au FileType vim execute "UltiSnipsAddFiletypes vim"
-"}}}
-"{{{indentline
-au FileType verilog,help let g:indentLine_enabled=0 "DISABLE INDENTLINE 
-au FileType c,cpp,vim let g:indentLine_enabled=1 "ENABLE INDENTLINE 
 "}}}
 "{{{fencview
 let g:fencview_autodetect=0 "it is look like a conflict with c.vim 
