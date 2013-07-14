@@ -308,7 +308,6 @@ endfunction
 nmap <leader>o :call Open_url()<cr>
 "clear search result
 noremap <a-q> :nohls<CR>
-
 "save file
 " Use CTRL-S for saving, also in Insert mode
 noremap <C-S>		:update<CR>
@@ -457,19 +456,17 @@ endfunction
 "}}}
 "}}}
 "plugin setting{{{
-
+"{{{vundle
+"
 "behave very Vi compatible (not advisable)
 set nocp 
 " Uncomment the following to have Vim load indentation rules and plugins
 " according to the detected filetype.
-filetype plugin indent on
+filetype off
 syntax on
-
-"{{{vundle
-"
 func! Vundle()
     if g:iswindows==1 
-        set rtp+=$VIM\\vimfiles\\bundle\\vundle
+        set rtp+=~/vimfiles/bundle/vundle
     else
         set rtp+=~/.vim/bundle/vundle/
     endif
@@ -508,9 +505,7 @@ endif
 " Bundle 'tpope/vim-rails.git'
 " vim-scripts repos
 Bundle 'a.vim'
-Bundle 'SirVer/ultisnips'
 Bundle 'tracyone/dict'
-Bundle 'JazzCore/neocomplcache-ultisnips'
 Bundle 'tracyone/Align'
 Bundle 'tracyone/calendar'
 Bundle 'tracyone/Colour-Sampler-Pack'
@@ -518,6 +513,8 @@ Bundle 'kien/ctrlp.vim'
 Bundle 'delimitMate.vim'
 Bundle 'FuzzyFinder'
 Bundle 'genutils'
+Bundle 'SirVer/ultisnips'
+Bundle 'tracyone/snippets'
 if g:iswindows==0 && has("patch584")
     let g:use_ycm=1
 else
@@ -534,8 +531,6 @@ if g:use_ycm==0
     else
         Bundle 'Shougo/neocomplcache'
     endif
-    "Bundle 'Shougo/neosnippet'
-    "Bundle 'honza/vim-snippets'
 else
     Bundle 'Valloric/YouCompleteMe'
 endif
@@ -583,6 +578,7 @@ endif
 " :BundleClean(!)      - confirm(or auto-approve) removal of unused bundles
 " see :h vundle for more details or wiki for FAQ
 " NOTE: comments after Bundle command are not allowed..
+filetype plugin indent on
 "}}}
 "{{{tohtml
 let html_use_css=1
@@ -1256,6 +1252,7 @@ autocmd FileType vimshell
             \| call vimshell#altercmd#define('i', 'iexe')
             \| call vimshell#altercmd#define('l', 'll')
             \| call vimshell#altercmd#define('ls', 'ls --encoding=utf8')
+            \| call vimshell#altercmd#define('c', 'clear')
             \| call vimshell#altercmd#define('ll', 'ls -l --encoding=utf8')
 "\| call vimshell#hook#add('chpwd', 'my_chpwd', 'g:my_chpwd')
 
@@ -1269,22 +1266,31 @@ endfunction
 map <F4> :VimShellPop<cr>
 "}}}
 "{{{UltiSnips
-"let g:UltiSnipsUsePythonVersion = 3
-"let g:UltiSnipsExpandTrigger='<m-u>'
-"let g:UltiSnipsListSnippets='<c-tab>'
-"let g:UltiSnipsJumpForwardTrigger='<c-j>'
-"let g:UltiSnipsJumpBackwardTrigger='<c-k>'
-let g:UltiSnipsSnippetDirectories=["d:/UltiSnips"]
+let g:UltiSnipsExpandTrigger="<c-j>"
+let g:UltiSnipsListSnippets ="<c-tab>"
+let g:UltiSnipsJumpForwardTrigge="<c-j>"
+let g:UltiSnipsJumpBackwardTrigge="<c-k>"
+"let g:UltiSnipsSnippetDirectories=["bundle/snippets"]
+let g:UltiSnipsSnippetsDir=$VIM."/vimfiles/bundle/snippets"
+au FileType c execute "UltiSnipsAddFiletypes c"
+au FileType cpp execute "UltiSnipsAddFiletypes cpp"
+au FileType verilog execute "UltiSnipsAddFiletypes verilog"
+au FileType vim execute "UltiSnipsAddFiletypes vim"
 "}}}
-"let g:loaded_indentLine=0
-let g:indentLine_enabled = 1
-au FileType verilog let g:indentLine_enabled=0
+"{{{indentline
+au FileType verilog,help let g:indentLine_enabled=0 "DISABLE INDENTLINE 
+au FileType c,cpp,vim let g:indentLine_enabled=1 "ENABLE INDENTLINE 
+"}}}
+"{{{fencview
 let g:fencview_autodetect=0 "it is look like a conflict with c.vim 
 let g:fencview_auto_patterns='*.txt,*.htm{l\=},*.c,*.cpp,*.s,*.vim'
-let g:NERDMenuMode=0
+"}}}
+"{{{renamer
 "rename multi file name
 map <F2> :Ren<cr>
 map <F11> :silent! VE<cr><cr>
+"}}}
+"{{{myvimhelp
 let g:startupfile="first_statup.txt"
 if g:iswindows==1
     let g:start_path=$VIM.'/first_statup.txt'
@@ -1299,6 +1305,10 @@ else
     :only
     map <F1> :h MyVimHelp.txt<cr>
 endif
+"}}}
+"{{{nerdcommander
+let g:NERDMenuMode=1
+"}}}
 "}}}
 "gui releate{{{
 "list of flags that specify how the GUI works
