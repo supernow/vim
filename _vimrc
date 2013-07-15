@@ -2,7 +2,7 @@
 "@brief      config file of vim and gvim for both windows and linux
 "@date       2012-12-30 11:01:30
 "@author     tracyone,tracyone@live.cn
-"@lastchange 2013-07-14/17:46:06
+"@lastchange 2013-07-15/23:15:49
 "@note:		Prior to use, in the case of windows vim convert this file's 
 "			format into dos,while convert it into unix format in the case 
 "			of linux vim
@@ -465,7 +465,6 @@ set nocp
 " Uncomment the following to have Vim load indentation rules and plugins
 " according to the detected filetype.
 filetype off
-syntax on
 func! Vundle()
     if g:iswindows==1 
         set rtp+=~/vimfiles/bundle/vundle
@@ -517,6 +516,14 @@ Bundle 'FuzzyFinder'
 Bundle 'genutils'
 Bundle 'SirVer/ultisnips'
 Bundle 'tracyone/snippets'
+"MarcWeber's ultisnip:
+"ability to read snipmate snippet files on the fly
+"snipmate like snippet completion
+"reloading snippets if snippet files timestamp changes
+"can read both: UltiSnip and snipmate snippet files on the fly
+"Bundle 'MarcWeber/ultisnips' 
+"Bundle 'tomtom/tlib_vim' 
+"Bundle 'honza/vim-snippets'
 if g:iswindows==0 && has("patch584")
     let g:use_ycm=1
 else
@@ -579,7 +586,6 @@ endif
 " :BundleClean(!)      - confirm(or auto-approve) removal of unused bundles
 " see :h vundle for more details or wiki for FAQ
 " NOTE: comments after Bundle command are not allowed..
-filetype plugin indent on
 "}}}
 "{{{tohtml
 let html_use_css=1
@@ -1271,12 +1277,8 @@ let g:UltiSnipsExpandTrigger="<c-j>"
 let g:UltiSnipsListSnippets ="<c-tab>"
 let g:UltiSnipsJumpForwardTrigge="<c-j>"
 let g:UltiSnipsJumpBackwardTrigge="<c-k>"
-"let g:UltiSnipsSnippetDirectories=["bundle/snippets"]
+let g:UltiSnipsSnippetDirectories=["bundle/snippets"]
 let g:UltiSnipsSnippetsDir=$VIM."/vimfiles/bundle/snippets"
-au FileType c execute "UltiSnipsAddFiletypes c"
-au FileType cpp execute "UltiSnipsAddFiletypes cpp"
-au FileType verilog execute "UltiSnipsAddFiletypes verilog"
-au FileType vim execute "UltiSnipsAddFiletypes vim"
 "}}}
 "{{{fencview
 let g:fencview_autodetect=0 "it is look like a conflict with c.vim 
@@ -1305,6 +1307,8 @@ endif
 "{{{nerdcommander
 let g:NERDMenuMode=1
 "}}}
+syntax on
+filetype plugin indent on
 "}}}
 "gui releate{{{
 "list of flags that specify how the GUI works
@@ -1431,4 +1435,3 @@ if(has("gui_running"))
     endfunction
 endif
 "}}}
-
