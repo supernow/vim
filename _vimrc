@@ -2,7 +2,7 @@
 "@brief      config file of vim and gvim for both windows and linux
 "@date       2012-12-30 11:01:30
 "@author     tracyone,tracyone@live.cn
-"@lastchange 2013-07-15/23:15:49
+"@lastchange 2013-07-16/23:37:42
 "@note:		Prior to use, in the case of windows vim convert this file's 
 "			format into dos,while convert it into unix format in the case 
 "			of linux vim
@@ -28,7 +28,6 @@ if (has("win32")) || has("win64")
     let $HOME=$VIM
     set filetype=dos
     set ffs=dos,unix,mac
-    behave  xterm
     "set path=
     let $VIMFILES = $VIM.'/vimfiles'
     let g:iswindows=1 "windows flags
@@ -36,7 +35,6 @@ elseif has("unix")
     set filetype=unix
     set ffs=unix
     set keywordprg=""
-    behave xterm
     set shell=bash
     runtime! debian.vim
     set path=.,/usr/include/ "c++ is in /usr/include/c++/...
@@ -114,6 +112,7 @@ endfunc
 "Strings to use in 'list' mode and for the |:list| command
 set listchars=tab:\|\ ,trail:-
 
+set mousemodel=popup_setpos
 " Uncomment the following to have Vim jump to the last position when
 " reopening a file
 au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
@@ -1400,6 +1399,11 @@ if(has("gui_running"))
         tmenu ToolBar.Project Load project and start debug
         tmenu ToolBar.SaveProject Save Project setting(save as .proj)
     endif
+    amenu PopUp.-SEP3-	<Nop>
+    amenu PopUp.&Goto\ Definition :cs find g <C-R>=expand("<cword>")<CR><CR>
+    amenu PopUp.&Find\ Text :cs find t <C-R>=expand("<cword>")<CR><CR>:cw 7<cr>
+    amenu PopUp.&Open\ Header/Source :AT<cr>
+    amenu PopUp.&Undo "" 
     "chose your colorscheme
     let g:colorscheme_file='' "color thmem's name  
     if g:iswindows == 0
