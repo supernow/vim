@@ -2,7 +2,7 @@
 "@brief      config file of vim and gvim for both windows and linux
 "@date       2012-12-30 11:01:30
 "@author     tracyone,tracyone@live.cn
-"@lastchange 2013-07-16/23:37:42
+"@lastchange 2013-07-17/23:46:51
 "@note:		Prior to use, in the case of windows vim convert this file's 
 "			format into dos,while convert it into unix format in the case 
 "			of linux vim
@@ -88,7 +88,7 @@ endfunction
 set foldtext=MyFoldText()
 autocmd FileType vim set foldmethod=marker 
 autocmd FileType vim set foldlevel=0
-nmap <TAB> za
+nnoremap <silent><tab> @=(foldlevel('.')?'za':"\<tab>")<CR>
 "set foldtext=foldtext()
 "}}}
 "highlight Pmenu ctermbg=13 guibg=LightGray
@@ -505,6 +505,7 @@ endif
 " Bundle 'tpope/vim-rails.git'
 " vim-scripts repos
 Bundle 'a.vim'
+Bundle 'verilog.vim'
 Bundle 'tracyone/dict'
 Bundle 'tracyone/Align'
 Bundle 'tracyone/calendar'
@@ -708,7 +709,7 @@ function! CreateCscopeTags()
         execute "echo \"Creating cscope.files...\r\"" 
     endif
     call system("touch cscope.files")
-    call system("find $PWD -name \"*.[chsS]\" > ./cscope.files")
+    call system("find $PWD -name \"*.[chsSv]\" > ./cscope.files")
     call system("cscope -Rbckq -i cscope.files")
     call system("ctags -R")
     execute "echo \"finish!\"" 
@@ -770,9 +771,9 @@ function! CreateCscopeTags()
         endif
         if(executable('cscope') && has("cscope") )
             if(g:iswindows!=1)
-                silent! execute "!find . -name \"*.[chsS]\" > ./cscope.files"
+                silent! execute "!find . -name \"*.[chsSv]\" > ./cscope.files"
             else
-                silent! execute "!dir /s/b *.c,*.cpp,*.h,*.java,*.cs,*.s,*.asm >> cscope.files"
+                silent! execute "!dir /s/b *.c,*.cpp,*.h,*.java,*.cs,*.s,*.asm,*.v >> cscope.files"
             endif
             silent! execute "!cscope -Rbkq -i cscope.files"
             "silent! execute "!ccglue -S cscope.out -o ccglue.out" "don not know how to use
@@ -1245,7 +1246,7 @@ else
     " Display user name on Linux.
     let g:vimshell_prompt = $USER."% "
 endif
-
+let g:vimshell_popup_command='rightbelow 10split'
 " Initialize execute file list.
 let g:vimshell_execute_file_list = {}
 call vimshell#set_execute_file('txt,vim,c,h,cpp,d,xml,java', 'vim')
@@ -1269,7 +1270,8 @@ autocmd FileType vimshell
 autocmd FileType int-* call s:interactive_settings()
 function! s:interactive_settings()
 endfunction
-map <F4> :VimShellPop $CurBufferDir<cr>
+"map <F4> :VimShellPop $CurBufferDir<cr>
+map <F4> :VimShellPop<cr>
 "}}}
 "{{{UltiSnips
 let g:UltiSnipsExpandTrigger="<c-j>"
