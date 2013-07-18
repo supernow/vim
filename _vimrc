@@ -134,7 +134,10 @@ endif
 "}}}
 
 set report=0  "Threshold for reporting number of lines changed
-
+" Don't update the display while executing macros
+set lazyredraw
+" Set up the gui cursor to look nice
+set guicursor=n-v-c:block-Cursor-blinkon0,ve:ver35-Cursor,o:hor50-Cursor,i-ci:ver25-Cursor,r-cr:hor20-Cursor,sm:block-Cursor-blinkwait175-blinkoff150-blinkon175
 "help doc dir
 "let helptags=$VIMFILES.'/doc'
 set modeline
@@ -358,14 +361,6 @@ nmap <A-k> <C-w>k
 "replace
 nmap <c-h> :%s/<C-R>=expand("<cword>")<cr>/
 
-map <F5> :call Do_make()<CR>
-
-function! Do_make()
-    set makeprg=make
-    execute "silent make"
-    execute "copen"
-endfunction 
-
 "compile and run open quickfix if wrong
 
 "delete the ^M
@@ -379,7 +374,14 @@ nmap <m-6> <esc>6gt
 nmap <m-7> <esc>7gt
 nmap <m-8> <esc>8gt
 nmap <m-9> <esc>9gt
-
+"cd to current buffer's path
+nmap <silent> ,cd :lcd %:h<CR>
+"resize windows
+"
+noremap <silent> <C-F9> :vertical resize -10<CR>
+noremap <silent> <C-F10> :resize +10<CR>
+noremap <silent> <C-F11> :resize -10<CR>
+noremap <silent> <C-F12> :vertical resize +10<CR>
 func! Getvimrc()
     if g:iswindows==1
         cd $VIM
@@ -569,6 +571,7 @@ Bundle 'tracyone/MyVimHelp'
 Bundle 'scrooloose/syntastic'
 Bundle 'Shougo/vimproc.vim'
 Bundle 'Shougo/vimshell.vim'
+Bundle 'git://github.com/sjl/gundo.vim.git'
 if g:iswindows == 1
     Bundle 'tracyone/pyclewn' 
 else
@@ -1308,6 +1311,9 @@ endif
 "{{{nerdcommander
 let g:NERDMenuMode=1
 "}}}
+"{{{gundo
+nmap <F5> :GundoToggle<CR>
+"}}}
 syntax on
 filetype plugin indent on
 "}}}
@@ -1402,10 +1408,10 @@ if(has("gui_running"))
         tmenu ToolBar.SaveProject Save Project setting(save as .proj)
     endif
     amenu PopUp.-SEP3-	<Nop>
+    amenu PopUp.&Undo :GundoToggle<CR>
     amenu PopUp.&Goto\ Definition :cs find g <C-R>=expand("<cword>")<CR><CR>
     amenu PopUp.&Find\ Text :cs find t <C-R>=expand("<cword>")<CR><CR>:cw 7<cr>
     amenu PopUp.&Open\ Header/Source :AT<cr>
-    amenu PopUp.&Undo "" 
     "chose your colorscheme
     let g:colorscheme_file='' "color thmem's name  
     if g:iswindows == 0
