@@ -2,7 +2,7 @@
 "@brief      config file of vim and gvim for both windows and linux
 "@date       2012-12-30 11:01:30
 "@author     tracyone,tracyone@live.cn
-"@lastchange 2013-07-17/23:46:51
+"@lastchange 2013-07-18/22:31:43
 "@note:		Prior to use, in the case of windows vim convert this file's 
 "			format into dos,while convert it into unix format in the case 
 "			of linux vim
@@ -646,7 +646,7 @@ if has("cscope")
     " check cscope for definition of a symbol before checking ctags: set to 1
     " if you want the reverse search order.
     set csto=0
-    set cscopequickfix=s-,c-,d-,i-,t-,e-,i-,g-
+    set cscopequickfix=s-,c-,d-,i-,t-,e-,i-,g-,f-
     " add any cscope database in current directory
     " else add the database pointed to by environment variable 
     set cscopetagorder=0
