@@ -377,7 +377,68 @@ nmap <m-9> <esc>9gt
 "cd to current buffer's path
 nmap <silent> ,cd :lcd %:h<CR>
 "resize windows
-"
+map <F5> :call Do_OneFileMake()<CR>
+function! Do_OneFileMake()
+    if expand("%:p:h")!=getcwd()
+        echohl WarningMsg | echo "Fail to make! This file is not in the current dir! Press <F7> to redirect to the dir of this file." | echohl None
+        return
+    endif
+    let sourcefileename=expand("%:t")
+    if (sourcefileename=="" || (&filetype!="cpp" && &filetype!="c"))
+        echohl WarningMsg | echo "Fail to make! Please select the right file!" | echohl None
+        return
+    endif
+    let deletedspacefilename=substitute(sourcefileename,' ','','g')
+    if strlen(deletedspacefilename)!=strlen(sourcefileename)
+        echohl WarningMsg | echo "Fail to make! Please delete the spaces in the filename!" | echohl None
+        return
+    endif
+    if &filetype=="c"
+        if g:iswindows==1
+            set makeprg=gcc\ -g\ -o\ %<.exe\ %
+        else
+            set makeprg=gcc\ -g\ -o\ %<\ %
+        endif
+    elseif &filetype=="cpp"
+        if g:iswindows==1
+            set makeprg=g++\ -o\ %<.exe\ %
+        else
+            set makeprg=g++\ -o\ %<\ %
+        endif
+        "elseif &filetype=="cs"
+        "set makeprg=csc\ \/nologo\ \/out:%<.exe\ %
+    endif
+    if(g:iswindows==1)
+        let outfilename=substitute(sourcefileename,'\(\.[^.]*\)' ,'.exe','g')
+        let toexename=outfilename
+    else
+        let outfilename=substitute(sourcefileename,'\(\.[^.]*\)' ,'','g')
+        let toexename=outfilename
+    endif
+    if filereadable(outfilename)
+        if(g:iswindows==1)
+            let outdeletedsuccess=delete(getcwd()."\\".outfilename)
+        else
+            let outdeletedsuccess=delete("./".outfilename)
+        endif
+        if(outdeletedsuccess!=0)
+            set makeprg=make
+            echohl WarningMsg | echo "Fail to make! I cannot delete the ".outfilename | echohl None
+            return
+        endif
+    endif
+    execute "silent make"
+    set makeprg=make
+    execute "normal :"
+    if filereadable(outfilename)
+        if(g:iswindows==1)
+            execute "!".toexename
+        else
+            execute "!./".toexename
+        endif
+    endif
+    execute "copen"
+endfunction
 noremap <silent> <C-F9> :vertical resize -10<CR>
 noremap <silent> <C-F10> :resize +10<CR>
 noremap <silent> <C-F11> :resize -10<CR>
@@ -674,15 +735,6 @@ nmap <C-@>e :split<CR>:cs find e <C-R>=expand("<cword>")<CR><CR>
 nmap <C-@>f :split<CR>:cs find f <C-R>=expand("<cfile>")<CR><CR>
 nmap <C-@>i :split<CR>:cs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
 
-nmap <C-@><C-@>s :vert split<CR>:cs find s <C-R>=expand("<cword>")<CR><CR>
-nmap <C-@><C-@>g :vert split<CR>:cs find g <C-R>=expand("<cword>")<CR><CR>
-nmap <C-@><C-@>d :vert split<CR>:cs find d <C-R>=expand("<cword>")<CR> <C-R>=expand("%")<CR><CR>
-nmap <C-@><C-@>c :vert split<CR>:cs find c <C-R>=expand("<cword>")<CR><CR>
-nmap <C-@><C-@>t :vert split<CR>:cs find t <C-R>=expand("<cword>")<CR><CR>
-nmap <C-@><C-@>e :vert split<CR>:cs find e <C-R>=expand("<cword>")<CR><CR>
-nmap <C-@><C-@>f :vert split<CR>:cs find f <C-R>=expand("<cfile>")<CR><CR>
-nmap <C-@><C-@>i :vert split<CR>:cs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
-
 nmap <C-\>s :cs find s 
 nmap <C-\>g :cs find g 
 nmap <C-\>c :cs find c 
@@ -774,11 +826,11 @@ function! CreateCscopeTags()
         endif
         if(executable('cscope') && has("cscope") )
             if(g:iswindows!=1)
-                silent! execute "!find . -name \"*.[chsSv]\" > ./cscope.files"
+                silent! execute "!find . -name \"*.[chsS]\" > ./cscope.files"
             else
-                silent! execute "!dir /s/b *.c,*.cpp,*.h,*.java,*.cs,*.s,*.asm,*.v >> cscope.files"
+                silent! execute "!dir /s/b *.c,*.cpp,*.h,*.java,*.cs,*.s,*.asm >> cscope.files"
             endif
-            silent! execute "!cscope -Rbkq -i cscope.files"
+             execute "!cscope -Rbkq -i cscope.files"
             "silent! execute "!ccglue -S cscope.out -o ccglue.out" "don not know how to use
             execute "normal :"
             if filereadable("cscope.out")
@@ -1277,6 +1329,11 @@ endfunction
 map <F4> :VimShellPop<cr>
 "}}}
 "{{{UltiSnips
+if g:iswindows==1
+    let g:UltiSnipsUsePythonVersion = 3
+else
+    let g:UltiSnipsUsePythonVersion = 2
+endif
 let g:UltiSnipsExpandTrigger="<c-j>"
 let g:UltiSnipsListSnippets ="<c-tab>"
 let g:UltiSnipsJumpForwardTrigge="<c-j>"
@@ -1312,7 +1369,7 @@ endif
 let g:NERDMenuMode=1
 "}}}
 "{{{gundo
-nmap <F5> :GundoToggle<CR>
+"nmap <F5> :GundoToggle<CR>
 "}}}
 syntax on
 filetype plugin indent on
