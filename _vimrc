@@ -1379,6 +1379,11 @@ let g:NERDMenuMode=1
 "{{{gundo
 "nmap <F5> :GundoToggle<CR>
 "}}}
+"{{{yankring
+nmap <c-y> :YRGetElem<CR>
+imap <c-y> <esc>:YRGetElem<CR>
+"vmap <c-y> :YRGetElem<CR>
+"}}}
 syntax on
 filetype plugin indent on
 "}}}
