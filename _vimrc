@@ -98,7 +98,7 @@ nnoremap <silent><tab> @=(foldlevel('.')?'za':"\<tab>")<CR>
 " If using a dark background within the editing area and syntax highlighting
 " turn on this option as well
 set background=light
-
+set pastetoggle=<m-p>
 nmap <F6> :call Dosunix()<cr>
 func! Dosunix()
     if &ff == 'unix'
@@ -209,7 +209,7 @@ set selection=inclusive
 set is
 
 "wrap long lines at a character in 'breakat'
-"set lbr
+set lbr
 
 "specifies what <BS>, CTRL-W, etc. can do in Insert mode
 set backspace=indent,eol,start
@@ -334,6 +334,7 @@ xnoremap <m-a> <C-C>ggVG
 "Alignment
 nmap <m-=> <esc>ggVG=``
 
+map <c-m-t> :tabnew<cr>
 " CTRL-X and SHIFT-Del are Cut
 vnoremap <C-X> "+x
 
@@ -358,6 +359,11 @@ nmap <A-h> <C-w>h
 nmap <A-l> <C-w>l
 nmap <A-j> <C-w>j
 nmap <A-k> <C-w>k
+
+cmap <A-h> <Left>
+cmap <A-l> <Right>
+cmap <A-j> <Down>
+cmap <A-k> <Up>
 "replace
 nmap <c-h> :%s/<C-R>=expand("<cword>")<cr>/
 
@@ -568,16 +574,18 @@ endif
 " Bundle 'tpope/vim-rails.git'
 " vim-scripts repos
 Bundle 'a.vim'
-Bundle 'verilog.vim'
 Bundle 'tracyone/dict'
+Bundle 'EasyGrep'
 Bundle 'tracyone/Align'
 Bundle 'tracyone/calendar'
 Bundle 'tracyone/Colour-Sampler-Pack'
+Bundle 'altercation/vim-colors-solarized'
 Bundle 'kien/ctrlp.vim'
 Bundle 'delimitMate.vim'
 Bundle 'FuzzyFinder'
 Bundle 'genutils'
 Bundle 'SirVer/ultisnips'
+Bundle 'YankRing.vim'
 Bundle 'tracyone/snippets'
 "MarcWeber's ultisnip:
 "ability to read snipmate snippet files on the fly
@@ -587,7 +595,7 @@ Bundle 'tracyone/snippets'
 "Bundle 'MarcWeber/ultisnips' 
 "Bundle 'tomtom/tlib_vim' 
 "Bundle 'honza/vim-snippets'
-if g:iswindows==0 && has("patch584")
+if g:iswindows==0 && (has("patch584") || version >= 704)
     let g:use_ycm=1
 else
     if has("patch885") && has('lua')
@@ -828,7 +836,7 @@ function! CreateCscopeTags()
             if(g:iswindows!=1)
                 silent! execute "!find . -name \"*.[chsS]\" > ./cscope.files"
             else
-                silent! execute "!dir /s/b *.c,*.cpp,*.h,*.java,*.cs,*.s,*.asm >> cscope.files"
+                silent! execute "!dir /s/b *.c,*.cpp,*.h,*.java,*.cs,*.s,*.asm > cscope.files"
             endif
              execute "!cscope -Rbkq -i cscope.files"
             "silent! execute "!ccglue -S cscope.out -o ccglue.out" "don not know how to use
@@ -1380,6 +1388,7 @@ if(has("gui_running"))
     if g:iswindows==0
         au GUIEnter * call MaximizeWindow()
         set guifont=Consolas\ 14
+        set gfw=YaHei_Mono_Hybird_Consolas\ 12.5
     else
         au GUIEnter * simalt~x "maximize window
         set guifont=Consolas:h14:cANSI
