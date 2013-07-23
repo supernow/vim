@@ -98,7 +98,7 @@ nnoremap <silent><tab> @=(foldlevel('.')?'za':"\<tab>")<CR>
 " If using a dark background within the editing area and syntax highlighting
 " turn on this option as well
 set background=light
-set pastetoggle=<m-p>
+"set pastetoggle=<m-p> it is useful when in vim
 nmap <F6> :call Dosunix()<cr>
 func! Dosunix()
     if &ff == 'unix'
@@ -574,9 +574,9 @@ endif
 " Bundle 'tpope/vim-rails.git'
 " vim-scripts repos
 Bundle 'a.vim'
-Bundle 'verilog.vim'
 Bundle 'tracyone/dict'
 Bundle 'EasyGrep'
+Bundle 'verilog.vim'
 Bundle 'tracyone/Align'
 Bundle 'tracyone/calendar'
 Bundle 'tracyone/Colour-Sampler-Pack'
@@ -839,7 +839,7 @@ function! CreateCscopeTags()
             else
                 silent! execute "!dir /s/b *.c,*.cpp,*.h,*.java,*.cs,*.s,*.asm > cscope.files"
             endif
-             execute "!cscope -Rbkq -i cscope.files"
+             silent! execute "!cscope -Rbkq -i cscope.files"
             "silent! execute "!ccglue -S cscope.out -o ccglue.out" "don not know how to use
             execute "normal :"
             if filereadable("cscope.out")
@@ -1379,6 +1379,14 @@ let g:NERDMenuMode=1
 "}}}
 "{{{gundo
 "nmap <F5> :GundoToggle<CR>
+"}}}
+"{{{yankring
+nmap <c-y> :YRGetElem<CR>
+imap <c-y> <esc>:YRGetElem<CR>
+let  g:yankring_default_menu_mode = 0
+let yankring_replace_n_pkey='<m-p>'
+let yankring_replace_n_nkey='<m-n>'
+"vmap <c-y> :YRGetElem<CR>
 "}}}
 syntax on
 filetype plugin indent on
