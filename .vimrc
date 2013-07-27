@@ -98,7 +98,7 @@ nnoremap <silent><tab> @=(foldlevel('.')?'za':"\<tab>")<CR>
 " If using a dark background within the editing area and syntax highlighting
 " turn on this option as well
 set background=light
-set pastetoggle=<m-p>
+"set pastetoggle=<m-p> it is useful when in vim
 nmap <F6> :call Dosunix()<cr>
 func! Dosunix()
     if &ff == 'unix'
@@ -574,9 +574,9 @@ endif
 " Bundle 'tpope/vim-rails.git'
 " vim-scripts repos
 Bundle 'a.vim'
-Bundle 'verilog.vim'
 Bundle 'tracyone/dict'
 Bundle 'EasyGrep'
+Bundle 'verilog.vim'
 Bundle 'tracyone/Align'
 Bundle 'tracyone/calendar'
 Bundle 'tracyone/Colour-Sampler-Pack'
@@ -839,7 +839,7 @@ function! CreateCscopeTags()
             else
                 silent! execute "!dir /s/b *.c,*.cpp,*.h,*.java,*.cs,*.s,*.asm > cscope.files"
             endif
-             execute "!cscope -Rbkq -i cscope.files"
+             silent! execute "!cscope -Rbkq -i cscope.files"
             "silent! execute "!ccglue -S cscope.out -o ccglue.out" "don not know how to use
             execute "normal :"
             if filereadable("cscope.out")
@@ -1380,6 +1380,14 @@ let g:NERDMenuMode=1
 "{{{gundo
 "nmap <F5> :GundoToggle<CR>
 "}}}
+"{{{yankring
+nmap <c-y> :YRGetElem<CR>
+imap <c-y> <esc>:YRGetElem<CR>
+let  g:yankring_default_menu_mode = 0
+let yankring_replace_n_pkey='<m-p>'
+let yankring_replace_n_nkey='<m-n>'
+"vmap <c-y> :YRGetElem<CR>
+"}}}
 syntax on
 filetype plugin indent on
 "}}}
@@ -1443,9 +1451,7 @@ if(has("gui_running"))
             amenu icon=$VIMFILES/bundle/pyclewn/debug_icons/dbgrunto.bmp ToolBar.Runto :Ccontinue<cr>
             amenu icon=$VIMFILES/bundle/pyclewn/debug_icons/dbgstepout.bmp ToolBar.Finish :Cfinish<cr>
             amenu icon=$VIMFILES/bundle/pyclewn/debug_icons/dbgwindow.bmp ToolBar.Watch :call OpenClosedbgvar()<cr>
-            if filereadable(".proj")
-                amenu icon=$VIMFILES/bundle/pyclewn/debug_icons/project.bmp ToolBar.Project :silent! Pyclewn<cr>:call Pyclewnmap()<cr>:Csource .proj<cr>:Cstart<cr>
-            endif
+            amenu icon=$VIMFILES/bundle/pyclewn/debug_icons/project.bmp ToolBar.Project :silent! Pyclewn<cr>:call Pyclewnmap()<cr>:Csource .proj<cr>:Cstart<cr>
             amenu icon=$VIMFILES/bundle/pyclewn/debug_icons/filesaveas.bmp ToolBar.SaveProject :Cproject .proj<cr>
         else
             amenu icon=$VIMFILES/bundle/pyclewn_linux/debug_icons/dbgrun.png ToolBar.Run :silent! Pyclewn<cr>:silent! call Pyclewnmap()<cr>:Cinferiortty<cr>
@@ -1457,9 +1463,7 @@ if(has("gui_running"))
             amenu icon=$VIMFILES/bundle/pyclewn_linux/debug_icons/dbgrunto.png ToolBar.Runto :Ccontinue<cr>
             amenu icon=$VIMFILES/bundle/pyclewn_linux/debug_icons/dbgstepout.png ToolBar.Finish :Cfinish<cr>
             amenu icon=$VIMFILES/bundle/pyclewn_linux/debug_icons/dbgwindow.png ToolBar.Watch :call OpenClosedbgvar()<cr>
-            if filereadable(".proj")
-                amenu icon=$VIMFILES/bundle/pyclewn_linux/debug_icons/project.png ToolBar.Project :silent! Pyclewn<cr>:call Pyclewnmap()<cr>:Cinferiortty<cr>:Csource .proj<cr>:Cstart<cr>
-            endif
+            amenu icon=$VIMFILES/bundle/pyclewn_linux/debug_icons/project.png ToolBar.Project :silent! Pyclewn<cr>:call Pyclewnmap()<cr>:Cinferiortty<cr>:Csource .proj<cr>:Cstart<cr>
             amenu icon=$VIMFILES/bundle/pyclewn_linux/debug_icons/filesaveas.png ToolBar.SaveProject :Cproject .proj<cr>
         endif
         tmenu ToolBar.Run Connect pyclewn-->Map keys-->Cfile <user input>
