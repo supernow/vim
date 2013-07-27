@@ -1,5 +1,5 @@
 vim
 ===
 
-.vimrc for linux ._vimrc for windows
+.vimrc for linux _vimrc for windows
 
