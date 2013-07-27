@@ -2,7 +2,7 @@
 "@brief      config file of vim and gvim for both windows and linux
 "@date       2012-12-30 11:01:30
 "@author     tracyone,tracyone@live.cn
-"@lastchange 2013-07-18/22:31:43
+"@lastchange 2013-07-27/09:33:58
 "@note:		Prior to use, in the case of windows vim convert this file's 
 "			format into dos,while convert it into unix format in the case 
 "			of linux vim
@@ -264,6 +264,7 @@ set winaltkeys=no
 "visual mode hit tab forward indent ,hit shift-tab backward indent
 vmap <TAB>  >gv  
 vmap <s-TAB>  <gv 
+nmap <c-TAB>  :tabnext<cr>
 "leader key
 let mapleader=","
 "open the vimrc
@@ -334,7 +335,8 @@ xnoremap <m-a> <C-C>ggVG
 "Alignment
 nmap <m-=> <esc>ggVG=``
 
-map <c-m-t> :tabnew<cr>
+nmap <m-t> :tabnew<cr>
+imap <m-t> <esc>:tabnew<cr>
 " CTRL-X and SHIFT-Del are Cut
 vnoremap <C-X> "+x
 
@@ -371,15 +373,15 @@ nmap <c-h> :%s/<C-R>=expand("<cword>")<cr>/
 
 "delete the ^M
 nmap dm :%s/\r\(\n\)/\1/g<CR>
-nmap <m-1> <esc>1gt
-nmap <m-2> <esc>2gt
-nmap <m-3> <esc>3gt
-nmap <m-4> <esc>4gt
-nmap <m-5> <esc>5gt
-nmap <m-6> <esc>6gt
-nmap <m-7> <esc>7gt
-nmap <m-8> <esc>8gt
-nmap <m-9> <esc>9gt
+map <m-1> <esc>1gt
+map <m-2> <esc>2gt
+map <m-3> <esc>3gt
+map <m-4> <esc>4gt
+map <m-5> <esc>5gt
+map <m-6> <esc>6gt
+map <m-7> <esc>7gt
+map <m-8> <esc>8gt
+map <m-9> <esc>9gt
 "cd to current buffer's path
 nmap <silent> ,cd :lcd %:h<CR>
 "resize windows
@@ -576,6 +578,7 @@ endif
 Bundle 'a.vim'
 Bundle 'tracyone/dict'
 Bundle 'EasyGrep'
+Bundle 'verilog.vim'
 Bundle 'tracyone/Align'
 Bundle 'tracyone/calendar'
 Bundle 'tracyone/Colour-Sampler-Pack'
@@ -838,7 +841,7 @@ function! CreateCscopeTags()
             else
                 silent! execute "!dir /s/b *.c,*.cpp,*.h,*.java,*.cs,*.s,*.asm > cscope.files"
             endif
-             execute "!cscope -Rbkq -i cscope.files"
+            silent! execute "!cscope -Rbkq -i cscope.files"
             "silent! execute "!ccglue -S cscope.out -o ccglue.out" "don not know how to use
             execute "normal :"
             if filereadable("cscope.out")
@@ -1382,7 +1385,9 @@ let g:NERDMenuMode=1
 "{{{yankring
 nmap <c-y> :YRGetElem<CR>
 imap <c-y> <esc>:YRGetElem<CR>
-"vmap <c-y> :YRGetElem<CR>
+let yankring_default_menu_mode = 0
+let g:yankring_replace_n_pkey = '<m-p>'
+let g:yankring_replace_n_nkey = '<m-n>'
 "}}}
 syntax on
 filetype plugin indent on
@@ -1447,9 +1452,7 @@ if(has("gui_running"))
             amenu icon=$VIMFILES/bundle/pyclewn/debug_icons/dbgrunto.bmp ToolBar.Runto :Ccontinue<cr>
             amenu icon=$VIMFILES/bundle/pyclewn/debug_icons/dbgstepout.bmp ToolBar.Finish :Cfinish<cr>
             amenu icon=$VIMFILES/bundle/pyclewn/debug_icons/dbgwindow.bmp ToolBar.Watch :call OpenClosedbgvar()<cr>
-            if filereadable(".proj")
-                amenu icon=$VIMFILES/bundle/pyclewn/debug_icons/project.bmp ToolBar.Project :silent! Pyclewn<cr>:call Pyclewnmap()<cr>:Csource .proj<cr>:Cstart<cr>
-            endif
+            amenu icon=$VIMFILES/bundle/pyclewn/debug_icons/project.bmp ToolBar.Project :silent! Pyclewn<cr>:call Pyclewnmap()<cr>:Csource .proj<cr>:Cstart<cr>
             amenu icon=$VIMFILES/bundle/pyclewn/debug_icons/filesaveas.bmp ToolBar.SaveProject :Cproject .proj<cr>
         else
             amenu icon=$VIMFILES/bundle/pyclewn_linux/debug_icons/dbgrun.png ToolBar.Run :silent! Pyclewn<cr>:silent! call Pyclewnmap()<cr>:Cinferiortty<cr>
@@ -1461,9 +1464,7 @@ if(has("gui_running"))
             amenu icon=$VIMFILES/bundle/pyclewn_linux/debug_icons/dbgrunto.png ToolBar.Runto :Ccontinue<cr>
             amenu icon=$VIMFILES/bundle/pyclewn_linux/debug_icons/dbgstepout.png ToolBar.Finish :Cfinish<cr>
             amenu icon=$VIMFILES/bundle/pyclewn_linux/debug_icons/dbgwindow.png ToolBar.Watch :call OpenClosedbgvar()<cr>
-            if filereadable(".proj")
-                amenu icon=$VIMFILES/bundle/pyclewn_linux/debug_icons/project.png ToolBar.Project :silent! Pyclewn<cr>:call Pyclewnmap()<cr>:Cinferiortty<cr>:Csource .proj<cr>:Cstart<cr>
-            endif
+            amenu icon=$VIMFILES/bundle/pyclewn_linux/debug_icons/project.png ToolBar.Project :silent! Pyclewn<cr>:call Pyclewnmap()<cr>:Cinferiortty<cr>:Csource .proj<cr>:Cstart<cr>
             amenu icon=$VIMFILES/bundle/pyclewn_linux/debug_icons/filesaveas.png ToolBar.SaveProject :Cproject .proj<cr>
         endif
         tmenu ToolBar.Run Connect pyclewn-->Map keys-->Cfile <user input>
