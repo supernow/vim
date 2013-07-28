@@ -2,7 +2,7 @@
 "@brief      config file of vim and gvim for both windows and linux
 "@date       2012-12-30 11:01:30
 "@author     tracyone,tracyone@live.cn
-"@lastchange 2013-07-28/19:34:56
+"@lastchange 2013-07-28/19:53:55
 "@note:		Prior to use, in the case of windows vim convert this file's 
 "			format into dos,while convert it into unix format in the case 
 "			of linux vim
@@ -32,7 +32,6 @@ if (has("win32")) || has("win64")
     let $VIMFILES = $VIM.'/vimfiles'
     let g:iswindows=1 "windows flags
 elseif has("unix")
-    let $VIM=$HOME
     set filetype=unix
     set ffs=unix
     set keywordprg=""
@@ -267,6 +266,7 @@ set winaltkeys=no
 "visual mode hit tab forward indent ,hit shift-tab backward indent
 vmap <TAB>  >gv  
 vmap <s-TAB>  <gv 
+nmap <c-TAB>  :tabnext<cr>
 "leader key
 let mapleader=","
 "open the vimrc
@@ -337,7 +337,8 @@ xnoremap <m-a> <C-C>ggVG
 "Alignment
 nmap <m-=> <esc>ggVG=``
 
-map <c-m-t> :tabnew<cr>
+nmap <c-m-t> :tabnew<cr>
+imap <c-m-t> <esc>:tabnew<cr>
 " CTRL-X and SHIFT-Del are Cut
 vnoremap <C-X> "+x
 
@@ -374,15 +375,15 @@ nmap <c-h> :%s/<C-R>=expand("<cword>")<cr>/
 
 "delete the ^M
 nmap dm :%s/\r\(\n\)/\1/g<CR>
-nmap <m-1> <esc>1gt
-nmap <m-2> <esc>2gt
-nmap <m-3> <esc>3gt
-nmap <m-4> <esc>4gt
-nmap <m-5> <esc>5gt
-nmap <m-6> <esc>6gt
-nmap <m-7> <esc>7gt
-nmap <m-8> <esc>8gt
-nmap <m-9> <esc>9gt
+map <m-1> <esc>1gt
+map <m-2> <esc>2gt
+map <m-3> <esc>3gt
+map <m-4> <esc>4gt
+map <m-5> <esc>5gt
+map <m-6> <esc>6gt
+map <m-7> <esc>7gt
+map <m-8> <esc>8gt
+map <m-9> <esc>9gt
 "cd to current buffer's path
 nmap <silent> ,cd :lcd %:h<CR>
 "resize windows
@@ -842,7 +843,7 @@ function! CreateCscopeTags()
             else
                 silent! execute "!dir /s/b *.c,*.cpp,*.h,*.java,*.cs,*.s,*.asm > cscope.files"
             endif
-             silent! execute "!cscope -Rbkq -i cscope.files"
+            silent! execute "!cscope -Rbkq -i cscope.files"
             "silent! execute "!ccglue -S cscope.out -o ccglue.out" "don not know how to use
             execute "normal :"
             if filereadable("cscope.out")
@@ -1199,7 +1200,6 @@ let g:ctrlp_working_path_mode = 'w'
 let g:ctrlp_custom_ignore = {
             \ 'dir': '\.git$\|\.hg$\|\.svn$\|target$\|built$\|.build$\|node_modules\|\.sass-cache',
             \ 'file': '\v\.(exe|so|dll|o)$',
-            \ 'link': 'SOME_BAD_SYMBOLIC_LINKS',
             \ }
 let g:ctrlp_extensions = ['tag', 'buffertag', 'dir', 'bookmarkdir']
 "}}}
@@ -1387,10 +1387,9 @@ let g:NERDMenuMode=1
 "{{{yankring
 nmap <c-y> :YRGetElem<CR>
 imap <c-y> <esc>:YRGetElem<CR>
-let  g:yankring_default_menu_mode = 0
-let yankring_replace_n_pkey='<m-p>'
-let yankring_replace_n_nkey='<m-n>'
-"vmap <c-y> :YRGetElem<CR>
+let g:yankring_default_menu_mode = 0
+let g:yankring_replace_n_pkey = '<m-p>'
+let g:yankring_replace_n_nkey = '<m-n>'
 "}}}
 syntax on
 filetype plugin indent on

@@ -2,7 +2,7 @@
 "@brief      config file of vim and gvim for both windows and linux
 "@date       2012-12-30 11:01:30
 "@author     tracyone,tracyone@live.cn
-"@lastchange 2013-07-27/09:33:58
+"@lastchange 2013-07-28/19:53:31
 "@note:		Prior to use, in the case of windows vim convert this file's 
 "			format into dos,while convert it into unix format in the case 
 "			of linux vim
@@ -48,7 +48,9 @@ endif
 "folding type: "manual", "indent", "expr", "marker" or "syntax"
 set foldenable                  " enable folding
 autocmd FileType c,cpp set foldmethod=syntax 
-autocmd FileType verilog set foldmethod=manual 
+autocmd FileType verilog set foldmethod=marker 
+autocmd FileType verilog set foldmarker=begin,end 
+autocmd FileType sh set foldmethod=indent
 set foldlevel=100         " start out with everything folded
 set foldopen=block,hor,insert,jump,mark,percent,quickfix,search,tag,undo
 set foldcolumn=1
@@ -98,7 +100,7 @@ nnoremap <silent><tab> @=(foldlevel('.')?'za':"\<tab>")<CR>
 " If using a dark background within the editing area and syntax highlighting
 " turn on this option as well
 set background=light
-set pastetoggle=<m-p>
+"set pastetoggle=<m-p> it is useful when in vim
 nmap <F6> :call Dosunix()<cr>
 func! Dosunix()
     if &ff == 'unix'
@@ -335,8 +337,8 @@ xnoremap <m-a> <C-C>ggVG
 "Alignment
 nmap <m-=> <esc>ggVG=``
 
-nmap <m-t> :tabnew<cr>
-imap <m-t> <esc>:tabnew<cr>
+nmap <c-m-t> :tabnew<cr>
+imap <c-m-t> <esc>:tabnew<cr>
 " CTRL-X and SHIFT-Del are Cut
 vnoremap <C-X> "+x
 
@@ -1385,7 +1387,7 @@ let g:NERDMenuMode=1
 "{{{yankring
 nmap <c-y> :YRGetElem<CR>
 imap <c-y> <esc>:YRGetElem<CR>
-let yankring_default_menu_mode = 0
+let g:yankring_default_menu_mode = 0
 let g:yankring_replace_n_pkey = '<m-p>'
 let g:yankring_replace_n_nkey = '<m-n>'
 "}}}
