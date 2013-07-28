@@ -2,7 +2,7 @@
 "@brief      config file of vim and gvim for both windows and linux
 "@date       2012-12-30 11:01:30
 "@author     tracyone,tracyone@live.cn
-"@lastchange 2013-07-18/22:31:43
+"@lastchange 2013-07-28/19:34:56
 "@note:		Prior to use, in the case of windows vim convert this file's 
 "			format into dos,while convert it into unix format in the case 
 "			of linux vim
@@ -32,6 +32,7 @@ if (has("win32")) || has("win64")
     let $VIMFILES = $VIM.'/vimfiles'
     let g:iswindows=1 "windows flags
 elseif has("unix")
+    let $VIM=$HOME
     set filetype=unix
     set ffs=unix
     set keywordprg=""
@@ -48,7 +49,9 @@ endif
 "folding type: "manual", "indent", "expr", "marker" or "syntax"
 set foldenable                  " enable folding
 autocmd FileType c,cpp set foldmethod=syntax 
-autocmd FileType verilog set foldmethod=manual 
+autocmd FileType verilog set foldmethod=marker 
+autocmd FileType verilog set foldmarker=begin,end 
+autocmd FileType sh set foldmethod=indent
 set foldlevel=100         " start out with everything folded
 set foldopen=block,hor,insert,jump,mark,percent,quickfix,search,tag,undo
 set foldcolumn=1
@@ -1196,6 +1199,7 @@ let g:ctrlp_working_path_mode = 'w'
 let g:ctrlp_custom_ignore = {
             \ 'dir': '\.git$\|\.hg$\|\.svn$\|target$\|built$\|.build$\|node_modules\|\.sass-cache',
             \ 'file': '\v\.(exe|so|dll|o)$',
+            \ 'link': 'SOME_BAD_SYMBOLIC_LINKS',
             \ }
 let g:ctrlp_extensions = ['tag', 'buffertag', 'dir', 'bookmarkdir']
 "}}}
