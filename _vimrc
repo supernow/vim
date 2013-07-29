@@ -592,6 +592,7 @@ Bundle 'genutils'
 Bundle 'SirVer/ultisnips'
 Bundle 'YankRing.vim'
 Bundle 'tracyone/snippets'
+Bundle 'dosbatch-indent'
 "MarcWeber's ultisnip:
 "ability to read snipmate snippet files on the fly
 "snipmate like snippet completion
