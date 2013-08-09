@@ -1292,7 +1292,7 @@ let g:vimshell_execute_file_list['rb'] = 'ruby'
 let g:vimshell_execute_file_list['pl'] = 'perl'
 let g:vimshell_execute_file_list['py'] = 'python'
 call vimshell#set_execute_file('html,xhtml', 'gexe firefox')
-imap <HOME> <Plug>(vimshell_move_head)
+au FileType vimshell :imap <buffer> <HOME> <Plug>(vimshell_move_head)
 imap <c-d> <Plug>(vimshell_exit)
 autocmd FileType vimshell
             \ call vimshell#altercmd#define('g', 'git')
