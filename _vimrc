@@ -28,7 +28,7 @@ if (has("win32")) || has("win64")
     let $HOME=$VIM
     set filetype=dos
     set ffs=dos,unix,mac
-    "set path=
+    set path=.,d:/MinGW/include/,d:/MinGW/msys/1.0/include
     let $VIMFILES = $VIM.'/vimfiles'
     let g:iswindows=1 "windows flags
 elseif has("unix")
