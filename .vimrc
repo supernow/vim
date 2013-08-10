@@ -2,7 +2,7 @@
 "@brief      config file of vim and gvim for both windows and linux
 "@date       2012-12-30 11:01:30
 "@author     tracyone,tracyone@live.cn
-"@lastchange 2013-07-28/20:39:37
+"@lastchange 2013-08-10/09:59:04
 "@note:		Prior to use, in the case of windows vim convert this file's 
 "			format into dos,while convert it into unix format in the case 
 "			of linux vim
@@ -28,7 +28,7 @@ if (has("win32")) || has("win64")
     let $HOME=$VIM
     set filetype=dos
     set ffs=dos,unix,mac
-    "set path=
+    set path=.,d:/MinGW/include/,d:/MinGW/msys/1.0/include
     let $VIMFILES = $VIM.'/vimfiles'
     let g:iswindows=1 "windows flags
 elseif has("unix")
@@ -337,8 +337,8 @@ xnoremap <m-a> <C-C>ggVG
 "Alignment
 nmap <m-=> <esc>ggVG=``
 
-nmap <c-m-t> :tabnew<cr>
-imap <c-m-t> <esc>:tabnew<cr>
+nmap <m-t> :tabnew<cr>
+imap <m-t> <esc>:tabnew<cr>
 " CTRL-X and SHIFT-Del are Cut
 vnoremap <C-X> "+x
 
@@ -592,6 +592,7 @@ Bundle 'genutils'
 Bundle 'SirVer/ultisnips'
 Bundle 'YankRing.vim'
 Bundle 'tracyone/snippets'
+Bundle 'dosbatch-indent'
 "MarcWeber's ultisnip:
 "ability to read snipmate snippet files on the fly
 "snipmate like snippet completion
@@ -1291,7 +1292,7 @@ let g:vimshell_execute_file_list['rb'] = 'ruby'
 let g:vimshell_execute_file_list['pl'] = 'perl'
 let g:vimshell_execute_file_list['py'] = 'python'
 call vimshell#set_execute_file('html,xhtml', 'gexe firefox')
-imap <HOME> <Plug>(vimshell_move_head)
+au FileType vimshell :imap <buffer> <HOME> <Plug>(vimshell_move_head)
 imap <c-d> <Plug>(vimshell_exit)
 autocmd FileType vimshell
             \ call vimshell#altercmd#define('g', 'git')
