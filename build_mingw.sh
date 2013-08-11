@@ -1,6 +1,6 @@
 #!/bin/bash
 # author        :tracyone
-# date          :20130728
+# date          :2013-08-11/10:54:37
 # description   :build gvim/vim from src;install;clean;
 # usage         :usage:./build_mingw.sh all|gvim|vim|clean|install|getsrc|uninstall
 #echo -e "all:build gvim and vim then install to /d/Program Files/Vim"
@@ -73,7 +73,7 @@ cd ../..
 function install(){
 if [ "$1" == "uninstall" ]
 then
-    /d/Program\ Files/Vim/vim74b/uninstal.exe
+    /d/Program\ Files/Vim/vim74/uninstal.exe
     taskkill //f //im explorer.exe
 echo -e "clean up...this take for a while.."
     rm -rf /d/Program\ Files/Vim/
@@ -82,22 +82,22 @@ echo -e "clean up...this take for a while.."
     wmic process call create explorer.exe
 else
     cd vim
-    mkdir -p /d/Program\ Files/Vim/vim74b
-    mkdir vim74b
+    mkdir -p /d/Program\ Files/Vim/vim74
+    mkdir vim74
     echo -e "start copy..."
-    cp -a runtime/* vim74b
-    cp -a src/*.exe vim74b
-    cp -a src/GvimExt/gvimext.dll vim74b
-    cp -a src/xxd/xxd.exe vim74b
-    cp -a vimtutor.bat vim74b
-    cp -a vim74b/* /d/Program\ Files/Vim/vim74b
+    cp -a runtime/* vim74
+    cp -a src/*.exe vim74
+    cp -a src/GvimExt/gvimext.dll vim74
+    cp -a src/xxd/xxd.exe vim74
+    cp -a vimtutor.bat vim74
+    cp -a vim74/* /d/Program\ Files/Vim/vim74
     echo -e "copy finish..."
-    rm -rf vim74b
-    /d/Program\ Files/Vim/vim74b/install.exe
+    rm -rf vim74
+    /d/Program\ Files/Vim/vim74/install.exe
     cd ..
 fi
 }
-#开始处理流程
+#start process
 date
 if [ "$#" -ne 1 ]; then
     echo -e "Error!!!lack of argument."
@@ -126,7 +126,7 @@ else
         build_vim gvim
         install
         build_vim vim
-        cp -a vim/src/vim.exe /d/Program\ Files/Vim/vim74b/
+        cp -a vim/src/vim.exe /d/Program\ Files/Vim/vim74/
     elif [ "$1" == "uninstall" ]; then
         install uninstall
     else

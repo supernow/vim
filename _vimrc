@@ -2,7 +2,7 @@
 "@brief      config file of vim and gvim for both windows and linux
 "@date       2012-12-30 11:01:30
 "@author     tracyone,tracyone@live.cn
-"@lastchange 2013-08-11/09:35:19
+"@lastchange 2013-08-11/10:07:00
 "@note:		Prior to use, in the case of windows vim convert this file's 
 "			format into dos,while convert it into unix format in the case 
 "			of linux vim
@@ -558,17 +558,22 @@ func! Vundle()
     silent! :execute "Bundle 'gmarik/vundle'"
 endfunc
 execute "call Vundle()"
+"mbbill/VimExplorer
 let g:justvundled = exists(':Bundle')
 if g:justvundled == 0
     if has('win32')
         cd $VIM
         call mkdir($VIM."\\vimfiles\\bundle\\vundle","p")
+        call mkdir($VIM."\\vimfiles\\bundle\\VimExplorer","p")
         call system('git clone https://github.com/gmarik/vundle.git .\vimfiles\bundle\vundle')
+        call system('git clone https://github.com/mbbill/VimExplorer.git .\vimfiles\bundle\VimExplorer')
         cd -
         execute "silent! call Vundle()"
     else
         call system('mkdir -p ~/.vim/bundle/vundle')
+        call system('mkdir -p ~/.vim/bundle/VimExplorer')
         call system('git clone https://github.com/gmarik/vundle.git ~/.vim/bundle/vundle')
+        call system('git clone https://github.com/mbbill/VimExplorer.git ~/.vim/bundle/VimExplorer')
         execute "silent! call Vundle()"
     endif
     :helptags $VIMFILES\bundle\vundle\doc\
