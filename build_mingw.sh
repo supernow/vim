@@ -75,6 +75,7 @@ if [ "$1" == "uninstall" ]
 then
     /d/Program\ Files/Vim/vim74b/uninstal.exe
     taskkill //f //im explorer.exe
+echo -e "clean up...this take for a while.."
     rm -rf /d/Program\ Files/Vim/
     echo -e "restart explorer.exe"
     sleep 3

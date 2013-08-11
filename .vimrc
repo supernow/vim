@@ -2,7 +2,7 @@
 "@brief      config file of vim and gvim for both windows and linux
 "@date       2012-12-30 11:01:30
 "@author     tracyone,tracyone@live.cn
-"@lastchange 2013-08-10/09:59:04
+"@lastchange 2013-08-11/09:35:19
 "@note:		Prior to use, in the case of windows vim convert this file's 
 "			format into dos,while convert it into unix format in the case 
 "			of linux vim
@@ -467,7 +467,12 @@ func! Getvimrc()
     else
         call system('git clone https://github.com/tracyone/vim.git')
     endif
-    call g:VEPlatform.copyfile('./vim/_vimrc',$VIM)
+    if g:iswindows==1
+        call g:VEPlatform.copyfile('./vim/_vimrc',$VIM)
+    else
+        call g:VEPlatform.copyfile('./vim/.vimrc',$HOME)
+    endif
+
 endfunc
 func! Uploadvimrc()
     if g:iswindows==1
