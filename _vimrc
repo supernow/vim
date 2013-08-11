@@ -2,7 +2,7 @@
 "@brief      config file of vim and gvim for both windows and linux
 "@date       2012-12-30 11:01:30
 "@author     tracyone,tracyone@live.cn
-"@lastchange 2013-08-11/10:07:00
+"@lastchange 2013-08-11/15:03:10
 "@note:		Prior to use, in the case of windows vim convert this file's 
 "			format into dos,while convert it into unix format in the case 
 "			of linux vim
@@ -603,6 +603,9 @@ Bundle 'SirVer/ultisnips'
 Bundle 'YankRing.vim'
 Bundle 'tracyone/snippets'
 Bundle 'dosbatch-indent'
+if g:iswindows==0
+    Bundle 'sudo.vim'
+endif
 "MarcWeber's ultisnip:
 "ability to read snipmate snippet files on the fly
 "snipmate like snippet completion
