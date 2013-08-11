@@ -2,7 +2,7 @@
 "@brief      config file of vim and gvim for both windows and linux
 "@date       2012-12-30 11:01:30
 "@author     tracyone,tracyone@live.cn
-"@lastchange 2013-08-11/15:03:10
+"@lastchange 2013-08-11/17:02:58
 "@note:		Prior to use, in the case of windows vim convert this file's 
 "			format into dos,while convert it into unix format in the case 
 "			of linux vim
@@ -36,7 +36,6 @@ elseif has("unix")
     set ffs=unix
     set keywordprg=""
     set shell=bash
-    runtime! debian.vim
     set path=.,/usr/include/,/usr/include/c++/4.7/ "c++ is in /usr/include/c++/...
     let $VIMFILES = $HOME.'/.vim'
     let g:iswindows=0
@@ -93,10 +92,6 @@ autocmd FileType vim set foldlevel=0
 nnoremap <silent><tab> @=(foldlevel('.')?'za':"\<tab>")<CR>
 "set foldtext=foldtext()
 "}}}
-"highlight Pmenu ctermbg=13 guibg=LightGray
-"highlight PmenuSel ctermbg=7 guibg=DarkBlue guifg=White
-"highlight PmenuSbar ctermbg=7 guibg=DarkGray
-"highlight PmenuThumb guibg=Black
 " If using a dark background within the editing area and syntax highlighting
 " turn on this option as well
 set background=light
@@ -114,7 +109,6 @@ endfunc
 "Strings to use in 'list' mode and for the |:list| command
 set listchars=tab:\|\ ,trail:-
 
-set mousemodel=popup_setpos
 " Uncomment the following to have Vim jump to the last position when
 " reopening a file
 au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
@@ -123,11 +117,6 @@ au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g
 set backup "generate a backupfile when open file
 
 set backupext=.bak  "backup file'a suffix
-
-set directory=$HOME/vimbackup  "swp file's directory
-if !isdirectory(&directory)
-    call mkdir(&directory, "p")
-endif
 
 set backupdir=$HOME/vimbackup  "backup file's directory
 if !isdirectory(&backupdir)
@@ -168,7 +157,7 @@ set smartcase
 set mouse=a
 
 ""extend", "popup" or "popup_setpos"; what the right
-"set mousemodel=extend
+set mousemodel=popup_setpos
 
 "start a dialog when a command fails
 set confirm
@@ -1392,10 +1381,10 @@ if(has("gui_running"))
     set guioptions-=b
     "set guioptions-=m "whether use menu
     set guioptions+=r "whether show the rigth scroll bar
+    set guioptions+=c "use console instead of dialog
     set guioptions-=l "whether show the left scroll bar
     "set guioptions-=T "whether show toolbar or not
     set guitablabel=%N\ %t  "do not show dir in tab
-    "set t_Co=256
     "highlight the screen line of the cursor
     "set cul
     if has("toolbar")
@@ -1467,7 +1456,7 @@ if(has("gui_running"))
     amenu PopUp.-SEP3-	<Nop>
     amenu PopUp.&Undo :GundoToggle<CR>
     amenu PopUp.&Goto\ Definition :cs find g <C-R>=expand("<cword>")<CR><CR>
-    amenu PopUp.&Find\ Text :cs find t <C-R>=expand("<cword>")<CR><CR>:cw 7<cr>
+    amenu PopUp.&Find\ Text :silent! execute "vimgrep " . expand("<cword>") . " **/*.[ch]". " **/*.cpp" . " **/*.cc"<cr>:cw 5<cr>
     amenu PopUp.&Open\ Header/Source :AT<cr>
     "chose your colorscheme
     let g:colorscheme_file='' "color thmem's name  
