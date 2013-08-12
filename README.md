@@ -13,17 +13,17 @@ build_mingw.sh is a shell script to build vim7.4 with MingGw and install it into
 usage:  
    ./build_mingw.sh all|gvim|vim|clean|install|getsrc|uninstall  
 
-	all			:build gvim and vim then install it to /d/Program Files/Vim"  
+	all			:build gvim and vim then install it to /d/Program Files/Vim  
 
-	gvim		:get src if not exist then build gvim"  
+	gvim		:get src if not exist then build gvim  
 
-	vim			:get src if not exist then build vim"  
+	vim			:get src if not exist then build vim  
 
-	install		:install gvim to /d/Program Files/Vim"  
+	install		:install gvim to /d/Program Files/Vim  
 
-	uninstall	:uninstall vim from /d/Program Files/Vim"  
+	uninstall	:uninstall vim from /d/Program Files/Vim  
 
-	getsrc		:use hg command to get vim\'s source "  
+	getsrc		:use hg command to get vim's source  
 
 
 
