@@ -11,11 +11,12 @@
 set encoding=utf-8
 if has("win32") || has("win64")
     set fileencoding=utf-8
+    set termencoding=cp936
 else
     set fileencoding=utf-8
+    set termencoding=utf-8
 endif
 set fileencodings=ucs-bom,utf-8,cp936,gb1830,big5,euc-jp,euc-kr,latin1
-set termencoding=utf-8
 if v:lang=~? '^\(zh\)\|\(ja\)\|\(ko\)'
     set ambiwidth=double
 endif
