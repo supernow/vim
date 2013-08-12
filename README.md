@@ -8,7 +8,7 @@ _vimrc for windows
 build_mingw.sh
 ===
 
-build_mingw.sh is a shell script to build vim7.4 with MingGw and install it into /d/Program\ Files\Vim  
+build_mingw.sh is a shell script to build vim7.4 with MinGw and install it into /d/Program\ Files\Vim  
 
 usage:  
    ./build_mingw.sh all|gvim|vim|clean|install|getsrc|uninstall  
