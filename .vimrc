@@ -2,7 +2,7 @@
 "@brief      config file of vim and gvim for both windows and linux
 "@date       2012-12-30 11:01:30
 "@author     tracyone,tracyone@live.cn
-"@lastchange 2013-08-11/17:02:58
+"@lastchange 2013-08-12/21:32:27
 "@note:		Prior to use, in the case of windows vim convert this file's 
 "			format into dos,while convert it into unix format in the case 
 "			of linux vim
@@ -11,11 +11,12 @@
 set encoding=utf-8
 if has("win32") || has("win64")
     set fileencoding=utf-8
+    set termencoding=cp936
 else
     set fileencoding=utf-8
+    set termencoding=utf-8
 endif
 set fileencodings=ucs-bom,utf-8,cp936,gb1830,big5,euc-jp,euc-kr,latin1
-set termencoding=utf-8
 if v:lang=~? '^\(zh\)\|\(ja\)\|\(ko\)'
     set ambiwidth=double
 endif
