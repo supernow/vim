@@ -246,10 +246,14 @@ au FileType verilog set shiftwidth=3
 au FileType verilog set softtabstop=3
 "}}}
 "key mapping{{{
-set timeout ttimeoutlen=-1
-for UseAlt in range (65 , 90 ) + range ( 97 , 122)
-        exe "set <M-" .nr2char(UseAlt).">=\<Esc>" .nr2char (UseAlt)
-endfor
+let c='a'
+while c <= 'z'
+  exec "set <m-".c.">=\e".c
+  exec "imap \e".c." <m-".c.">"
+  let c = nr2char(1+char2nr(c))
+endw
+
+set timeout timeoutlen=400 ttimeoutlen=1
 ""no", "yes" or "menu"; how to use the ALT key
 set winaltkeys=no
 "leader key
@@ -304,7 +308,7 @@ function! Open_url()
 endfunction
 nmap <leader>o :call Open_url()<cr>
 "clear search result
-noremap <a-q> :nohls<CR>
+noremap <m-q> :nohls<CR>
 "save file
 " Use CTRL-S for saving, also in Insert mode
 noremap <C-S>		:update<CR>
@@ -1371,10 +1375,9 @@ let g:NERDMenuMode=1
 nmap <c-y> :YRGetElem<CR>
 imap <c-y> <esc>:YRGetElem<CR>
 let g:yankring_history_file = ".yank_history"
-let g:yankring_history_dir = $VIM
 let g:yankring_default_menu_mode = 0
-let g:yankring_replace_n_pkey = '<m-p>'
-let g:yankring_replace_n_nkey = '<m-n>'
+"let g:yankring_replace_n_pkey = '<leader>p'
+"let g:yankring_replace_n_nkey = '<leader>n'
 "}}}
 syntax on
 filetype plugin indent on
