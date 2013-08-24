@@ -2,7 +2,7 @@
 "@brief      config file of vim and gvim for both windows and linux
 "@date       2012-12-30 11:01:30
 "@author     tracyone,tracyone@live.cn
-"@lastchange 2013-08-12/21:32:27
+"@lastchange 2013-08-24/11:58:02
 "@note:		Prior to use, in the case of windows vim convert this file's 
 "			format into dos,while convert it into unix format in the case 
 "			of linux vim
@@ -158,7 +158,7 @@ set smartcase
 set mouse=a
 
 ""extend", "popup" or "popup_setpos"; what the right
-set mousemodel=popup_setpos
+set mousemodel=extend
 
 "start a dialog when a command fails
 set confirm
@@ -246,23 +246,23 @@ au FileType verilog set shiftwidth=3
 au FileType verilog set softtabstop=3
 "}}}
 "key mapping{{{
-""key map timeouts
-"set notimeout 
-"set timeoutlen=4000
-"set ttimeout
-"set ttimeoutlen=100
+set timeout ttimeoutlen=-1
+for UseAlt in range (65 , 90 ) + range ( 97 , 122)
+        exe "set <M-" .nr2char(UseAlt).">=\<Esc>" .nr2char (UseAlt)
+endfor
 ""no", "yes" or "menu"; how to use the ALT key
 set winaltkeys=no
+"leader key
+let mapleader=","
+
 "visual mode hit tab forward indent ,hit shift-tab backward indent
 vmap <TAB>  >gv  
 vmap <s-TAB>  <gv 
 nmap <c-TAB>  :tabnext<cr>
-"leader key
-let mapleader=","
 "open the vimrc
-nmap <leader>vc :tabedit $MYVIMRC<cr>
 "update the _vimrc
-nmap <leader>so :source $MYVIMRC<CR>:e<CR>
+map <leader>so :source $MYVIMRC<CR>:e<cr>
+map <leader>vc :tabedit $MYVIMRC<CR>
 function! Get_pattern_at_cursor(pat)
     let col = col('.') - 1
     let line = getline('.')
@@ -344,20 +344,21 @@ vnoremap <C-C> "+y
 " CTRL-V and SHIFT-Insert are Paste
 "
 "move
-imap <A-h> <Left>
-imap <A-l> <Right>
-imap <A-j> <Down>
-imap <A-k> <Up>
-"move between windos
-nmap <A-h> <C-w>h
-nmap <A-l> <C-w>l
-nmap <A-j> <C-w>j
-nmap <A-k> <C-w>k
 
-cmap <A-h> <Left>
-cmap <A-l> <Right>
-cmap <A-j> <Down>
-cmap <A-k> <Up>
+imap <m-h> <Left>
+imap <m-l> <Right>
+imap <m-j> <Down>
+imap <m-k> <Up>
+"move between windos
+nmap <m-h> <C-w>h
+nmap <m-l> <C-w>l
+nmap <m-j> <C-w>j
+nmap <m-k> <C-w>k
+
+cmap <m-h> <Left>
+cmap <m-l> <Right>
+cmap <m-j> <Down>
+cmap <m-k> <Up>
 "replace
 nmap <c-h> :%s/<C-R>=expand("<cword>")<cr>/
 
@@ -365,15 +366,15 @@ nmap <c-h> :%s/<C-R>=expand("<cword>")<cr>/
 
 "delete the ^M
 nmap dm :%s/\r\(\n\)/\1/g<CR>
-map <m-1> <esc>1gt
-map <m-2> <esc>2gt
-map <m-3> <esc>3gt
-map <m-4> <esc>4gt
-map <m-5> <esc>5gt
-map <m-6> <esc>6gt
-map <m-7> <esc>7gt
-map <m-8> <esc>8gt
-map <m-9> <esc>9gt
+nmap <m-1> <esc>1gt
+nmap <m-2> <esc>2gt
+nmap <m-3> <esc>3gt
+nmap <m-4> <esc>4gt
+nmap <m-5> <esc>5gt
+nmap <m-6> <esc>6gt
+nmap <m-7> <esc>7gt
+nmap <m-8> <esc>8gt
+nmap <m-9> <esc>9gt
 "cd to current buffer's path
 nmap <silent> ,cd :lcd %:h<CR>
 "resize windows
@@ -1016,10 +1017,18 @@ else
     if !exists("g:neocomplcache_include_paths")
         let g:neocomplcache_include_paths = {}
     endif
-    let g:neocomplcache_include_paths = {
-                \ 'cpp' : '.,d:/MinGw/lib/gcc/mingw32/4.6.2/include/c++',
-                \ 'c' : '.,d:/MinGW/lib/gcc/mingw32/4.6.2/include,d:/MinGw/include'
-                \ }
+    if g:iswindows == 1
+        let g:neocomplcache_include_paths = {
+                    \ 'cpp' : '.,d:/MinGw/lib/gcc/mingw32/4.6.2/include/c++',
+                    \ 'c' : '.,d:/MinGW/lib/gcc/mingw32/4.6.2/include,d:/MinGw/include'
+                    \ }
+    else
+        let g:neocomplcache_include_paths = {
+                    \ 'cpp' : '.,/usr/include/c++/4.7/',
+                    \ 'c' : '.,/usr/include/'
+                    \ }
+    endif
+
     let g:neocomplcache_include_patterns = {
                 \ 'cpp' : '^\s*#\s*include',
                 \ 'c' : '^\s*#\s*include'
@@ -1296,6 +1305,7 @@ let g:vimshell_execute_file_list['pl'] = 'perl'
 let g:vimshell_execute_file_list['py'] = 'python'
 call vimshell#set_execute_file('html,xhtml', 'gexe firefox')
 au FileType vimshell :imap <buffer> <HOME> <Plug>(vimshell_move_head)
+au FileType vimshell set nonu
 imap <c-d> <Plug>(vimshell_exit)
 autocmd FileType vimshell
             \ call vimshell#altercmd#define('g', 'git')
@@ -1360,6 +1370,8 @@ let g:NERDMenuMode=1
 "{{{yankring
 nmap <c-y> :YRGetElem<CR>
 imap <c-y> <esc>:YRGetElem<CR>
+let g:yankring_history_file = ".yank_history"
+let g:yankring_history_dir = $VIM
 let g:yankring_default_menu_mode = 0
 let g:yankring_replace_n_pkey = '<m-p>'
 let g:yankring_replace_n_nkey = '<m-n>'
@@ -1373,7 +1385,7 @@ if(has("gui_running"))
     if g:iswindows==0
         au GUIEnter * call MaximizeWindow()
         set guifont=Consolas\ 14
-        set gfw=YaHei_Mono_Hybird_Consolas\ 12.5
+        set gfw=YaHei_Mono\ 12.5
     else
         au GUIEnter * simalt~x "maximize window
         set guifont=Consolas:h14:cANSI
