@@ -2,7 +2,7 @@
 "@brief      config file of vim and gvim for both windows and linux
 "@date       2012-12-30 11:01:30
 "@author     tracyone,tracyone@live.cn
-"@lastchange 2013-08-24/11:58:02
+"@lastchange 2013-08-24/23:44:55
 "@note:		Prior to use, in the case of windows vim convert this file's 
 "			format into dos,while convert it into unix format in the case 
 "			of linux vim
@@ -246,11 +246,18 @@ au FileType verilog set shiftwidth=3
 au FileType verilog set softtabstop=3
 "}}}
 "key mapping{{{
+"fuck the meta key...
 let c='a'
 while c <= 'z'
   exec "set <m-".c.">=\e".c
   exec "imap \e".c." <m-".c.">"
   let c = nr2char(1+char2nr(c))
+endw
+let d='1'
+while d <= '9'
+  exec "set <m-".d.">=\e".d
+  exec "inoremap \e".d." <m-".d.">"
+  let d = nr2char(1+char2nr(d))
 endw
 
 set timeout timeoutlen=400 ttimeoutlen=1
@@ -262,11 +269,14 @@ let mapleader=","
 "visual mode hit tab forward indent ,hit shift-tab backward indent
 vmap <TAB>  >gv  
 vmap <s-TAB>  <gv 
-nmap <c-TAB>  :tabnext<cr>
-"open the vimrc
+"Ctrl-tab is not work in vim
+noremap <silent><c-TAB> :tabnext<cr>
+
 "update the _vimrc
-map <leader>so :source $MYVIMRC<CR>:e<cr>
+map <leader>so :source $MYVIMRC<CR>
+"open the vimrc in tab
 map <leader>vc :tabedit $MYVIMRC<CR>
+
 function! Get_pattern_at_cursor(pat)
     let col = col('.') - 1
     let line = getline('.')
@@ -370,15 +380,15 @@ nmap <c-h> :%s/<C-R>=expand("<cword>")<cr>/
 
 "delete the ^M
 nmap dm :%s/\r\(\n\)/\1/g<CR>
-nmap <m-1> <esc>1gt
-nmap <m-2> <esc>2gt
-nmap <m-3> <esc>3gt
-nmap <m-4> <esc>4gt
-nmap <m-5> <esc>5gt
-nmap <m-6> <esc>6gt
-nmap <m-7> <esc>7gt
-nmap <m-8> <esc>8gt
-nmap <m-9> <esc>9gt
+nnoremap <m-1> <esc>1gt
+nnoremap <m-2> <esc>2gt
+nnoremap <m-3> <esc>3gt
+nnoremap <m-4> <esc>4gt
+nnoremap <m-5> <esc>5gt
+nnoremap <m-6> <esc>6gt
+nnoremap <m-7> <esc>7gt
+nnoremap <m-8> <esc>8gt
+nnoremap <m-9> <esc>9gt
 "cd to current buffer's path
 nmap <silent> ,cd :lcd %:h<CR>
 "resize windows
