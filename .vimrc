@@ -2,7 +2,7 @@
 "@brief      config file of vim and gvim for both windows and linux
 "@date       2012-12-30 11:01:30
 "@author     tracyone,tracyone@live.cn
-"@lastchange 2013-08-25/19:23:52
+"@lastchange 2013-08-25/21:58:51
 "@note:		Prior to use, in the case of windows vim convert this file's 
 "			format into dos,while convert it into unix format in the case 
 "			of linux vim
@@ -98,13 +98,12 @@ nnoremap <silent><tab> @=(foldlevel('.')?'za':"\<tab>")<CR>
 set background=light
 "set pastetoggle=<m-p> it is useful when in vim
 nmap <F6> :call Dosunix()<cr>
-func! Dosunix()
-    if &ff == 'unix'
-        exec "se ff=dos"
-    else
-        exec "se ff=unix"
-    endif
-endfunc
+
+"list candidate word in statusline
+set wildmenu
+set wildmode=longest,full
+set wic
+
 "display unprintable characters by set list
 "set list
 "Strings to use in 'list' mode and for the |:list| command
@@ -250,6 +249,14 @@ au BufRead,BufNewFile * let $CurBufferDir=expand('%:p:h')
 au FileType verilog set tabstop=3
 au FileType verilog set shiftwidth=3
 au FileType verilog set softtabstop=3
+
+func! Dosunix()
+    if &ff == 'unix'
+        exec "se ff=dos"
+    else
+        exec "se ff=unix"
+    endif
+endfunc
 "}}}
 "key mapping{{{
 
