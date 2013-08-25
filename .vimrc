@@ -2,7 +2,7 @@
 "@brief      config file of vim and gvim for both windows and linux
 "@date       2012-12-30 11:01:30
 "@author     tracyone,tracyone@live.cn
-"@lastchange 2013-08-25/15:16:38
+"@lastchange 2013-08-25/19:23:52
 "@note:		Prior to use, in the case of windows vim convert this file's 
 "			format into dos,while convert it into unix format in the case 
 "			of linux vim
@@ -253,23 +253,26 @@ au FileType verilog set softtabstop=3
 "}}}
 "key mapping{{{
 
-"fuck the meta key...
+"map jj to esc..
 inoremap jj <c-[>
-let c='a'
-while c <= 'z'
-  exec "set <m-".c.">=\e".c
-  exec "imap \e".c." <m-".c.">"
-  let c = nr2char(1+char2nr(c))
-endw
-let d='1'
-while d <= '9'
-  exec "set <m-".d.">=\e".d
-  exec "inoremap \e".d." <m-".d.">"
-  let d = nr2char(1+char2nr(d))
-endw
-""no", "yes" or "menu"; how to use the ALT key
-set winaltkeys=no
-set timeout timeoutlen=500 ttimeoutlen=1
+"fuck the meta key...
+if(!has("gui_running"))
+    let c='a'
+    while c <= 'z'
+        exec "set <m-".c.">=\e".c
+        exec "imap \e".c." <m-".c.">"
+        let c = nr2char(1+char2nr(c))
+    endw
+    let d='1'
+    while d <= '9'
+        exec "set <m-".d.">=\e".d
+        exec "inoremap \e".d." <m-".d.">"
+        let d = nr2char(1+char2nr(d))
+    endw
+    ""no", "yes" or "menu"; how to use the ALT key
+    set winaltkeys=no
+    set timeout timeoutlen=500 ttimeoutlen=1
+endif
 "leader key
 let mapleader=","
 
