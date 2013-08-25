@@ -2,7 +2,7 @@
 "@brief      config file of vim and gvim for both windows and linux
 "@date       2012-12-30 11:01:30
 "@author     tracyone,tracyone@live.cn
-"@lastchange 2013-08-24/23:44:55
+"@lastchange 2013-08-25/15:16:38
 "@note:		Prior to use, in the case of windows vim convert this file's 
 "			format into dos,while convert it into unix format in the case 
 "			of linux vim
@@ -125,6 +125,12 @@ if !isdirectory(&backupdir)
 endif
 "}}}
 
+"do not Ring the bell (beep or screen flash) for error messages
+set noerrorbells
+set novisualbell 
+"set vb t_vb= "close visual bell
+set mat=2
+
 set report=0  "Threshold for reporting number of lines changed
 " Don't update the display while executing macros
 set lazyredraw
@@ -246,7 +252,9 @@ au FileType verilog set shiftwidth=3
 au FileType verilog set softtabstop=3
 "}}}
 "key mapping{{{
+
 "fuck the meta key...
+inoremap jj <c-[>
 let c='a'
 while c <= 'z'
   exec "set <m-".c.">=\e".c
@@ -259,10 +267,9 @@ while d <= '9'
   exec "inoremap \e".d." <m-".d.">"
   let d = nr2char(1+char2nr(d))
 endw
-
-set timeout timeoutlen=400 ttimeoutlen=1
 ""no", "yes" or "menu"; how to use the ALT key
 set winaltkeys=no
+set timeout timeoutlen=500 ttimeoutlen=1
 "leader key
 let mapleader=","
 
@@ -271,64 +278,38 @@ vmap <TAB>  >gv
 vmap <s-TAB>  <gv 
 "Ctrl-tab is not work in vim
 noremap <silent><c-TAB> :tabnext<cr>
+nmap <m-t> :tabnew<cr>
+imap <m-t> <esc>:tabnew<cr>
+nnoremap <m-1> <esc>1gt
+nnoremap <m-2> <esc>2gt
+nnoremap <m-3> <esc>3gt
+nnoremap <m-4> <esc>4gt
+nnoremap <m-5> <esc>5gt
+nnoremap <m-6> <esc>6gt
+nnoremap <m-7> <esc>7gt
+nnoremap <m-8> <esc>8gt
+nnoremap <m-9> <esc>9gt
 
 "update the _vimrc
 map <leader>so :source $MYVIMRC<CR>
 "open the vimrc in tab
 map <leader>vc :tabedit $MYVIMRC<CR>
 
-function! Get_pattern_at_cursor(pat)
-    let col = col('.') - 1
-    let line = getline('.')
-    let ebeg = -1
-    let cont = match(line, a:pat, 0)
-    while (ebeg >= 0 || (0 <= cont) && (cont <= col))
-        let contn = matchend(line, a:pat, cont)
-        if (cont <= col) && (col < contn)
-            let ebeg = match(line, a:pat, cont)
-            let elen = contn - ebeg
-            break
-        else
-            let cont = match(line, a:pat, contn)
-        endif
-    endwhile
-    if ebeg >= 0
-        return strpart(line, ebeg, elen)
-    else
-        return ""
-    endif
-endfunction
-function! Open_url()
-    let s:url = Get_pattern_at_cursor('\v(https?://|ftp://|file:/{3}|www\.)(\w|[.-])+(:\d+)?(/(\w|[~@#$%^&+=/.?:-])+)?')
-    if s:url == ""
-        echohl WarningMsg
-        echomsg 'It is not a URL on current cursor！'
-        echohl None
-    else
-        echo 'Open URL：' . s:url
-        if has("win32") || has("win64")
-            call system("cmd /C start " . s:url)
-        elseif has("mac")
-            call system("open '" . s:url . "'")
-        else
-            call system("setsid firefox '" . s:url . "' &")
-        endif
-    endif
-    unlet s:url
-endfunction
-nmap <leader>o :call Open_url()<cr>
 "clear search result
 noremap <m-q> :nohls<CR>
-"save file
-" Use CTRL-S for saving, also in Insert mode
-noremap <C-S>		:update<CR>
-vnoremap <C-S>		<C-C>:update<CR>
-inoremap <C-S>		<C-O>:update<CR>
 
-map <S-Insert>		"+gP
-imap <c-v>		<C-o>"+gp
-cmap <C-V>		<C-R>+
-cmap <S-Insert>		<C-R>+
+"save file 
+"in terminal ctrl-s is used to stop printf..
+noremap <C-S>	:update<CR>
+vnoremap <C-S>	<C-C>:update<CR>
+inoremap <C-S>	<C-O>:update<CR>
+
+"copy,paste and cut 
+map <S-Insert> "+gP
+imap <c-v>	<C-o>"+gp
+cmap <C-V>	<C-R>+
+cmap <S-Insert>	<C-R>+
+vnoremap <C-X> "+x
 
 "select all
 noremap <m-a> gggH<C-O>G
@@ -341,28 +322,21 @@ xnoremap <m-a> <C-C>ggVG
 "Alignment
 nmap <m-=> <esc>ggVG=``
 
-nmap <m-t> :tabnew<cr>
-imap <m-t> <esc>:tabnew<cr>
-" CTRL-X and SHIFT-Del are Cut
-vnoremap <C-X> "+x
-
-"do not Ring the bell (beep or screen flash) for error messages
-set noerrorbells
-set novisualbell 
-"set vb t_vb= "close visual bell
-set mat=2
-
 " CTRL-C and SHIFT-Insert are Paste
 vnoremap <C-C> "+y
 
-" CTRL-V and SHIFT-Insert are Paste
-"
-"move
+"change the windows size
+noremap <silent> <C-F9> :vertical resize -10<CR>
+noremap <silent> <C-F10> :resize +10<CR>
+noremap <silent> <C-F11> :resize -10<CR>
+noremap <silent> <C-F12> :vertical resize +10<CR>
 
+"move
 imap <m-h> <Left>
 imap <m-l> <Right>
 imap <m-j> <Down>
 imap <m-k> <Up>
+
 "move between windos
 nmap <m-h> <C-w>h
 nmap <m-l> <C-w>l
@@ -373,26 +347,26 @@ cmap <m-h> <Left>
 cmap <m-l> <Right>
 cmap <m-j> <Down>
 cmap <m-k> <Up>
+
 "replace
 nmap <c-h> :%s/<C-R>=expand("<cword>")<cr>/
 
-"compile and run open quickfix if wrong
-
 "delete the ^M
 nmap dm :%s/\r\(\n\)/\1/g<CR>
-nnoremap <m-1> <esc>1gt
-nnoremap <m-2> <esc>2gt
-nnoremap <m-3> <esc>3gt
-nnoremap <m-4> <esc>4gt
-nnoremap <m-5> <esc>5gt
-nnoremap <m-6> <esc>6gt
-nnoremap <m-7> <esc>7gt
-nnoremap <m-8> <esc>8gt
-nnoremap <m-9> <esc>9gt
+
 "cd to current buffer's path
 nmap <silent> ,cd :lcd %:h<CR>
 "resize windows
 map <F5> :call Do_OneFileMake()<CR>
+
+" Visual mode pressing * or # searches for the current selection
+" Super useful! From an idea by Michael Naumann
+vnoremap <silent> * :call VisualSelection('f')<CR>
+vnoremap <silent> # :call VisualSelection('b')<CR>
+
+nmap <leader>o :call Open_url()<cr>
+
+"{{{function definition
 function! Do_OneFileMake()
     if expand("%:p:h")!=getcwd()
         echohl WarningMsg | echo "Fail to make! This file is not in the current dir! Press <F7> to redirect to the dir of this file." | echohl None
@@ -454,10 +428,7 @@ function! Do_OneFileMake()
     endif
     execute "copen"
 endfunction
-noremap <silent> <C-F9> :vertical resize -10<CR>
-noremap <silent> <C-F10> :resize +10<CR>
-noremap <silent> <C-F11> :resize -10<CR>
-noremap <silent> <C-F12> :vertical resize +10<CR>
+
 func! Getvimrc()
     if g:iswindows==1
         cd $VIM
@@ -506,10 +477,47 @@ func! Uploadvimrc()
     call system(g:commit_string)
     execute ":!git push origin master"
 endfunc
-" {{{Visual mode pressing * or # searches for the current selection
-" Super useful! From an idea by Michael Naumann
-vnoremap <silent> * :call VisualSelection('f')<CR>
-vnoremap <silent> # :call VisualSelection('b')<CR>
+
+function! Get_pattern_at_cursor(pat)
+    let col = col('.') - 1
+    let line = getline('.')
+    let ebeg = -1
+    let cont = match(line, a:pat, 0)
+    while (ebeg >= 0 || (0 <= cont) && (cont <= col))
+        let contn = matchend(line, a:pat, cont)
+        if (cont <= col) && (col < contn)
+            let ebeg = match(line, a:pat, cont)
+            let elen = contn - ebeg
+            break
+        else
+            let cont = match(line, a:pat, contn)
+        endif
+    endwhile
+    if ebeg >= 0
+        return strpart(line, ebeg, elen)
+    else
+        return ""
+    endif
+endfunction
+
+function! Open_url()
+    let s:url = Get_pattern_at_cursor('\v(https?://|ftp://|file:/{3}|www\.)(\w|[.-])+(:\d+)?(/(\w|[~@#$%^&+=/.?:-])+)?')
+    if s:url == ""
+        echohl WarningMsg
+        echomsg 'It is not a URL on current cursor！'
+        echohl None
+    else
+        echo 'Open URL：' . s:url
+        if has("win32") || has("win64")
+            call system("cmd /C start " . s:url)
+        elseif has("mac")
+            call system("open '" . s:url . "'")
+        else
+            call system("setsid firefox '" . s:url . "' &")
+        endif
+    endif
+    unlet s:url
+endfunction
 
 function! VisualSelection(direction) range
     let l:saved_reg = @"
@@ -538,6 +546,7 @@ function! CmdLine(str)
     unmenu Foo
 endfunction
 "}}}
+
 "}}}
 "plugin setting{{{
 "{{{vundle
@@ -1398,7 +1407,7 @@ if(has("gui_running"))
     if g:iswindows==0
         au GUIEnter * call MaximizeWindow()
         set guifont=Consolas\ 14
-        set gfw=YaHei_Mono\ 12.5
+        set gfw=YaHei_Mono_Hybird_Consolas\ 12.5
     else
         au GUIEnter * simalt~x "maximize window
         set guifont=Consolas:h14:cANSI
