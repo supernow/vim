@@ -2,7 +2,7 @@
 "@brief      config file of vim and gvim for both windows and linux
 "@date       2012-12-30 11:01:30
 "@author     tracyone,tracyone@live.cn
-"@lastchange 2013-08-25/21:58:51
+"@lastchange 2013-08-25/22:30:39
 "@note:		Prior to use, in the case of windows vim convert this file's 
 "			format into dos,while convert it into unix format in the case 
 "			of linux vim
@@ -276,10 +276,12 @@ if(!has("gui_running"))
         exec "inoremap \e".d." <m-".d.">"
         let d = nr2char(1+char2nr(d))
     endw
-    ""no", "yes" or "menu"; how to use the ALT key
-    set winaltkeys=no
     set timeout timeoutlen=500 ttimeoutlen=1
 endif
+
+""no", "yes" or "menu"; how to use the ALT key
+set winaltkeys=no
+
 "leader key
 let mapleader=","
 
@@ -620,6 +622,7 @@ Bundle 'tracyone/calendar'
 Bundle 'tracyone/Colour-Sampler-Pack'
 Bundle 'altercation/vim-colors-solarized'
 Bundle 'kien/ctrlp.vim'
+Bundle 'tpope/vim-fugitive'
 Bundle 'delimitMate.vim'
 Bundle 'FuzzyFinder'
 Bundle 'genutils'
@@ -1405,8 +1408,8 @@ nmap <c-y> :YRGetElem<CR>
 imap <c-y> <esc>:YRGetElem<CR>
 let g:yankring_history_file = ".yank_history"
 let g:yankring_default_menu_mode = 0
-"let g:yankring_replace_n_pkey = '<leader>p'
-"let g:yankring_replace_n_nkey = '<leader>n'
+let g:yankring_replace_n_pkey = '<m-p>'
+let g:yankring_replace_n_nkey = '<m-n>'
 "}}}
 syntax on
 filetype plugin indent on
