@@ -2,7 +2,7 @@
 "@brief      config file of vim and gvim for both windows and linux
 "@date       2012-12-30 11:01:30
 "@author     tracyone,tracyone@live.cn
-"@lastchange 2013-08-25/22:30:39
+"@lastchange 2013-08-26/23:28:21
 "@note:		Prior to use, in the case of windows vim convert this file's 
 "			format into dos,while convert it into unix format in the case 
 "			of linux vim
@@ -88,10 +88,7 @@ function! MyFoldText()
     return sub . info
 endfunction
 set foldtext=MyFoldText()
-autocmd FileType vim set foldmethod=marker 
-autocmd FileType vim set foldlevel=0
 nnoremap <silent><tab> @=(foldlevel('.')?'za':"\<tab>")<CR>
-"set foldtext=foldtext()
 "}}}
 " If using a dark background within the editing area and syntax highlighting
 " turn on this option as well
@@ -135,10 +132,6 @@ set report=0  "Threshold for reporting number of lines changed
 set lazyredraw
 " Set up the gui cursor to look nice
 set guicursor=n-v-c:block-Cursor-blinkon0,ve:ver35-Cursor,o:hor50-Cursor,i-ci:ver25-Cursor,r-cr:hor20-Cursor,sm:block-Cursor-blinkwait175-blinkoff150-blinkon175
-"help doc dir
-"let helptags=$VIMFILES.'/doc'
-set modeline
-set modelines=5 " default numbers of lines to read for modeline instructions
 
 set helplang=en,cn  "set helplang=en
 "autoread when a file is changed from the outside
@@ -1541,3 +1534,6 @@ if(has("gui_running"))
     endfunction
 endif
 "}}}
+"default is on but it is off when you are root,so we put it here
+set modeline
+" vim: set fdm=marker foldlevel=0 foldmarker&: 
