@@ -90,9 +90,6 @@ endfunction
 set foldtext=MyFoldText()
 nnoremap <silent><tab> @=(foldlevel('.')?'za':"\<tab>")<CR>
 "}}}
-" If using a dark background within the editing area and syntax highlighting
-" turn on this option as well
-set background=light
 "set pastetoggle=<m-p> it is useful when in vim
 nmap <F6> :call Dosunix()<cr>
 
@@ -1412,13 +1409,16 @@ filetype plugin indent on
 if(has("gui_running"))
     if g:iswindows==0
         au GUIEnter * call MaximizeWindow()
-        set guifont=Consolas\ 14
+        set guifont=Monaco\ 14
         set gfw=YaHei_Mono_Hybird_Consolas\ 12.5
     else
         au GUIEnter * simalt~x "maximize window
         set guifont=Consolas:h14:cANSI
         set gfw=YaHei_Mono:h12.5:cGB2312
     endif
+    " If using a dark background within the editing area and syntax highlighting
+    " turn on this option as well
+    set background=dark
     set guioptions-=b
     "set guioptions-=m "whether use menu
     set guioptions+=r "whether show the rigth scroll bar
@@ -1532,6 +1532,8 @@ if(has("gui_running"))
     function! MaximizeWindow()
         silent !wmctrl -r :ACTIVE: -b add,maximized_vert,maximized_horz
     endfunction
+else
+    set background=light
 endif
 "}}}
 "default is on but it is off when you are root,so we put it here
