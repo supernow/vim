@@ -595,14 +595,6 @@ if g:justvundled == 0
     :helptags $VIMFILES\bundle\vundle\doc\
 endif
 
-" My Bundles here:
-"
-" original repos on github
-" Bundle 'tpope/vim-fugitive'
-" Bundle 'Lokaltog/vim-easymotion'
-" Bundle 'rstacruz/sparkup', {'rtp': 'vim/'}
-" Bundle 'tpope/vim-rails.git'
-" vim-scripts repos
 Bundle 'a.vim'
 Bundle 'tracyone/dict'
 Bundle 'EasyGrep'
@@ -623,14 +615,6 @@ Bundle 'dosbatch-indent'
 if g:iswindows==0
     Bundle 'sudo.vim'
 endif
-"MarcWeber's ultisnip:
-"ability to read snipmate snippet files on the fly
-"snipmate like snippet completion
-"reloading snippets if snippet files timestamp changes
-"can read both: UltiSnip and snipmate snippet files on the fly
-"Bundle 'MarcWeber/ultisnips' 
-"Bundle 'tomtom/tlib_vim' 
-"Bundle 'honza/vim-snippets'
 if ( has("patch885") || version == 704 ) && has('lua')
     let g:use_neocomplete=1
 else
@@ -673,18 +657,6 @@ if g:iswindows == 1
 else
     Bundle 'tracyone/pyclewn_linux' 
 endif
-" non github reposo
-" Bundle 'git://git.wincent.com/command-t.git'
-" ...
-
-"
-" Brief help
-" :BundleList          - list configured bundles
-" :BundleInstall(!)    - install(update) bundles
-" :BundleSearch(!) foo - search(or refresh cache first) for foo
-" :BundleClean(!)      - confirm(or auto-approve) removal of unused bundles
-" see :h vundle for more details or wiki for FAQ
-" NOTE: comments after Bundle command are not allowed..
 "}}}
 "{{{tohtml
 let html_use_css=1
