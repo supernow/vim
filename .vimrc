@@ -1428,6 +1428,7 @@ if(has("gui_running"))
     set guitablabel=%N\ %t  "do not show dir in tab
     "highlight the screen line of the cursor
     "set cul
+    "{{{toolbar
     if has("toolbar")
         if exists("*Do_toolbar_tmenu")
             delfun Do_toolbar_tmenu
@@ -1494,12 +1495,28 @@ if(has("gui_running"))
         tmenu ToolBar.Project Load project and start debug
         tmenu ToolBar.SaveProject Save Project setting(save as .proj)
     endif
+    "}}}
+    "{{{Right mouse
     amenu PopUp.-SEP3-	<Nop>
     amenu PopUp.&Undo :GundoToggle<CR>
     amenu PopUp.&Goto\ Definition :cs find g <C-R>=expand("<cword>")<CR><CR>
     amenu PopUp.&Find\ Text :silent! execute "vimgrep " . expand("<cword>") . " **/*.[ch]". " **/*.cpp" . " **/*.cc"<cr>:cw 5<cr>
     amenu PopUp.&Open\ Header/Source :AT<cr>
-    "chose your colorscheme
+    "}}}
+    "{{{colorscheme
+    "{{{colorscheme solarized setting
+    "let g:solarized_termtrans=0
+    " let g:solarized_degrade=0
+    let g:solarized_bold=1
+    let g:solarized_underline=0
+    " let g:solarized_italic=1
+    let g:solarized_termcolors=256
+    " let g:solarized_contrast="normal"
+    " let g:solarized_visibility="normal"
+    " let g:solarized_diffmode="normal"
+    " let g:solarized_hitrail=0
+    let g:solarized_menu=0
+    "}}}
     let g:colorscheme_file='' "color thmem's name  
     if g:iswindows == 0
         let g:slash='/'
@@ -1527,8 +1544,12 @@ if(has("gui_running"))
             call ApplyCS()
         endif
     else
-        colorscheme wombat256 "default setting 
+        colorscheme solarized "default setting 
     endif
+
+    
+    "}}}
+    
     function! MaximizeWindow()
         silent !wmctrl -r :ACTIVE: -b add,maximized_vert,maximized_horz
     endfunction
