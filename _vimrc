@@ -2,7 +2,7 @@
 "@brief      config file of vim and gvim for both windows and linux
 "@date       2012-12-30 11:01:30
 "@author     tracyone,tracyone@live.cn
-"@lastchange 2013-08-25/22:30:39
+"@lastchange 2013-09-01/08:42:58
 "@note:		Prior to use, in the case of windows vim convert this file's 
 "			format into dos,while convert it into unix format in the case 
 "			of linux vim
@@ -88,14 +88,8 @@ function! MyFoldText()
     return sub . info
 endfunction
 set foldtext=MyFoldText()
-autocmd FileType vim set foldmethod=marker 
-autocmd FileType vim set foldlevel=0
 nnoremap <silent><tab> @=(foldlevel('.')?'za':"\<tab>")<CR>
-"set foldtext=foldtext()
 "}}}
-" If using a dark background within the editing area and syntax highlighting
-" turn on this option as well
-set background=light
 "set pastetoggle=<m-p> it is useful when in vim
 nmap <F6> :call Dosunix()<cr>
 
@@ -135,10 +129,6 @@ set report=0  "Threshold for reporting number of lines changed
 set lazyredraw
 " Set up the gui cursor to look nice
 set guicursor=n-v-c:block-Cursor-blinkon0,ve:ver35-Cursor,o:hor50-Cursor,i-ci:ver25-Cursor,r-cr:hor20-Cursor,sm:block-Cursor-blinkwait175-blinkoff150-blinkon175
-"help doc dir
-"let helptags=$VIMFILES.'/doc'
-set modeline
-set modelines=5 " default numbers of lines to read for modeline instructions
 
 set helplang=en,cn  "set helplang=en
 "autoread when a file is changed from the outside
@@ -221,18 +211,13 @@ set clipboard+=unnamed
 "change to directory of file in buffer
 "set autochdir
 
-"statusline
+"statuslne
 set statusline+=%<%f%m%r%h%w%{tagbar#currenttag('[%s]','')}
-set statusline+=%=[FORMAT=%{(&fenc!=''?&fenc:&enc)}:%{&ff}:%Y]\ [ASCII=\%03.3b]\ [POS=%l,%v][%p%%] 
-set statusline+=%{strftime(\"%y/%m/%d\-\%H:%M\")}
+set statusline+=%=[%{(&fenc!=''?&fenc:&enc)}\|%{&ff}\|%Y]\ [%l,%v][%p%%]\  
+set statusline+=[%{strftime(\"%m/%d\-\%H:%M\")}]
 "0, 1 or 2; when to use a status line for the last window
 set laststatus=2 "always show status
-"hi StatusLine guifg=Black guibg=White gui=none
-"highlight StatusLineNC guifg=LightGrey guibg=LightSlateGrey	
-"if version >= 700 
-"au InsertEnter * hi StatusLine guibg=#818D29 guifg=#FCFCFC gui=none
-"au InsertLeave * hi StatusLine guifg=Black guibg=White gui=none
-"endif
+
 "always show the tabline
 set stal=2
 nmap <F7> a<C-R>=strftime("%Y-%m-%d/%H:%M:%S")<CR><ESC>
@@ -605,14 +590,6 @@ if g:justvundled == 0
     :helptags $VIMFILES\bundle\vundle\doc\
 endif
 
-" My Bundles here:
-"
-" original repos on github
-" Bundle 'tpope/vim-fugitive'
-" Bundle 'Lokaltog/vim-easymotion'
-" Bundle 'rstacruz/sparkup', {'rtp': 'vim/'}
-" Bundle 'tpope/vim-rails.git'
-" vim-scripts repos
 Bundle 'a.vim'
 Bundle 'tracyone/dict'
 Bundle 'EasyGrep'
@@ -633,14 +610,6 @@ Bundle 'dosbatch-indent'
 if g:iswindows==0
     Bundle 'sudo.vim'
 endif
-"MarcWeber's ultisnip:
-"ability to read snipmate snippet files on the fly
-"snipmate like snippet completion
-"reloading snippets if snippet files timestamp changes
-"can read both: UltiSnip and snipmate snippet files on the fly
-"Bundle 'MarcWeber/ultisnips' 
-"Bundle 'tomtom/tlib_vim' 
-"Bundle 'honza/vim-snippets'
 if ( has("patch885") || version == 704 ) && has('lua')
     let g:use_neocomplete=1
 else
@@ -683,18 +652,6 @@ if g:iswindows == 1
 else
     Bundle 'tracyone/pyclewn_linux' 
 endif
-" non github reposo
-" Bundle 'git://git.wincent.com/command-t.git'
-" ...
-
-"
-" Brief help
-" :BundleList          - list configured bundles
-" :BundleInstall(!)    - install(update) bundles
-" :BundleSearch(!) foo - search(or refresh cache first) for foo
-" :BundleClean(!)      - confirm(or auto-approve) removal of unused bundles
-" see :h vundle for more details or wiki for FAQ
-" NOTE: comments after Bundle command are not allowed..
 "}}}
 "{{{tohtml
 let html_use_css=1
@@ -1419,13 +1376,16 @@ filetype plugin indent on
 if(has("gui_running"))
     if g:iswindows==0
         au GUIEnter * call MaximizeWindow()
-        set guifont=Consolas\ 14
+        set guifont=Monaco\ 14
         set gfw=YaHei_Mono_Hybird_Consolas\ 12.5
     else
         au GUIEnter * simalt~x "maximize window
         set guifont=Consolas:h14:cANSI
         set gfw=YaHei_Mono:h12.5:cGB2312
     endif
+    " If using a dark background within the editing area and syntax highlighting
+    " turn on this option as well
+    set background=dark
     set guioptions-=b
     "set guioptions-=m "whether use menu
     set guioptions+=r "whether show the rigth scroll bar
@@ -1435,6 +1395,7 @@ if(has("gui_running"))
     set guitablabel=%N\ %t  "do not show dir in tab
     "highlight the screen line of the cursor
     "set cul
+    "{{{toolbar
     if has("toolbar")
         if exists("*Do_toolbar_tmenu")
             delfun Do_toolbar_tmenu
@@ -1501,12 +1462,28 @@ if(has("gui_running"))
         tmenu ToolBar.Project Load project and start debug
         tmenu ToolBar.SaveProject Save Project setting(save as .proj)
     endif
+    "}}}
+    "{{{Right mouse
     amenu PopUp.-SEP3-	<Nop>
     amenu PopUp.&Undo :GundoToggle<CR>
     amenu PopUp.&Goto\ Definition :cs find g <C-R>=expand("<cword>")<CR><CR>
     amenu PopUp.&Find\ Text :silent! execute "vimgrep " . expand("<cword>") . " **/*.[ch]". " **/*.cpp" . " **/*.cc"<cr>:cw 5<cr>
     amenu PopUp.&Open\ Header/Source :AT<cr>
-    "chose your colorscheme
+    "}}}
+    "{{{colorscheme
+    "{{{colorscheme solarized setting
+    "let g:solarized_termtrans=0
+    " let g:solarized_degrade=0
+    let g:solarized_bold=1
+    let g:solarized_underline=0
+    " let g:solarized_italic=1
+    let g:solarized_termcolors=256
+    " let g:solarized_contrast="normal"
+    " let g:solarized_visibility="normal"
+    " let g:solarized_diffmode="normal"
+    " let g:solarized_hitrail=0
+    let g:solarized_menu=0
+    "}}}
     let g:colorscheme_file='' "color thmem's name  
     if g:iswindows == 0
         let g:slash='/'
@@ -1534,10 +1511,19 @@ if(has("gui_running"))
             call ApplyCS()
         endif
     else
-        colorscheme wombat256 "default setting 
+        colorscheme solarized "default setting 
     endif
+
+    
+    "}}}
+    
     function! MaximizeWindow()
         silent !wmctrl -r :ACTIVE: -b add,maximized_vert,maximized_horz
     endfunction
+else
+    set background=light
 endif
 "}}}
+"default is on but it is off when you are root,so we put it here
+set modeline
+" vim: set fdm=marker foldlevel=0 foldmarker&: 
