@@ -2,7 +2,7 @@
 "@brief      config file of vim and gvim for both windows and linux
 "@date       2012-12-30 11:01:30
 "@author     tracyone,tracyone@live.cn
-"@lastchange 2013-08-26/23:28:21
+"@lastchange 2013-09-01/08:42:58
 "@note:		Prior to use, in the case of windows vim convert this file's 
 "			format into dos,while convert it into unix format in the case 
 "			of linux vim
@@ -211,18 +211,13 @@ set clipboard+=unnamed
 "change to directory of file in buffer
 "set autochdir
 
-"statusline
+"statuslne
 set statusline+=%<%f%m%r%h%w%{tagbar#currenttag('[%s]','')}
-set statusline+=%=[FORMAT=%{(&fenc!=''?&fenc:&enc)}:%{&ff}:%Y]\ [ASCII=\%03.3b]\ [POS=%l,%v][%p%%] 
-set statusline+=%{strftime(\"%y/%m/%d\-\%H:%M\")}
+set statusline+=%=[%{(&fenc!=''?&fenc:&enc)}\|%{&ff}\|%Y]\ [%l,%v][%p%%]\  
+set statusline+=[%{strftime(\"%m/%d\-\%H:%M\")}]
 "0, 1 or 2; when to use a status line for the last window
 set laststatus=2 "always show status
-"hi StatusLine guifg=Black guibg=White gui=none
-"highlight StatusLineNC guifg=LightGrey guibg=LightSlateGrey	
-"if version >= 700 
-"au InsertEnter * hi StatusLine guibg=#818D29 guifg=#FCFCFC gui=none
-"au InsertLeave * hi StatusLine guifg=Black guibg=White gui=none
-"endif
+
 "always show the tabline
 set stal=2
 nmap <F7> a<C-R>=strftime("%Y-%m-%d/%H:%M:%S")<CR><ESC>
