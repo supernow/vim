@@ -2,7 +2,7 @@
 "@brief      config file of vim and gvim for both windows and linux
 "@date       2012-12-30 11:01:30
 "@author     tracyone,tracyone@live.cn
-"@lastchange 2013-09-01/08:42:58
+"@lastchange 2013-09-06/10:55:36
 "@note:		Prior to use, in the case of windows vim convert this file's 
 "			format into dos,while convert it into unix format in the case 
 "			of linux vim
@@ -90,23 +90,13 @@ endfunction
 set foldtext=MyFoldText()
 nnoremap <silent><tab> @=(foldlevel('.')?'za':"\<tab>")<CR>
 "}}}
-"set pastetoggle=<m-p> it is useful when in vim
-nmap <F6> :call Dosunix()<cr>
-
 "list candidate word in statusline
 set wildmenu
 set wildmode=longest,full
 set wic
-
-"display unprintable characters by set list
-"set list
-"Strings to use in 'list' mode and for the |:list| command
-set listchars=tab:\|\ ,trail:-
-
-" Uncomment the following to have Vim jump to the last position when
-" reopening a file
-au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
-
+"set list  "display unprintable characters by set list
+set listchars=tab:\|\ ,trail:-  "Strings to use in 'list' mode and for the |:list| command
+au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif "jump to last position last open in vim
 "{{{backup
 set backup "generate a backupfile when open file
 
@@ -117,111 +107,49 @@ if !isdirectory(&backupdir)
     call mkdir(&backupdir, "p")
 endif
 "}}}
-
 "do not Ring the bell (beep or screen flash) for error messages
 set noerrorbells
 set novisualbell 
-"set vb t_vb= "close visual bell
-set mat=2
-
+set mat=2  
 set report=0  "Threshold for reporting number of lines changed
-" Don't update the display while executing macros
-set lazyredraw
-" Set up the gui cursor to look nice
-set guicursor=n-v-c:block-Cursor-blinkon0,ve:ver35-Cursor,o:hor50-Cursor,i-ci:ver25-Cursor,r-cr:hor20-Cursor,sm:block-Cursor-blinkwait175-blinkoff150-blinkon175
-
+set lazyredraw  " Don't update the display while executing macros
 set helplang=en,cn  "set helplang=en
-"autoread when a file is changed from the outside
-set autoread
-
-"show the line number for each line
-set nu
-
-"number of lines used for the command-line
-set cmdheight=1
-
-"when inserting a bracket, briefly jump to its match
-set showmatch
-
-"name of the font to be used for :hardcopy
-set printfont=Yahei_Mono:h10:cGB2312
-
-"override 'ignorecase' when pattern has upper case characters
-set smartcase
-
-"list of flags for using the mouse,support all
-set mouse=a
-
-""extend", "popup" or "popup_setpos"; what the right
-set mousemodel=extend
-
-"start a dialog when a command fails
-set confirm
-
+set autoread   "autoread when a file is changed from the outside
+set nu  "show the line number for each line
+set cmdheight=1  "number of lines used for the command-line
+set showmatch "when inserting a bracket, briefly jump to its match
+set printfont=Yahei_Mono:h10:cGB2312  "name of the font to be used for :hardcopy
+set smartcase  "override 'ignorecase' when pattern has upper case characters
+set confirm  "start a dialog when a command fails
 set smartindent "do clever autoindenting
-
 "set nowrap   "don't auto linefeed
-
-"enable specific indenting for C code
-set cindent
-
-au FileType c,cpp,java,vim set expandtab "instead tab with space 
-au FileType make set noexpandtab
-
-"number of spaces a <Tab> in the text stands for
-set tabstop=4
-
-"if non-zero, number of spaces to insert for a <Tab>
-set softtabstop=4
-
-"a <Tab> in an indent inserts 'shiftwidth' spaces
-set smarttab
-
-"highlight all matches for the last used search pattern
-set hlsearch
-
-"number of spaces used for each step of (auto)indent
-set shiftwidth=4
-
-"display the current mode in the status line
-set showmode
-
-"show cursor position below each window
-"set ruler
-
-""old", "inclusive" or "exclusive"; how selecting text behaves
-set selection=inclusive
-
-"show match for partly typed search command
-set is
-
-"wrap long lines at a character in 'breakat'
-set lbr
-
-"specifies what <BS>, CTRL-W, etc. can do in Insert mode
-set backspace=indent,eol,start
-
-"list of flags specifying which commands wrap to another line
-set whichwrap=b,h,l,<,>,[,]
+set cindent  "enable specific indenting for C code
+set tabstop=4  "number of spaces a <Tab> in the text stands for
+set softtabstop=4  "if non-zero, number of spaces to insert for a <Tab>
+set smarttab "a <Tab> in an indent inserts 'shiftwidth' spaces
+set hlsearch "highlight all matches for the last used search pattern
+set shiftwidth=4 "number of spaces used for each step of (auto)indent
+set showmode "display the current mode in the status line
+"set ruler  "show cursor position below each window
+set selection=inclusive  ""old", "inclusive" or "exclusive"; how selecting text behaves
+set is  "show match for partly typed search command
+set lbr "wrap long lines at a character in 'breakat'
+set backspace=indent,eol,start  "specifies what <BS>, CTRL-W, etc. can do in Insert mode
+set whichwrap=b,h,l,<,>,[,]  "list of flags specifying which commands wrap to another line
 
 "unnamed" to use the * register like unnamed register
 "autoselect" to always put selected text on the clipboardset clipboard+=unnamed
 set clipboard+=unnamed
-
-"change to directory of file in buffer
-"set autochdir
+"set autochdir  "change to directory of file in buffer
 
 "statuslne
-set statusline+=%<%f%m%r%h%w%{tagbar#currenttag('[%s]','')}
-set statusline+=%=[%{(&fenc!=''?&fenc:&enc)}\|%{&ff}\|%Y]\ [%l,%v][%p%%]\  
+set statusline+=%<%t%m%r%h%w%{tagbar#currenttag('[%s]','')}
+set statusline+=%=[%{(&fenc!=''?&fenc:&enc)}\|%{&ff}\|%Y][%l,%v][%p%%] 
 set statusline+=[%{strftime(\"%m/%d\-\%H:%M\")}]
 "0, 1 or 2; when to use a status line for the last window
 set laststatus=2 "always show status
+set stal=2  "always show the tabline
 
-"always show the tabline
-set stal=2
-nmap <F7> a<C-R>=strftime("%Y-%m-%d/%H:%M:%S")<CR><ESC>
-imap <F7> <C-R>=strftime("%Y-%m-%d/%H:%M:%S")<CR>
 "automatic recognition vt file as verilog 
 au BufRead,BufNewFile *.vt set filetype=verilog
 "automatic recognition bld file as javascript 
@@ -234,17 +162,11 @@ au BufRead,BufNewFile * let $CurBufferDir=expand('%:p:h')
 au FileType verilog set tabstop=3
 au FileType verilog set shiftwidth=3
 au FileType verilog set softtabstop=3
+au FileType c,cpp,java,vim set expandtab "instead tab with space 
+au FileType make set noexpandtab
 
-func! Dosunix()
-    if &ff == 'unix'
-        exec "se ff=dos"
-    else
-        exec "se ff=unix"
-    endif
-endfunc
 "}}}
 "key mapping{{{
-
 "map jj to esc..
 inoremap jj <c-[>
 "fuck the meta key...
@@ -291,6 +213,10 @@ nnoremap <m-9> <esc>9gt
 map <leader>so :source $MYVIMRC<CR>
 "open the vimrc in tab
 map <leader>vc :tabedit $MYVIMRC<CR>
+
+"insert time info
+nmap <F7> a<C-R>=strftime("%Y-%m-%d/%H:%M:%S")<CR><ESC>
+imap <F7> <C-R>=strftime("%Y-%m-%d/%H:%M:%S")<CR>
 
 "clear search result
 noremap <m-q> :nohls<CR>
@@ -361,6 +287,7 @@ map <F5> :call Do_OneFileMake()<CR>
 vnoremap <silent> * :call VisualSelection('f')<CR>
 vnoremap <silent> # :call VisualSelection('b')<CR>
 
+nmap <F6> :call Dosunix()<cr>
 nmap <leader>o :call Open_url()<cr>
 
 "{{{function definition
@@ -542,8 +469,15 @@ function! CmdLine(str)
     emenu Foo.Bar
     unmenu Foo
 endfunction
-"}}}
 
+func! Dosunix()
+    if &ff == 'unix'
+        exec "se ff=dos"
+    else
+        exec "se ff=unix"
+    endif
+endfunc
+"}}}
 "}}}
 "plugin setting{{{
 "{{{vundle
@@ -1376,11 +1310,11 @@ filetype plugin indent on
 if(has("gui_running"))
     if g:iswindows==0
         au GUIEnter * call MaximizeWindow()
-        set guifont=Monaco\ 14
+        set guifont=Monaco\ 12
         set gfw=YaHei_Mono_Hybird_Consolas\ 12.5
     else
         au GUIEnter * simalt~x "maximize window
-        set guifont=Consolas:h14:cANSI
+        set guifont=Monaco:h12:cANSI
         set gfw=YaHei_Mono:h12.5:cGB2312
     endif
     " If using a dark background within the editing area and syntax highlighting
@@ -1463,8 +1397,14 @@ if(has("gui_running"))
         tmenu ToolBar.SaveProject Save Project setting(save as .proj)
     endif
     "}}}
-    "{{{Right mouse
+    "{{{mouse
+    " Set up the gui cursor to look nice
+    set guicursor=n-v-c:block-Cursor-blinkon0,ve:ver35-Cursor,o:hor50-Cursor,i-ci:ver25-Cursor,r-cr:hor20-Cursor,sm:block-Cursor-blinkwait175-blinkoff150-blinkon175
     amenu PopUp.-SEP3-	<Nop>
+    "list of flags for using the mouse,support all
+    set mouse=a
+    ""extend", "popup" or "popup_setpos"; what the right
+    set mousemodel=extend
     amenu PopUp.&Undo :GundoToggle<CR>
     amenu PopUp.&Goto\ Definition :cs find g <C-R>=expand("<cword>")<CR><CR>
     amenu PopUp.&Find\ Text :silent! execute "vimgrep " . expand("<cword>") . " **/*.[ch]". " **/*.cpp" . " **/*.cc"<cr>:cw 5<cr>
