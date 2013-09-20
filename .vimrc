@@ -2,7 +2,7 @@
 "@brief      config file of vim and gvim for both windows and linux
 "@date       2012-12-30 11:01:30
 "@author     tracyone,tracyone@live.cn
-"@lastchange 2013-09-14/01:42:49
+"@lastchange  2013-09-16/21:13:29
 "@note:		Prior to use, in the case of windows vim convert this file's 
 "			format into dos,while convert it into unix format in the case 
 "			of linux vim
@@ -279,7 +279,7 @@ nmap <c-h> :%s/<C-R>=expand("<cword>")<cr>/
 nmap dm :%s/\r\(\n\)/\1/g<CR>
 
 "cd to current buffer's path
-nmap <silent> ,cd :lcd %:h<CR>
+nmap <silent> <F8> :lcd %:h<CR>
 "resize windows
 map <F5> :call Do_OneFileMake()<CR>
 
@@ -1183,7 +1183,7 @@ let g:vimshell_execute_file_list['py'] = 'python'
 call vimshell#set_execute_file('html,xhtml', 'gexe firefox')
 au FileType vimshell :imap <buffer> <HOME> <Plug>(vimshell_move_head)
 au FileType vimshell set nonu
-imap <c-d> <Plug>(vimshell_exit)
+au FileType vimshell :imap <c-d> <Plug>(vimshell_exit)
 autocmd FileType vimshell
             \ call vimshell#altercmd#define('g', 'git')
             \| call vimshell#altercmd#define('i', 'iexe')
