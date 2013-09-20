@@ -2,7 +2,7 @@
 "@brief      config file of vim and gvim for both windows and linux
 "@date       2012-12-30 11:01:30
 "@author     tracyone,tracyone@live.cn
-"@lastchange 2013-09-06/10:55:36
+"@lastchange 2013-09-20/23:51:25
 "@note:		Prior to use, in the case of windows vim convert this file's 
 "			format into dos,while convert it into unix format in the case 
 "			of linux vim
@@ -109,7 +109,6 @@ endif
 "}}}
 "do not Ring the bell (beep or screen flash) for error messages
 set noerrorbells
-set novisualbell 
 set mat=2  
 set report=0  "Threshold for reporting number of lines changed
 set lazyredraw  " Don't update the display while executing macros
@@ -133,9 +132,10 @@ set showmode "display the current mode in the status line
 "set ruler  "show cursor position below each window
 set selection=inclusive  ""old", "inclusive" or "exclusive"; how selecting text behaves
 set is  "show match for partly typed search command
-set lbr "wrap long lines at a character in 'breakat'
+"set lbr "wrap long lines at a character in 'breakat'
 set backspace=indent,eol,start  "specifies what <BS>, CTRL-W, etc. can do in Insert mode
 set whichwrap=b,h,l,<,>,[,]  "list of flags specifying which commands wrap to another line
+set mouse=a "list of flags for using the mouse,support all
 
 "unnamed" to use the * register like unnamed register
 "autoselect" to always put selected text on the clipboardset clipboard+=unnamed
@@ -278,7 +278,7 @@ nmap <c-h> :%s/<C-R>=expand("<cword>")<cr>/
 nmap dm :%s/\r\(\n\)/\1/g<CR>
 
 "cd to current buffer's path
-nmap <silent> ,cd :lcd %:h<CR>
+nmap <silent> <F8> :lcd %:h<CR>
 "resize windows
 map <F5> :call Do_OneFileMake()<CR>
 
@@ -529,6 +529,7 @@ Bundle 'tracyone/dict'
 Bundle 'EasyGrep'
 Bundle 'verilog.vim'
 Bundle 'tracyone/Align'
+Bundle 'mhinz/vim-startify'
 Bundle 'tracyone/calendar'
 Bundle 'tracyone/Colour-Sampler-Pack'
 Bundle 'altercation/vim-colors-solarized'
@@ -564,7 +565,6 @@ Bundle 'Shougo/unite.vim'
 Bundle 'L9'
 Bundle 'mattn/zencoding-vim'
 Bundle 'vimwiki'
-Bundle 'matrix.vim--Yang'
 Bundle 'adah1972/fencview'
 Bundle 'Markdown'
 Bundle 'LaTeX-Suite-aka-Vim-LaTeX'
@@ -779,56 +779,6 @@ function! CreateCscopeTags()
         endif
     endfunction
     "}}}
-"{{{srcexpl.vim
-" // The switch of the Source Explorer                                         
-map <F8> :silent! SrcExplToggle<CR>
-imap <F8> <ESC>:SrcExplToggle<CR>i
-"                                                                              
-" // Set the height of Source Explorer window                                  
-let g:SrcExpl_winHeight = 8
-"                                                                              
-" // Set 100 ms for refreshing the Source Explorer                             
-let g:SrcExpl_refreshTime = 100
-"                                                                              
-" // Set "Enter" key to jump into the exact definition context                 
-let g:SrcExpl_jumpKey = "<ENTER>"
-"                                                                              
-" // Set "Space" key for back from the definition context                      
-let g:SrcExpl_gobackKey = ""
-"                                                                              
-" // In order to Avoid conflicts, the Source Explorer should know what plugins 
-" // are using buffers. And you need add their bufname into the list below     
-" // according to the command ":buffers!"                                      
-let g:SrcExpl_pluginList = [
-            \ "__Tag_List__",
-            \ "__TagBar__",
-            \ "_NERD_tree_",
-            \ "Source_Explorer",
-            \ "[unite] - *"
-            \ ]
-"
-" // Enable/Disable the local definition searching, and note that this is not  
-" // guaranteed to work, the Source Explorer doesn't check the syntax for now. 
-" // It only searches for a match with the keyword according to command 'gd'   
-" let g:SrcExpl_searchLocalDef = 1
-"                                                                              
-" // Do not let the Source Explorer update the tags file when opening          
-let g:SrcExpl_isUpdateTags = 0
-"                                                                              
-" // Use 'Exuberant Ctags' with '--sort=foldcase -R .' or '-L cscope.files' to 
-" //  create/update a tags file                                                
-let g:SrcExpl_updateTagsCmd = "ctags --sort=foldcase -R ."
-"                                                                              
-" // Set "<F12>" key for updating the tags file artificially                   
-"let g:SrcExpl_updateTagsKey = "<F3>"
-" // Set "<F3>" key for displaying the previous definition in the jump list 
-let g:SrcExpl_prevDefKey = "" 
-
-" // Set "<F4>" key for displaying the next definition in the jump list 
-let g:SrcExpl_nextDefKey = "" 
-
-
-"}}}
 "{{{neocomplcache or neocomplete
 "neocomplete is a new plugin develop by the same author,it required lua
 "feature and it is more intelligen of course
@@ -1233,7 +1183,7 @@ let g:vimshell_execute_file_list['py'] = 'python'
 call vimshell#set_execute_file('html,xhtml', 'gexe firefox')
 au FileType vimshell :imap <buffer> <HOME> <Plug>(vimshell_move_head)
 au FileType vimshell set nonu
-imap <c-d> <Plug>(vimshell_exit)
+au FileType vimshell :imap <c-d> <Plug>(vimshell_exit)
 autocmd FileType vimshell
             \ call vimshell#altercmd#define('g', 'git')
             \| call vimshell#altercmd#define('i', 'iexe')
@@ -1291,9 +1241,6 @@ endif
 "{{{nerdcommander
 let g:NERDMenuMode=1
 "}}}
-"{{{gundo
-"nmap <F5> :GundoToggle<CR>
-"}}}
 "{{{yankring
 nmap <c-y> :YRGetElem<CR>
 imap <c-y> <esc>:YRGetElem<CR>
@@ -1301,6 +1248,37 @@ let g:yankring_history_file = ".yank_history"
 let g:yankring_default_menu_mode = 0
 let g:yankring_replace_n_pkey = '<m-p>'
 let g:yankring_replace_n_nkey = '<m-n>'
+"}}}
+"{{{vim-startify
+let g:startify_session_dir = $VIM.'/session'
+let g:startify_list_order = ['files', 'sessions', 'bookmarks']
+let g:startify_files_number = 10
+let g:startify_session_detection = 1
+let g:startify_session_autoload = 0
+let g:startify_session_persistence = 0
+let g:startify_change_to_dir = 1
+let g:startify_change_to_vcs_root = 1
+let g:startify_custom_header = [
+            \ "This is tracyone's vimrc,press F1 for help!",
+            \ 'Email:tracyone1989@gmail.com && tracyone@live.cn',
+            \ 'Twitter:https://twitter.com/itracyone',
+            \ 'Facebook:https://www.facebook.com/itracyone',
+            \ 'My vimrc:https://github.com/tracyone/vim',
+            \ '-------------------------------------------',
+            \ '',
+            \ '',
+            \ ]
+let g:startify_custom_footer = [
+            \ '',
+            \ '   __      ___            ',
+            \ '   \ \    / (_)           ',
+            \ '    \ \  / / _ _ __ ___   ',
+            \ '     \ \/ / | | ''_ ` _ \ ',
+            \ '      \  /  | | | | | | | ',
+            \ '       \/   |_|_| |_| |_| ',
+            \ '',
+            \ '',
+            \ ]
 "}}}
 syntax on
 filetype plugin indent on
@@ -1319,7 +1297,9 @@ if(has("gui_running"))
     endif
     " If using a dark background within the editing area and syntax highlighting
     " turn on this option as well
-    set background=dark
+    set novb
+    au GUIEnter * set vb t_vb=
+    set t_vb=
     set guioptions-=b
     "set guioptions-=m "whether use menu
     set guioptions+=r "whether show the rigth scroll bar
@@ -1401,10 +1381,8 @@ if(has("gui_running"))
     " Set up the gui cursor to look nice
     set guicursor=n-v-c:block-Cursor-blinkon0,ve:ver35-Cursor,o:hor50-Cursor,i-ci:ver25-Cursor,r-cr:hor20-Cursor,sm:block-Cursor-blinkwait175-blinkoff150-blinkon175
     amenu PopUp.-SEP3-	<Nop>
-    "list of flags for using the mouse,support all
-    set mouse=a
     ""extend", "popup" or "popup_setpos"; what the right
-    set mousemodel=extend
+    set mousemodel=popup_setpos
     amenu PopUp.&Undo :GundoToggle<CR>
     amenu PopUp.&Goto\ Definition :cs find g <C-R>=expand("<cword>")<CR><CR>
     amenu PopUp.&Find\ Text :silent! execute "vimgrep " . expand("<cword>") . " **/*.[ch]". " **/*.cpp" . " **/*.cc"<cr>:cw 5<cr>
@@ -1423,6 +1401,14 @@ if(has("gui_running"))
     " let g:solarized_diffmode="normal"
     " let g:solarized_hitrail=0
     let g:solarized_menu=0
+    func! Turnonoff()
+        if &background == 'light'
+            exec "set background=dark"
+        else
+            exec "set background=light"
+        endif
+    endfunc
+    noremap <c-F8> :call Turnonoff()<cr>
     "}}}
     let g:colorscheme_file='' "color thmem's name  
     if g:iswindows == 0
@@ -1460,8 +1446,6 @@ if(has("gui_running"))
     function! MaximizeWindow()
         silent !wmctrl -r :ACTIVE: -b add,maximized_vert,maximized_horz
     endfunction
-else
-    set background=light
 endif
 "}}}
 "default is on but it is off when you are root,so we put it here
