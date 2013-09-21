@@ -164,7 +164,6 @@ au FileType verilog set shiftwidth=3
 au FileType verilog set softtabstop=3
 au FileType c,cpp,java,vim set expandtab "instead tab with space 
 au FileType make set noexpandtab
-
 "}}}
 "key mapping{{{
 "map jj to esc..
@@ -199,15 +198,15 @@ vmap <s-TAB>  <gv
 noremap <silent><c-TAB> :tabnext<cr>
 nmap <m-t> :tabnew<cr>
 imap <m-t> <esc>:tabnew<cr>
-nnoremap <m-1> <esc>1gt
-nnoremap <m-2> <esc>2gt
-nnoremap <m-3> <esc>3gt
-nnoremap <m-4> <esc>4gt
-nnoremap <m-5> <esc>5gt
-nnoremap <m-6> <esc>6gt
-nnoremap <m-7> <esc>7gt
-nnoremap <m-8> <esc>8gt
-nnoremap <m-9> <esc>9gt
+noremap <m-1> <esc>1gt
+noremap <m-2> <esc>2gt
+noremap <m-3> <esc>3gt
+noremap <m-4> <esc>4gt
+noremap <m-5> <esc>5gt
+noremap <m-6> <esc>6gt
+noremap <m-7> <esc>7gt
+noremap <m-8> <esc>8gt
+noremap <m-9> <esc>9gt
 
 "update the _vimrc
 map <leader>so :source $MYVIMRC<CR>
@@ -1202,11 +1201,7 @@ endfunction
 map <F4> :VimShellPop<cr>
 "}}}
 "{{{UltiSnips
-if g:iswindows==1
-    let g:UltiSnipsUsePythonVersion = 3
-else
-    let g:UltiSnipsUsePythonVersion = 2
-endif
+let g:UltiSnipsUsePythonVersion = 2
 let g:UltiSnipsExpandTrigger="<c-j>"
 let g:UltiSnipsListSnippets ="<c-tab>"
 let g:UltiSnipsJumpForwardTrigge="<c-j>"
@@ -1280,8 +1275,8 @@ let g:startify_custom_footer = [
             \ '',
             \ ]
 "}}}
-syntax on
 filetype plugin indent on
+syntax on
 "}}}
 "gui releate{{{
 "list of flags that specify how the GUI works
