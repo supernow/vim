@@ -566,7 +566,9 @@ Bundle 'mattn/zencoding-vim'
 Bundle 'vimwiki'
 Bundle 'adah1972/fencview'
 Bundle 'Markdown'
-Bundle 'LaTeX-Suite-aka-Vim-LaTeX'
+if g:iswindows==0
+    Bundle 'LaTeX-Suite-aka-Vim-LaTeX'
+endif
 Bundle 'DrawIt'
 Bundle 'mbbill/VimExplorer'
 Bundle 'renamer.vim'
