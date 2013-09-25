@@ -2,7 +2,7 @@
 "@brief      config file of vim and gvim for both windows and linux
 "@date       2012-12-30 11:01:30
 "@author     tracyone,tracyone@live.cn
-"@lastchange 2013-09-20/23:51:25
+"@lastchange 2013-09-25/14:32:51
 "@note:		Prior to use, in the case of windows vim convert this file's 
 "			format into dos,while convert it into unix format in the case 
 "			of linux vim
@@ -528,7 +528,6 @@ Bundle 'tracyone/dict'
 Bundle 'EasyGrep'
 Bundle 'verilog.vim'
 Bundle 'tracyone/Align'
-Bundle 'mhinz/vim-startify'
 Bundle 'tracyone/calendar'
 Bundle 'tracyone/Colour-Sampler-Pack'
 Bundle 'altercation/vim-colors-solarized'
@@ -575,7 +574,6 @@ Bundle 'renamer.vim'
 Bundle 'tracyone/doxygen-support'
 Bundle 'tracyone/CCtree'
 Bundle 'hallison/vim-markdown'
-Bundle 'TeTrIs.vim'
 Bundle 'tracyone/mark.vim'
 Bundle 'tracyone/MyVimHelp'
 Bundle 'scrooloose/syntastic'
@@ -1093,7 +1091,7 @@ let g:ctrlp_working_path_mode = 'w'
 " Ctrl-P ignore target dirs so VIM doesn't have to! Yay!
 let g:ctrlp_custom_ignore = {
             \ 'dir': '\.git$\|\.hg$\|\.svn$\|target$\|built$\|.build$\|node_modules\|\.sass-cache',
-            \ 'file': '\v\.(exe|so|dll|o)$',
+            \ 'file': '\v\.(exe|so|dll|o|proj|out|)$',
             \ }
 let g:ctrlp_extensions = ['tag', 'buffertag', 'dir', 'bookmarkdir']
 "}}}
@@ -1203,7 +1201,7 @@ endfunction
 map <F4> :VimShellPop<cr>
 "}}}
 "{{{UltiSnips
-let g:UltiSnipsUsePythonVersion = 2
+"let g:UltiSnipsUsePythonVersion = 2
 let g:UltiSnipsExpandTrigger="<c-j>"
 let g:UltiSnipsListSnippets ="<c-tab>"
 let g:UltiSnipsJumpForwardTrigge="<c-j>"
@@ -1245,37 +1243,6 @@ let g:yankring_history_file = ".yank_history"
 let g:yankring_default_menu_mode = 0
 let g:yankring_replace_n_pkey = '<m-p>'
 let g:yankring_replace_n_nkey = '<m-n>'
-"}}}
-"{{{vim-startify
-let g:startify_session_dir = $VIM.'/session'
-let g:startify_list_order = ['files', 'sessions', 'bookmarks']
-let g:startify_files_number = 10
-let g:startify_session_detection = 1
-let g:startify_session_autoload = 0
-let g:startify_session_persistence = 0
-let g:startify_change_to_dir = 1
-let g:startify_change_to_vcs_root = 1
-let g:startify_custom_header = [
-            \ "This is tracyone's vimrc,press F1 for help!",
-            \ 'Email:tracyone1989@gmail.com && tracyone@live.cn',
-            \ 'Twitter:https://twitter.com/itracyone',
-            \ 'Facebook:https://www.facebook.com/itracyone',
-            \ 'My vimrc:https://github.com/tracyone/vim',
-            \ '-------------------------------------------',
-            \ '',
-            \ '',
-            \ ]
-let g:startify_custom_footer = [
-            \ '',
-            \ '   __      ___            ',
-            \ '   \ \    / (_)           ',
-            \ '    \ \  / / _ _ __ ___   ',
-            \ '     \ \/ / | | ''_ ` _ \ ',
-            \ '      \  /  | | | | | | | ',
-            \ '       \/   |_|_| |_| |_| ',
-            \ '',
-            \ '',
-            \ ]
 "}}}
 filetype plugin indent on
 syntax on
