@@ -149,6 +149,8 @@ set statusline+=[%{strftime(\"%m/%d\-\%H:%M\")}]
 "0, 1 or 2; when to use a status line for the last window
 set laststatus=2 "always show status
 set stal=2  "always show the tabline
+set sessionoptions-=folds
+set sessionoptions-=options
 
 "automatic recognition vt file as verilog 
 au BufRead,BufNewFile *.vt set filetype=verilog
@@ -536,6 +538,7 @@ Bundle 'tpope/vim-fugitive'
 Bundle 'delimitMate.vim'
 Bundle 'FuzzyFinder'
 Bundle 'genutils'
+Bundle 'mhinz/vim-startify'
 Bundle 'SirVer/ultisnips'
 Bundle 'YankRing.vim'
 Bundle 'tracyone/snippets'
@@ -1243,6 +1246,23 @@ let g:yankring_history_file = ".yank_history"
 let g:yankring_default_menu_mode = 0
 let g:yankring_replace_n_pkey = '<m-p>'
 let g:yankring_replace_n_nkey = '<m-n>'
+"}}}
+"{{{vim-startify
+let g:startify_session_dir = $VIM .'\sessions'
+let g:startify_list_order = ['files', 'dir', 'bookmarks', 'sessions']
+let g:startify_change_to_dir = 1
+let g:startify_change_to_vcs_root = 0
+let g:startify_custom_header = [
+            \ 'This is my vimrc for both linux and windows,press F1 for help',
+            \ 'Contact me by the following method:',
+            \ 'Twitter:twitter.com/itracyone',
+            \ 'Facebook:facebook.com/itracyone',
+            \ 'Email:tracyone@live.cn or tracyone1989@gmail.com',
+            \ '',
+            \ '',
+            \ ]
+noremap <F8> :SSave<cr>
+autocmd FileType startify setlocal buftype=
 "}}}
 filetype plugin indent on
 syntax on
