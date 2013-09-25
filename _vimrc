@@ -2,7 +2,7 @@
 "@brief      config file of vim and gvim for both windows and linux
 "@date       2012-12-30 11:01:30
 "@author     tracyone,tracyone@live.cn
-"@lastchange 2013-09-25/14:32:51
+"@lastchange 2013-09-25/15:47:15
 "@note:		Prior to use, in the case of windows vim convert this file's 
 "			format into dos,while convert it into unix format in the case 
 "			of linux vim
@@ -1248,16 +1248,20 @@ let g:yankring_replace_n_pkey = '<m-p>'
 let g:yankring_replace_n_nkey = '<m-n>'
 "}}}
 "{{{vim-startify
-let g:startify_session_dir = $VIM .'\sessions'
-let g:startify_list_order = ['files', 'dir', 'bookmarks', 'sessions']
+if g:iswindows==1
+    let g:startify_session_dir = $HOME .'\sessions'
+else
+    let g:startify_session_dir = $HOME .'/sessions'
+endif
+let g:startify_list_order = ['files', 'bookmarks', 'sessions']
 let g:startify_change_to_dir = 1
 let g:startify_change_to_vcs_root = 0
 let g:startify_custom_header = [
             \ 'This is my vimrc for both linux and windows,press F1 for help',
             \ 'Contact me by the following method:',
-            \ 'Twitter:twitter.com/itracyone',
-            \ 'Facebook:facebook.com/itracyone',
-            \ 'Email:tracyone@live.cn or tracyone1989@gmail.com',
+            \ '    1,Twitter:twitter.com/itracyone',
+            \ '    2,Facebook:facebook.com/itracyone',
+            \ '    3,Email:tracyone@live.cn or tracyone1989@gmail.com',
             \ '',
             \ '',
             \ ]
@@ -1384,6 +1388,7 @@ if(has("gui_running"))
     " let g:solarized_visibility="normal"
     " let g:solarized_diffmode="normal"
     " let g:solarized_hitrail=0
+    set background=dark
     let g:solarized_menu=0
     func! Turnonoff()
         if &background == 'light'
