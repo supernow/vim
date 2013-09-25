@@ -2,7 +2,7 @@
 "@brief      config file of vim and gvim for both windows and linux
 "@date       2012-12-30 11:01:30
 "@author     tracyone,tracyone@live.cn
-"@lastchange  2013-09-16/21:13:29
+"@lastchange 2013-09-25/16:00:15
 "@note:		Prior to use, in the case of windows vim convert this file's 
 "			format into dos,while convert it into unix format in the case 
 "			of linux vim
@@ -109,7 +109,6 @@ endif
 "}}}
 "do not Ring the bell (beep or screen flash) for error messages
 set noerrorbells
-set novisualbell 
 set mat=2  
 set report=0  "Threshold for reporting number of lines changed
 set lazyredraw  " Don't update the display while executing macros
@@ -150,6 +149,8 @@ set statusline+=[%{strftime(\"%m/%d\-\%H:%M\")}]
 "0, 1 or 2; when to use a status line for the last window
 set laststatus=2 "always show status
 set stal=2  "always show the tabline
+set sessionoptions-=folds
+set sessionoptions-=options
 
 "automatic recognition vt file as verilog 
 au BufRead,BufNewFile *.vt set filetype=verilog
@@ -165,7 +166,6 @@ au FileType verilog set shiftwidth=3
 au FileType verilog set softtabstop=3
 au FileType c,cpp,java,vim set expandtab "instead tab with space 
 au FileType make set noexpandtab
-
 "}}}
 "key mapping{{{
 "map jj to esc..
@@ -200,15 +200,15 @@ vmap <s-TAB>  <gv
 noremap <silent><c-TAB> :tabnext<cr>
 nmap <m-t> :tabnew<cr>
 imap <m-t> <esc>:tabnew<cr>
-nnoremap <m-1> <esc>1gt
-nnoremap <m-2> <esc>2gt
-nnoremap <m-3> <esc>3gt
-nnoremap <m-4> <esc>4gt
-nnoremap <m-5> <esc>5gt
-nnoremap <m-6> <esc>6gt
-nnoremap <m-7> <esc>7gt
-nnoremap <m-8> <esc>8gt
-nnoremap <m-9> <esc>9gt
+noremap <m-1> <esc>1gt
+noremap <m-2> <esc>2gt
+noremap <m-3> <esc>3gt
+noremap <m-4> <esc>4gt
+noremap <m-5> <esc>5gt
+noremap <m-6> <esc>6gt
+noremap <m-7> <esc>7gt
+noremap <m-8> <esc>8gt
+noremap <m-9> <esc>9gt
 
 "update the _vimrc
 map <leader>so :source $MYVIMRC<CR>
@@ -538,6 +538,7 @@ Bundle 'tpope/vim-fugitive'
 Bundle 'delimitMate.vim'
 Bundle 'FuzzyFinder'
 Bundle 'genutils'
+Bundle 'mhinz/vim-startify'
 Bundle 'SirVer/ultisnips'
 Bundle 'YankRing.vim'
 Bundle 'tracyone/snippets'
@@ -567,14 +568,15 @@ Bundle 'mattn/zencoding-vim'
 Bundle 'vimwiki'
 Bundle 'adah1972/fencview'
 Bundle 'Markdown'
-Bundle 'LaTeX-Suite-aka-Vim-LaTeX'
+if g:iswindows==0
+    Bundle 'LaTeX-Suite-aka-Vim-LaTeX'
+endif
 Bundle 'DrawIt'
 Bundle 'mbbill/VimExplorer'
 Bundle 'renamer.vim'
 Bundle 'tracyone/doxygen-support'
 Bundle 'tracyone/CCtree'
 Bundle 'hallison/vim-markdown'
-Bundle 'TeTrIs.vim'
 Bundle 'tracyone/mark.vim'
 Bundle 'tracyone/MyVimHelp'
 Bundle 'scrooloose/syntastic'
@@ -1092,7 +1094,7 @@ let g:ctrlp_working_path_mode = 'w'
 " Ctrl-P ignore target dirs so VIM doesn't have to! Yay!
 let g:ctrlp_custom_ignore = {
             \ 'dir': '\.git$\|\.hg$\|\.svn$\|target$\|built$\|.build$\|node_modules\|\.sass-cache',
-            \ 'file': '\v\.(exe|so|dll|o)$',
+            \ 'file': '\v\.(exe|so|dll|o|proj|out|)$',
             \ }
 let g:ctrlp_extensions = ['tag', 'buffertag', 'dir', 'bookmarkdir']
 "}}}
@@ -1202,11 +1204,7 @@ endfunction
 map <F4> :VimShellPop<cr>
 "}}}
 "{{{UltiSnips
-if g:iswindows==1
-    let g:UltiSnipsUsePythonVersion = 3
-else
-    let g:UltiSnipsUsePythonVersion = 2
-endif
+"let g:UltiSnipsUsePythonVersion = 2
 let g:UltiSnipsExpandTrigger="<c-j>"
 let g:UltiSnipsListSnippets ="<c-tab>"
 let g:UltiSnipsJumpForwardTrigge="<c-j>"
@@ -1241,9 +1239,6 @@ endif
 "{{{nerdcommander
 let g:NERDMenuMode=1
 "}}}
-"{{{gundo
-"nmap <F5> :GundoToggle<CR>
-"}}}
 "{{{yankring
 nmap <c-y> :YRGetElem<CR>
 imap <c-y> <esc>:YRGetElem<CR>
@@ -1252,8 +1247,29 @@ let g:yankring_default_menu_mode = 0
 let g:yankring_replace_n_pkey = '<m-p>'
 let g:yankring_replace_n_nkey = '<m-n>'
 "}}}
-syntax on
+"{{{vim-startify
+if g:iswindows==1
+    let g:startify_session_dir = $HOME .'\sessions'
+else
+    let g:startify_session_dir = $HOME .'/sessions'
+endif
+let g:startify_list_order = ['files', 'bookmarks', 'sessions']
+let g:startify_change_to_dir = 1
+let g:startify_change_to_vcs_root = 0
+let g:startify_custom_header = [
+            \ 'This is my vimrc for both linux and windows,press F1 for help',
+            \ 'Contact me by the following method:',
+            \ '    1,Twitter:twitter.com/itracyone',
+            \ '    2,Facebook:facebook.com/itracyone',
+            \ '    3,Email:tracyone@live.cn or tracyone1989@gmail.com',
+            \ '',
+            \ '',
+            \ ]
+noremap <F8> :SSave<cr>
+autocmd FileType startify setlocal buftype=
+"}}}
 filetype plugin indent on
+syntax on
 "}}}
 "gui releate{{{
 "list of flags that specify how the GUI works
@@ -1269,7 +1285,9 @@ if(has("gui_running"))
     endif
     " If using a dark background within the editing area and syntax highlighting
     " turn on this option as well
-    set background=dark
+    set novb
+    au GUIEnter * set vb t_vb=
+    set t_vb=
     set guioptions-=b
     "set guioptions-=m "whether use menu
     set guioptions+=r "whether show the rigth scroll bar
@@ -1352,7 +1370,7 @@ if(has("gui_running"))
     set guicursor=n-v-c:block-Cursor-blinkon0,ve:ver35-Cursor,o:hor50-Cursor,i-ci:ver25-Cursor,r-cr:hor20-Cursor,sm:block-Cursor-blinkwait175-blinkoff150-blinkon175
     amenu PopUp.-SEP3-	<Nop>
     ""extend", "popup" or "popup_setpos"; what the right
-    set mousemodel=extend
+    set mousemodel=popup_setpos
     amenu PopUp.&Undo :GundoToggle<CR>
     amenu PopUp.&Goto\ Definition :cs find g <C-R>=expand("<cword>")<CR><CR>
     amenu PopUp.&Find\ Text :silent! execute "vimgrep " . expand("<cword>") . " **/*.[ch]". " **/*.cpp" . " **/*.cc"<cr>:cw 5<cr>
@@ -1370,7 +1388,16 @@ if(has("gui_running"))
     " let g:solarized_visibility="normal"
     " let g:solarized_diffmode="normal"
     " let g:solarized_hitrail=0
+    set background=dark
     let g:solarized_menu=0
+    func! Turnonoff()
+        if &background == 'light'
+            exec "set background=dark"
+        else
+            exec "set background=light"
+        endif
+    endfunc
+    noremap <c-F8> :call Turnonoff()<cr>
     "}}}
     let g:colorscheme_file='' "color thmem's name  
     if g:iswindows == 0
@@ -1408,8 +1435,6 @@ if(has("gui_running"))
     function! MaximizeWindow()
         silent !wmctrl -r :ACTIVE: -b add,maximized_vert,maximized_horz
     endfunction
-else
-    set background=light
 endif
 "}}}
 "default is on but it is off when you are root,so we put it here
