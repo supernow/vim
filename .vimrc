@@ -2,7 +2,7 @@
 "@brief      config file of vim and gvim for both windows and linux
 "@date       2012-12-30 11:01:30
 "@author     tracyone,tracyone@live.cn
-"@lastchange 2013-09-25/16:00:15
+"@lastchange 2013-09-26/15:15:57
 "@note:		Prior to use, in the case of windows vim convert this file's 
 "			format into dos,while convert it into unix format in the case 
 "			of linux vim
@@ -11,7 +11,7 @@
 set encoding=utf-8
 if has("win32") || has("win64")
     set fileencoding=utf-8
-    set termencoding=cp936
+    set termencoding=utf-8
 else
     set fileencoding=utf-8
     set termencoding=utf-8
@@ -279,7 +279,7 @@ nmap <c-h> :%s/<C-R>=expand("<cword>")<cr>/
 nmap dm :%s/\r\(\n\)/\1/g<CR>
 
 "cd to current buffer's path
-nmap <silent> <F8> :lcd %:h<CR>
+nmap <silent> <c-F7> :lcd %:h<CR>
 "resize windows
 map <F5> :call Do_OneFileMake()<CR>
 
@@ -681,105 +681,79 @@ nmap <C-\>e :cs find e
 nmap <C-\>f :cs find f 
 nmap <C-\>i :cs find i 
 nmap <C-\>d :cs find d 
-if g:iswindows==1 
-    nmap <leader>u :call Do_CsTag()<cr>
-else
-    nmap <leader>u :call CreateCscopeTags()<cr>
-endif
+nnoremap <leader>u :call Do_CsTag()<cr>
 nmap <leader>a :cs add cscope.out<cr>:CCTreeLoadDB cscope.out<cr>
 "kill the connection of current dir 
 nmap <leader>k :cs kill cscope.out<cr> 
-function! CreateCscopeTags()
-    if has("cscope") && filereadable("cscope.out")
-        cs kill cscope.out "kill the cscope.out in current dir only 
+function! Do_CsTag()
+    let dir = getcwd()
+    if filereadable("tags")
+        if(g:iswindows==1)
+            let tagsdeleted=delete(dir."\\"."tags")
+        else
+            let tagsdeleted=delete("./"."tags")
+        endif
+        if(tagsdeleted!=0)
+            echohl WarningMsg | echo "Fail to do tags! I cannot delete the tags" | echohl None
+            return
+        endif
     endif
     if filereadable("cscope.files")
-        call delete("cscope.files")
-        call delete("cscope.out")
-        call delete("tags")
-        execute "echo \"Updating cscope.files...\r\"" 
-    else
-        execute "echo \"Creating cscope.files...\r\"" 
+        if(g:iswindows==1)
+            let csfilesdeleted=delete(dir."\\"."cscope.files")
+        else
+            let csfilesdeleted=delete("./"."cscope.files")
+        endif
+        if(csfilesdeleted!=0)
+            echohl WarningMsg | echo "Fail to do cscope! I cannot delete the cscope.files" | echohl None
+            return
+        endif
     endif
-    call system("touch cscope.files")
-    call system("find $PWD -name \"*.[chsSv]\" > ./cscope.files")
-    call system("cscope -Rbckq -i cscope.files")
-    call system("ctags -R")
-    execute "echo \"finish!\"" 
     if filereadable("cscope.out")
-        execute "cs add cscope.out"
-        execute "CCTreeLoadDB cscope.out"
-    else
-    endfunction
-    function! Do_CsTag()
-        let dir = getcwd()
-        if filereadable("tags")
-            if(g:iswindows==1)
-                let tagsdeleted=delete(dir."\\"."tags")
-            else
-                let tagsdeleted=delete("./"."tags")
-            endif
-            if(tagsdeleted!=0)
-                echohl WarningMsg | echo "Fail to do tags! I cannot delete the tags" | echohl None
-                return
-            endif
+        if(g:iswindows==1)
+            let csoutdeleted=delete(dir."\\"."cscope.out")
+        else
+            let csoutdeleted=delete("./"."cscope.out")
         endif
-        if filereadable("cscope.files")
-            if(g:iswindows==1)
-                let csfilesdeleted=delete(dir."\\"."cscope.files")
-            else
-                let csfilesdeleted=delete("./"."cscope.files")
+        if(csoutdeleted!=0)
+            echohl WarningMsg | echo "I cannot delete the cscope.out,try again" | echohl None
+            echo "kill the cscope connection"
+            if has("cscope") && filereadable("cscope.out")
+                silent! execute "cs kill cscope.out"
             endif
-            if(csfilesdeleted!=0)
-                echohl WarningMsg | echo "Fail to do cscope! I cannot delete the cscope.files" | echohl None
-                return
-            endif
-        endif
-        if filereadable("cscope.out")
             if(g:iswindows==1)
                 let csoutdeleted=delete(dir."\\"."cscope.out")
             else
                 let csoutdeleted=delete("./"."cscope.out")
             endif
-            if(csoutdeleted!=0)
-                echohl WarningMsg | echo "I cannot delete the cscope.out,try again" | echohl None
-                echo "kill the cscope connection"
-                if has("cscope") && filereadable("cscope.out")
-                    silent! execute "cs kill cscope.out"
-                endif
-                if(g:iswindows==1)
-                    let csoutdeleted=delete(dir."\\"."cscope.out")
-                else
-                    let csoutdeleted=delete("./"."cscope.out")
-                endif
-            endif
-            if(csoutdeleted!=0)
-                echohl WarningMsg | echo "I still cannot delete the cscope.out,failed to do cscope" | echohl None
-                return
-            endif
         endif
-        if(executable('ctags'))
-            silent! execute "!ctags -R --c-types=+p --fields=+S *"
-            silent! execute "!ctags -R --c++-kinds=+p --fields=+iaS --extra=+q ."
+        if(csoutdeleted!=0)
+            echohl WarningMsg | echo "I still cannot delete the cscope.out,failed to do cscope" | echohl None
+            return
         endif
-        if(executable('cscope') && has("cscope") )
-            if(g:iswindows!=1)
-                silent! execute "!find . -name \"*.[chsS]\" > ./cscope.files"
-            else
-                silent! execute "!dir /s/b *.c,*.cpp,*.h,*.java,*.cs,*.s,*.asm > cscope.files"
-            endif
-            silent! execute "!cscope -Rbkq -i cscope.files"
-            "silent! execute "!ccglue -S cscope.out -o ccglue.out" "don not know how to use
-            execute "normal :"
-            if filereadable("cscope.out")
-                execute "cs add cscope.out"
-                execute "CCTreeLoadDB cscope.out"
-                "execute "CCTreeLoadXRefDBFromDisk ccglue.out"
-            else
-                echohl WarningMsg | echo "No cscope.out" | echohl None
-            endif
+    endif
+    if(executable('ctags'))
+        silent! execute "!ctags -R --c-types=+p --fields=+S *"
+        silent! execute "!ctags -R --c++-kinds=+p --fields=+iaS --extra=+q ."
+    endif
+    if(executable('cscope') && has("cscope") )
+        if(g:iswindows!=1)
+            silent! execute "!find . -name \"*.[chsS]\" > ./cscope.files"
+        else
+            silent! execute "!dir /s/b *.c,*.cpp,*.h,*.java,*.cs,*.s,*.asm > cscope.files"
         endif
-    endfunction
+        silent! execute "!cscope -Rbkq -i cscope.files"
+        "silent! execute "!ccglue -S cscope.out -o ccglue.out" "don not know how to use
+        execute "normal :"
+        if filereadable("cscope.out")
+            execute "cs add cscope.out"
+            execute "CCTreeLoadDB cscope.out"
+            "execute "CCTreeLoadXRefDBFromDisk ccglue.out"
+        else
+            echohl WarningMsg | echo "No cscope.out" | echohl None
+        endif
+    endif
+endfunction
     "}}}
 "{{{neocomplcache or neocomplete
 "neocomplete is a new plugin develop by the same author,it required lua
@@ -1204,7 +1178,7 @@ endfunction
 map <F4> :VimShellPop<cr>
 "}}}
 "{{{UltiSnips
-"let g:UltiSnipsUsePythonVersion = 2
+let g:UltiSnipsUsePythonVersion = 2 "recommend to use python2.x
 let g:UltiSnipsExpandTrigger="<c-j>"
 let g:UltiSnipsListSnippets ="<c-tab>"
 let g:UltiSnipsJumpForwardTrigge="<c-j>"
