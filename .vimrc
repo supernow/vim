@@ -738,7 +738,7 @@ function! Do_CsTag()
     endif
     if(executable('cscope') && has("cscope") )
         if(g:iswindows!=1)
-            silent! execute "!find . -name \"*.[chsS]\" > ./cscope.files"
+            silent! execute "!find $(pwd) -name \"*.[chsS]\" > ./cscope.files"
         else
             silent! execute "!dir /s/b *.c,*.cpp,*.h,*.java,*.cs,*.s,*.asm > cscope.files"
         endif
