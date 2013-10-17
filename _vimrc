@@ -1,8 +1,8 @@
-"@file       .vimrc & _vimrc
+﻿"@file       .vimrc & _vimrc
 "@brief      config file of vim and gvim for both windows and linux
 "@date       2012-12-30 11:01:30
 "@author     tracyone,tracyone@live.cn
-"@lastchange 2013-09-26/15:15:57
+"@lastchange 2013-10-11/08:40:14
 "@note:		Prior to use, in the case of windows vim convert this file's 
 "			format into dos,while convert it into unix format in the case 
 "			of linux vim
@@ -738,7 +738,7 @@ function! Do_CsTag()
     endif
     if(executable('cscope') && has("cscope") )
         if(g:iswindows!=1)
-            silent! execute "!find . -name \"*.[chsS]\" > ./cscope.files"
+            silent! execute "!find $(pwd) -name \"*.[chsS]\" > ./cscope.files"
         else
             silent! execute "!dir /s/b *.c,*.cpp,*.h,*.java,*.cs,*.s,*.asm > cscope.files"
         endif
@@ -1135,7 +1135,7 @@ if g:iswindows==1
 else
     let g:VEConf_systemEncoding = 'gbk'
 endif
-map <F11> :silent! VE $CurBufferDir<cr><cr>
+map <F11> :silent! VE<cr><cr>
 "}}}
 "{{{vimshell
 let g:vimshell_user_prompt = '":: " . "(" . fnamemodify(getcwd(), ":~") . ")"'
@@ -1192,7 +1192,7 @@ let g:fencview_auto_patterns='*.txt,*.htm{l\=},*.c,*.cpp,*.s,*.vim'
 "}}}
 "{{{renamer
 "rename multi file name
-map <F2> :Ren $CurBufferDir<cr>
+map <F2> :Ren<cr>
 "}}}
 "{{{myvimhelp
 let g:startupfile="first_statup.txt"
