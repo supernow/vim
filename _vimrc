@@ -1,8 +1,8 @@
-﻿"@file       .vimrc & _vimrc
+"@file       .vimrc & _vimrc
 "@brief      config file of vim and gvim for both windows and linux
 "@date       2012-12-30 11:01:30
 "@author     tracyone,tracyone@live.cn
-"@lastchange 2013-10-11/08:40:14
+"@lastchange 2013-10-21/16:54:56
 "@note:		Prior to use, in the case of windows vim convert this file's 
 "			format into dos,while convert it into unix format in the case 
 "			of linux vim
@@ -220,7 +220,7 @@ nmap <F7> a<C-R>=strftime("%Y-%m-%d/%H:%M:%S")<CR><ESC>
 imap <F7> <C-R>=strftime("%Y-%m-%d/%H:%M:%S")<CR>
 
 "clear search result
-noremap <m-q> :nohls<CR>
+noremap <m-q> :nohls<CR>:MarkClear<cr>
 
 "save file 
 "in terminal ctrl-s is used to stop printf..
