@@ -1182,6 +1182,7 @@ if g:iswindows == 1
     let g:UltiSnipsUsePythonVersion = 3 "recommend to use python2.x
 else
     let g:UltiSnipsUsePythonVersion = 2 "recommend to use python2.x
+endif
 
 let g:UltiSnipsExpandTrigger="<c-j>"
 let g:UltiSnipsListSnippets ="<c-tab>"
