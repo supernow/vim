@@ -2,7 +2,7 @@
 "@brief      config file of vim and gvim for both windows and linux
 "@date       2012-12-30 11:01:30
 "@author     tracyone,tracyone@live.cn
-"@lastchange 2013-10-21/23:55:21
+"@lastchange 2013-10-22/17:55:55
 "@note:		Prior to use, in the case of windows vim convert this file's 
 "			format into dos,while convert it into unix format in the case 
 "			of linux vim
@@ -351,7 +351,7 @@ function! Do_OneFileMake()
             execute "!./".toexename
         endif
     endif
-    execute "copen"
+    execute "cw"
 endfunction
 
 func! Getvimrc()
@@ -1178,12 +1178,7 @@ endfunction
 map <F4> :VimShellPop<cr>
 "}}}
 "{{{UltiSnips
-if g:iswindows == 1
-    let g:UltiSnipsUsePythonVersion = 3 "recommend to use python2.x
-else
-    let g:UltiSnipsUsePythonVersion = 2 "recommend to use python2.x
-endif
-
+let g:UltiSnipsUsePythonVersion = 2 "recommend to use python2.x
 let g:UltiSnipsExpandTrigger="<c-j>"
 let g:UltiSnipsListSnippets ="<c-tab>"
 let g:UltiSnipsJumpForwardTrigge="<c-j>"
