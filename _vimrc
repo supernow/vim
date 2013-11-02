@@ -2,7 +2,7 @@
 "@brief      config file of vim and gvim for both windows and linux
 "@date       2012-12-30 11:01:30
 "@author     tracyone,tracyone@live.cn
-"@lastchange 2013-10-22/17:55:55
+"@lastchange 2013-11-02/10:26:04
 "@note:		Prior to use, in the case of windows vim convert this file's 
 "			format into dos,while convert it into unix format in the case 
 "			of linux vim
@@ -10,8 +10,8 @@
 "encode {{{
 set encoding=utf-8
 if has("win32") || has("win64")
-    set fileencoding=utf-8
-    set termencoding=utf-8
+    set fileencoding=cp936
+    set termencoding=cp936
 else
     set fileencoding=utf-8
     set termencoding=utf-8
@@ -164,7 +164,7 @@ au BufRead,BufNewFile * let $CurBufferDir=expand('%:p:h')
 au FileType verilog set tabstop=3
 au FileType verilog set shiftwidth=3
 au FileType verilog set softtabstop=3
-au FileType c,cpp,java,vim set expandtab "instead tab with space 
+au FileType c,cpp,java,vim,verilog set expandtab "instead tab with space 
 au FileType make set noexpandtab
 "}}}
 "key mapping{{{
@@ -559,7 +559,6 @@ endif
 Bundle 'The-NERD-Commenter'
 Bundle 'tracyone/nerdtree'
 Bundle 'ShowMarks7'
-Bundle 'wesleyche/SrcExpl'
 Bundle 'surround.vim'
 Bundle 'majutsushi/tagbar'
 Bundle 'Shougo/unite.vim'
