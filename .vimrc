@@ -2,7 +2,7 @@
 "@brief      config file of vim and gvim for both windows and linux
 "@date       2012-12-30 11:01:30
 "@author     tracyone,tracyone@live.cn
-"@lastchange 2013-09-26/15:15:57
+"@lastchange 2013-11-02/10:26:04
 "@note:		Prior to use, in the case of windows vim convert this file's 
 "			format into dos,while convert it into unix format in the case 
 "			of linux vim
@@ -10,8 +10,8 @@
 "encode {{{
 set encoding=utf-8
 if has("win32") || has("win64")
-    set fileencoding=utf-8
-    set termencoding=utf-8
+    set fileencoding=cp936
+    set termencoding=cp936
 else
     set fileencoding=utf-8
     set termencoding=utf-8
@@ -164,7 +164,7 @@ au BufRead,BufNewFile * let $CurBufferDir=expand('%:p:h')
 au FileType verilog set tabstop=3
 au FileType verilog set shiftwidth=3
 au FileType verilog set softtabstop=3
-au FileType c,cpp,java,vim set expandtab "instead tab with space 
+au FileType c,cpp,java,vim,verilog set expandtab "instead tab with space 
 au FileType make set noexpandtab
 "}}}
 "key mapping{{{
@@ -220,7 +220,7 @@ nmap <F7> a<C-R>=strftime("%Y-%m-%d/%H:%M:%S")<CR><ESC>
 imap <F7> <C-R>=strftime("%Y-%m-%d/%H:%M:%S")<CR>
 
 "clear search result
-noremap <m-q> :nohls<CR>
+noremap <m-q> :nohls<CR>:MarkClear<cr>
 
 "save file 
 "in terminal ctrl-s is used to stop printf..
@@ -351,7 +351,7 @@ function! Do_OneFileMake()
             execute "!./".toexename
         endif
     endif
-    execute "copen"
+    execute "cw"
 endfunction
 
 func! Getvimrc()
@@ -559,7 +559,6 @@ endif
 Bundle 'The-NERD-Commenter'
 Bundle 'tracyone/nerdtree'
 Bundle 'ShowMarks7'
-Bundle 'wesleyche/SrcExpl'
 Bundle 'surround.vim'
 Bundle 'majutsushi/tagbar'
 Bundle 'Shougo/unite.vim'
@@ -1135,7 +1134,7 @@ if g:iswindows==1
 else
     let g:VEConf_systemEncoding = 'gbk'
 endif
-map <F11> :silent! VE $CurBufferDir<cr><cr>
+map <F11> :silent! VE<cr><cr>
 "}}}
 "{{{vimshell
 let g:vimshell_user_prompt = '":: " . "(" . fnamemodify(getcwd(), ":~") . ")"'
@@ -1192,7 +1191,7 @@ let g:fencview_auto_patterns='*.txt,*.htm{l\=},*.c,*.cpp,*.s,*.vim'
 "}}}
 "{{{renamer
 "rename multi file name
-map <F2> :Ren $CurBufferDir<cr>
+map <F2> :Ren<cr>
 "}}}
 "{{{myvimhelp
 let g:startupfile="first_statup.txt"
@@ -1250,7 +1249,7 @@ syntax on
 if(has("gui_running"))
     if g:iswindows==0
         au GUIEnter * call MaximizeWindow()
-        set guifont=Monaco\ 12
+        set guifont=Consolas\ 14
         set gfw=YaHei_Mono_Hybird_Consolas\ 12.5
     else
         au GUIEnter * simalt~x "maximize window
