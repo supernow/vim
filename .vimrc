@@ -1238,6 +1238,7 @@ let g:NERDMenuMode=1
 "{{{yankring
 nmap <c-y> :YRGetElem<CR>
 imap <c-y> <esc>:YRGetElem<CR>
+let yankring_history_dir = $VIMFILES
 let g:yankring_history_file = ".yank_history"
 let g:yankring_default_menu_mode = 0
 let g:yankring_replace_n_pkey = '<m-p>'
@@ -1245,19 +1246,24 @@ let g:yankring_replace_n_nkey = '<m-n>'
 "}}}
 "{{{vim-startify
 if g:iswindows==1
-    let g:startify_session_dir = $HOME .'\sessions'
+    let g:startify_session_dir = $VIMFILES .'\sessions'
 else
-    let g:startify_session_dir = $HOME .'/sessions'
+    let g:startify_session_dir = $VIMFILES .'/sessions'
 endif
 let g:startify_list_order = ['files', 'bookmarks', 'sessions']
 let g:startify_change_to_dir = 1
 let g:startify_change_to_vcs_root = 0
 let g:startify_custom_header = [
-            \ 'This is my vimrc for both linux and windows,press F1 for help',
+            \ '--------------- ---------------------Enjoy vimming !----------------------------------------',
             \ 'Contact me by the following method:',
             \ '    1,Twitter:twitter.com/itracyone',
-            \ '    2,Facebook:facebook.com/itracyone',
-            \ '    3,Email:tracyone@live.cn or tracyone1989@gmail.com',
+            \ '    2,Email:tracyone@live.cn or tracyone1989@gmail.com',
+            \ 'You can get the latest vimrc by following method:',
+            \ '    1,git clone https://github.com/tracyone/vim.git ',
+            \ '    2,You can execute :call Getvimrc() in vim after successfully config your vim with my vimrc',
+            \ 'You can execute :BundleInstall! in vim to update all the plugins',
+            \ 'Don not forget Press F1 for help',
+            \ '--------------- ---------------------Enjoy vimming !----------------------------------------',
             \ '',
             \ '',
             \ ]
