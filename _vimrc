@@ -2,7 +2,7 @@
 "@brief      config file of vim and gvim for both windows and linux
 "@date       2012-12-30 11:01:30
 "@author     tracyone,tracyone@live.cn
-"@lastchange 2013-11-02/10:26:04
+"@lastchange 2013-11-17/08:31:54
 "@note:		Prior to use, in the case of windows vim convert this file's 
 "			format into dos,while convert it into unix format in the case 
 "			of linux vim
@@ -99,10 +99,8 @@ set listchars=tab:\|\ ,trail:-  "Strings to use in 'list' mode and for the |:lis
 au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif "jump to last position last open in vim
 "{{{backup
 set backup "generate a backupfile when open file
-
 set backupext=.bak  "backup file'a suffix
-
-set backupdir=$HOME/vimbackup  "backup file's directory
+set backupdir=$VIMFILES/vimbackup  "backup file's directory
 if !isdirectory(&backupdir)
     call mkdir(&backupdir, "p")
 endif
@@ -166,6 +164,32 @@ au FileType verilog set shiftwidth=3
 au FileType verilog set softtabstop=3
 au FileType c,cpp,java,vim,verilog set expandtab "instead tab with space 
 au FileType make set noexpandtab
+
+"##### auto fcitx  ###########
+if(!has("gui_running"))
+    let g:input_toggle = 1
+    function! Fcitx2en()
+        let s:input_status = system("fcitx-remote")
+        if s:input_status == 2
+            let g:input_toggle = 1
+            let l:a = system("fcitx-remote -c")
+        endif
+    endfunction
+
+    function! Fcitx2zh()
+        let s:input_status = system("fcitx-remote")
+        if s:input_status != 2 && g:input_toggle == 1
+            let l:a = system("fcitx-remote -o")
+            let g:input_toggle = 0
+        endif
+    endfunction
+
+    set ttimeoutlen=150
+    "exit insert mode
+    autocmd InsertLeave * call Fcitx2en()
+    autocmd InsertEnter * call Fcitx2zh()
+    "##### auto fcitx end ######
+endif
 "}}}
 "key mapping{{{
 "map jj to esc..
@@ -376,12 +400,7 @@ func! Getvimrc()
 
 endfunc
 func! Uploadvimrc()
-    if g:iswindows==1
-        cd $VIM
-    else
-        cd ~
-    endif
-    pwd
+    cd $VIMFILES
     let xx=finddir('vim','.')
     call system('git config --global user.name \"tracyone\"')
     call system('git config --global user.email \"tracyone@live.cn\"')
@@ -603,6 +622,7 @@ let g:fuf_mrufile_maxItem = 10000
 let g:fuf_modesDisable = []
 let g:fuf_mrufile_maxItem = 20
 let g:fuf_mrucmd_maxItem = 20
+let g:fuf_dataDir = $VIMFILES . '/.vim-fuf-data'
 "recursive open 
 nmap <F3> :FufFile **/<cr>   
 nmap <silent><leader>ff :FufFile<cr>
@@ -766,6 +786,7 @@ if g:use_neocomplete==1
     " Set minimum syntax keyword length.
     let g:neocomplete#sources#syntax#min_keyword_length = 3
     let g:neocomplete#lock_buffer_name_pattern = '\*ku\*'
+    let g:neocomplete#data_directory = $VIMFILES . '/.neocomplete'
 
     " Define dictionary.
     let g:neocomplete#sources#dictionary#dictionaries = {
@@ -953,6 +974,7 @@ endfunction
 
 let g:unite_source_file_mru_limit = 200
 let g:unite_enable_split_vertically = 0 "vertical split
+let g:unite_data_directory = $VIMFILES . '/.unite'
 "}}}
 "{{{matchit.vim
 "extend %
@@ -1036,9 +1058,9 @@ if g:iswindows==1
                 \ 'path_html': 'c:/vimwiki/html/',
                 \ 'html_header': 'c:/vimwiki/template/header.tpl',}] 
 else
-    let g:vimwiki_list = [{'path': '~/vimwiki/',
-                \ 'path_html': '~/vimwiki/html/',
-                \ 'html_header': '~/vimwiki/template/header.tpl',}] 
+    let g:vimwiki_list = [{'path': $VIMFILES .'/vimwiki/',
+                \ 'path_html': $VIMFILES .'/vimwiki/html/',
+                \ 'html_header': $VIMFILES .'/vimwiki/template/header.tpl',}] 
 endif
 
 let g:vimwiki_use_calendar=1 "use calendar plugin 
@@ -1155,6 +1177,7 @@ call vimshell#set_execute_file('txt,vim,c,h,cpp,d,xml,java', 'vim')
 let g:vimshell_execute_file_list['rb'] = 'ruby'
 let g:vimshell_execute_file_list['pl'] = 'perl'
 let g:vimshell_execute_file_list['py'] = 'python'
+let g:vimshell_temporary_directory = $VIMFILES . '/.vimshell'
 call vimshell#set_execute_file('html,xhtml', 'gexe firefox')
 au FileType vimshell :imap <buffer> <HOME> <Plug>(vimshell_move_head)
 au FileType vimshell set nonu
@@ -1215,6 +1238,7 @@ let g:NERDMenuMode=1
 "{{{yankring
 nmap <c-y> :YRGetElem<CR>
 imap <c-y> <esc>:YRGetElem<CR>
+let yankring_history_dir = $VIMFILES
 let g:yankring_history_file = ".yank_history"
 let g:yankring_default_menu_mode = 0
 let g:yankring_replace_n_pkey = '<m-p>'
@@ -1222,19 +1246,24 @@ let g:yankring_replace_n_nkey = '<m-n>'
 "}}}
 "{{{vim-startify
 if g:iswindows==1
-    let g:startify_session_dir = $HOME .'\sessions'
+    let g:startify_session_dir = $VIMFILES .'\sessions'
 else
-    let g:startify_session_dir = $HOME .'/sessions'
+    let g:startify_session_dir = $VIMFILES .'/sessions'
 endif
 let g:startify_list_order = ['files', 'bookmarks', 'sessions']
 let g:startify_change_to_dir = 1
 let g:startify_change_to_vcs_root = 0
 let g:startify_custom_header = [
-            \ 'This is my vimrc for both linux and windows,press F1 for help',
+            \ '--------------- ---------------------Enjoy vimming !----------------------------------------',
             \ 'Contact me by the following method:',
             \ '    1,Twitter:twitter.com/itracyone',
-            \ '    2,Facebook:facebook.com/itracyone',
-            \ '    3,Email:tracyone@live.cn or tracyone1989@gmail.com',
+            \ '    2,Email:tracyone@live.cn or tracyone1989@gmail.com',
+            \ 'You can get the latest vimrc by following method:',
+            \ '    1,git clone https://github.com/tracyone/vim.git ',
+            \ '    2,You can execute :call Getvimrc() in vim after successfully config your vim with my vimrc',
+            \ 'You can execute :BundleInstall! in vim to update all the plugins',
+            \ 'Don not forget Press F1 for help',
+            \ '--------------- ---------------------Enjoy vimming !----------------------------------------',
             \ '',
             \ '',
             \ ]
@@ -1249,7 +1278,7 @@ syntax on
 if(has("gui_running"))
     if g:iswindows==0
         au GUIEnter * call MaximizeWindow()
-        set guifont=Monaco\ 12
+        set guifont=Consolas\ 14
         set gfw=YaHei_Mono_Hybird_Consolas\ 12.5
     else
         au GUIEnter * simalt~x "maximize window
@@ -1262,14 +1291,13 @@ if(has("gui_running"))
     au GUIEnter * set vb t_vb=
     set t_vb=
     set guioptions-=b
-    "set guioptions-=m "whether use menu
-    set guioptions+=r "whether show the rigth scroll bar
-    set guioptions+=c "use console instead of dialog
+    ""set guioptions-=m "whether use menu
+    "set guioptions+=r "whether show the rigth scroll bar
     set guioptions-=l "whether show the left scroll bar
-    "set guioptions-=T "whether show toolbar or not
+    ""set guioptions-=T "whether show toolbar or not
     set guitablabel=%N\ %t  "do not show dir in tab
     "highlight the screen line of the cursor
-    "set cul
+    set cul
     "{{{toolbar
     if has("toolbar")
         if exists("*Do_toolbar_tmenu")
