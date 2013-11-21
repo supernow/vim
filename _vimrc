@@ -2,7 +2,7 @@
 "@brief      config file of vim and gvim for both windows and linux
 "@date       2012-12-30 11:01:30
 "@author     tracyone,tracyone@live.cn
-"@lastchange 2013-11-17/08:31:54
+"@lastchange 2013-11-21/23:06:18
 "@note:		Prior to use, in the case of windows vim convert this file's 
 "			format into dos,while convert it into unix format in the case 
 "			of linux vim
@@ -221,7 +221,9 @@ let mapleader=","
 vmap <TAB>  >gv  
 vmap <s-TAB>  <gv 
 "Ctrl-tab is not work in vim
-noremap <silent><c-TAB> :tabnext<cr>
+noremap <silent><c-TAB> :AT<cr>
+noremap <silent><right> :tabnext<cr>
+noremap <silent><left> :tabp<cr>
 nmap <m-t> :tabnew<cr>
 imap <m-t> <esc>:tabnew<cr>
 noremap <m-1> <esc>1gt
@@ -1219,9 +1221,9 @@ map <F2> :Ren<cr>
 "{{{myvimhelp
 let g:startupfile="first_statup.txt"
 if g:iswindows==1
-    let g:start_path=$VIM.'/first_statup.txt'
+    let g:start_path=$VIMFILES.'/first_statup.txt'
 else
-    let g:start_path=$HOME.'/.first_statup'
+    let g:start_path=$VIMFILES.'/.first_statup'
 endif
 if filereadable(g:start_path)
     map <F1> :h MyVimHelp.txt<cr>
@@ -1403,10 +1405,10 @@ if(has("gui_running"))
     let g:colorscheme_file='' "color thmem's name  
     if g:iswindows == 0
         let g:slash='/'
-        let g:love_path=$HOME.'/.love'
+        let g:love_path=$VIMFILES.'/.love'
     else
         let g:slash='\'
-        let g:love_path=$HOME.'\love.txt'
+        let g:love_path=$VIMFILES.'\love.txt'
     endif
 
     command! Love call LoveCS()
