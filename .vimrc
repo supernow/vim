@@ -2,7 +2,7 @@
 "@brief      config file of vim and gvim for both windows and linux
 "@date       2012-12-30 11:01:30
 "@author     tracyone,tracyone@live.cn
-"@lastchange 2013-11-17/08:31:54
+"@lastchange 2013-11-24/12:12:02
 "@note:		Prior to use, in the case of windows vim convert this file's 
 "			format into dos,while convert it into unix format in the case 
 "			of linux vim
@@ -594,7 +594,6 @@ endif
 Bundle 'DrawIt'
 Bundle 'mbbill/VimExplorer'
 Bundle 'renamer.vim'
-Bundle 'tracyone/doxygen-support'
 Bundle 'tracyone/CCtree'
 Bundle 'hallison/vim-markdown'
 Bundle 'tracyone/mark.vim'
@@ -1036,11 +1035,6 @@ let delimitMate_nesting_quotes = ['"','`']
 let delimitMate_expand_cr = 1
 let delimitMate_expand_space = 1
 "}}}
-"{{{doxygen
-nmap <leader>dh :DoxyFILEHeader<cr>
-nmap <leader>df :DoxyFunction<cr>
-map <leader>db :DoxyBlockLong<cr>
-"}}}
 "{{{CCtree
 let g:CCTreeKeyTraceForwardTree = '<C-\>>' "the symbol in current cursor's forward tree 
 let g:CCTreeKeyTraceReverseTree = '<C-\><'
@@ -1259,7 +1253,7 @@ let g:startify_custom_header = [
             \ '--------------- ---------------------Enjoy vimming !----------------------------------------',
             \ 'Contact me by the following method:',
             \ '    1,Twitter:twitter.com/itracyone',
-            \ '    2,Email:tracyone@live.cn or tracyone1989@gmail.com',
+            \ '    2,Email:tracyone@live.cn',
             \ 'You can get the latest vimrc by following method:',
             \ '    1,git clone https://github.com/tracyone/vim.git ',
             \ '    2,You can execute :call Getvimrc() in vim after successfully config your vim with my vimrc',
