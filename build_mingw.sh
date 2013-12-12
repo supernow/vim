@@ -3,13 +3,22 @@
 # date          :2013-08-11/10:54:37
 # description   :build gvim/vim from src;install;clean;
 # usage         :usage:./build_mingw.sh all|gvim|vim|clean|install|getsrc|uninstall
-#echo -e "all:build gvim and vim then install to /d/Program Files/Vim"
+#echo -e "all:build gvim and vim then install
 #echo -e "gvim:get src if not exist then build gvim"
 #echo -e "vim:get src if not exist then build vim"
-#echo -e "install:install gvim to /d/Program Files/Vim"
-#echo -e "uninstall:vim from /d/Program Files/Vim"
+#echo -e "install:install gvim 
+#echo -e "uninstall:vim from
 #echo -e "getsrc:use hg command to get vim\'s source "
 # history       :
+# 2013-12-11/23:07:27:install.log..安装的同时会将脚本和安装记录一起复制到安装路径下
+#这样下次用户就可以比较方便的立刻卸载了
+
+#Download vim source by tortoisehg
+LOGFILE=install.log
+DRIVER=d
+#default install directory
+INSTALL_DIR=/${DRIVER}/Program\ Files/Vim/vim74
+
 function getsrc(){
 which thg
 if [ "$?" == 0 ];then
@@ -31,12 +40,21 @@ else
     exit 0
 fi
 }
+
 function build_vim(){
-if [ -d "vim" ];then
+if [ -d "vim" -a -d "vim/src" ];then
     echo -e "we found vim src directory!"
     echo -e "start build...."
     cd vim/src
     make -f Make_ming.mak clean
+    if [[ $? -ne 0 ]]; then
+        echo -e "make failed!Something was wrong!\n"
+        echo -e "get vim src from the internet!"
+        cd ../..
+        rm -rf vim
+        getsrc
+        cd vim/src
+    fi
 else
     echo -e "srcdir:vim was not found!"
     echo -e "get vim src from the internet!"
@@ -70,46 +88,67 @@ else
 fi
 cd ../..
 }
+
 function install(){
 if [ "$1" == "uninstall" ]
 then
-    /d/Program\ Files/Vim/vim74/uninstal.exe
+    ${INSTALL_DIR}/vim74/uninstal.exe
     taskkill //f //im explorer.exe
 echo -e "clean up...this take for a while.."
-    rm -rf /d/Program\ Files/Vim/
+    rm -rf ${INSTALL_DIR}
     echo -e "restart explorer.exe"
     sleep 3
     wmic process call create explorer.exe
 else
     cd vim
-    mkdir -p /d/Program\ Files/Vim/vim74
+    mkdir -p "${INSTALL_DIR}/vim74"
     mkdir vim74
+    echo ${INSTALL_DIR}
     echo -e "start copy..."
     cp -a runtime/* vim74
     cp -a src/*.exe vim74
     cp -a src/GvimExt/gvimext.dll vim74
     cp -a src/xxd/xxd.exe vim74
     cp -a vimtutor.bat vim74
-    cp -a vim74/* /d/Program\ Files/Vim/vim74
+    cp -a vim74/* "${INSTALL_DIR}/vim74"
     echo -e "copy finish..."
     rm -rf vim74
-    /d/Program\ Files/Vim/vim74/install.exe
+    "${INSTALL_DIR}/vim74/install.exe"
     cd ..
 fi
 }
+
 #start process
 date
 if [ "$#" -ne 1 ]; then
     echo -e "Error!!!lack of argument."
     echo -e "usage:$0 all|gvim|vim|clean|install|getsrc|uninstall"
-    echo -e "all:\t\tbuild gvim and vim then install to /d/Program Files/Vim"
+    echo -e "all:\t\tbuild gvim and vim then install"
     echo -e "gvim:\t\tget src if not exist then build gvim"
     echo -e "vim:\t\tget src if not exist then build vim"
-    echo -e "install:\tinstall gvim to /d/Program Files/Vim"
-    echo -e "uninstall:\tuninstall vim from /d/Program Files/Vim"
+    echo -e "install:\tinstall gvim"
+    echo -e "uninstall:\tuninstall vim"
     echo -e "getsrc:\t\tuse hg command to get vim\'s source "
     exit 0  
 else
+    #用户交互~~
+    read -p "Input the directory you want to install Vim[/d/Program Files/Vim]" user_input
+    if [[ "${user_input}" == "" || "${user_input}" == "y" ]]; then
+        DRIVER=d
+    else
+        while [[ ! -d "${user_input}" ]]; do
+            echo "The ${user_input} is not exist,we will create it!"
+            mkdir "${user_input}"
+            if [[ $? -ne 0 ]]; then
+                echo "Create ${user_input} failed"
+                read -p "Input another directory you want to install Vim[/d/Program Files/Vim]" user_input
+            fi
+        done
+        #去掉路径中的空格...
+        #INSTALL_DIR=${user_input// /\\ }
+        INSTALL_DIR=${user_input}
+    fi
+
     if [ "$1" == "gvim" ]; then
         build_vim gvim
     elif [ "$1" == "vim" ]; then
@@ -126,17 +165,17 @@ else
         build_vim gvim
         install
         build_vim vim
-        cp -a vim/src/vim.exe /d/Program\ Files/Vim/vim74/
+        cp -a vim/src/vim.exe "${INSTALL_DIR}/vim74/"
     elif [ "$1" == "uninstall" ]; then
         install uninstall
     else
         echo -e "Argument Error!!"
         echo -e "usage:$0 all|gvim|vim|clean|install|getsrc|uninstall"
-        echo -e "all:\t\tbuild gvim and vim then install to /d/Program Files/Vim"
+        echo -e "all:\t\tbuild gvim and vim then install"
         echo -e "gvim:\t\tget src if not exist then build gvim"
         echo -e "vim:\t\tget src if not exist then build vim"
-        echo -e "install:\tinstall gvim to /d/Program Files/Vim"
-        echo -e "uninstall:\tuninstall vim from /d/Program Files/Vim"
+        echo -e "install:\tinstall gvim"
+        echo -e "uninstall:\tuninstall vim"
         echo -e "getsrc:\t\tuse hg command to get vim\'s source "
         exit 0
     fi
