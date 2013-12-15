@@ -1308,7 +1308,7 @@ if(has("gui_running"))
         endif
     endfunc
     :call MenuToggle()
-    nnoremap <c-F9> :call MenuToggle()<cr>
+    nnoremap <c-F6> :call MenuToggle()<cr>
     set cul
     "{{{toolbar
     if has("toolbar")
