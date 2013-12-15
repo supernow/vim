@@ -2,28 +2,25 @@
 # author        :tracyone
 # date          :2013-08-11/10:54:37
 # description   :build gvim/vim from src;install;clean;
-# usage         :usage:./build_mingw.sh all|gvim|vim|clean|install|getsrc|uninstall
-#echo -e "all:build gvim and vim then install
-#echo -e "gvim:get src if not exist then build gvim"
-#echo -e "vim:get src if not exist then build vim"
-#echo -e "install:install gvim 
-#echo -e "uninstall:vim from
-#echo -e "getsrc:use hg command to get vim\'s source "
-# history       :
-# 2013-12-11/23:07:27:install.log..安装的同时会将脚本和安装记录一起复制到安装路径下
-#这样下次用户就可以比较方便的立刻卸载了
+# usage         :usage:./build_mingw.sh all|gvim|vim|clean|install|getsrc
+#                       "all:build gvim and vim then install
+#                       "gvim:get src if not exist then build gvim"
+#                       "vim:get src if not exist then build vim"
+#                       "install:install gvim 
+#                       "getsrc:use hg command to get vim\'s source "
 
 #Download vim source by tortoisehg
-LOGFILE=install.log
-DRIVER=d
 #default install directory
-INSTALL_DIR=/${DRIVER}/Program\ Files/Vim/vim74
+INSTALL_DIR="/d/Program Files/Vim"
+
+CUR_DIR="$(pwd)"
 
 function getsrc(){
 which thg
 if [ "$?" == 0 ];then
-    echo -e "deleting old vim source..."
+    echo -e "get vim src from the internet!"
     echo -e "This may take for a moment"
+    sleep 2
     rm -rf vim
     echo -e "clone vim src to local.... "
     hg clone --verbose -- https://vim.googlecode.com/hg/ vim
@@ -44,25 +41,33 @@ fi
 function build_vim(){
 if [ -d "vim" -a -d "vim/src" ];then
     echo -e "we found vim src directory!"
-    echo -e "start build...."
-    cd vim/src
-    make -f Make_ming.mak clean
-    if [[ $? -ne 0 ]]; then
-        echo -e "make failed!Something was wrong!\n"
-        echo -e "get vim src from the internet!"
-        cd ../..
-        rm -rf vim
-        getsrc
+    read -p 'Do you want to upadte vim source??[y]' UPDATE_OR_NOT
+    if [[ "${UPDATE_OR_NOT}" == "" || "${UPDATE_OR_NOT}" == "y" ]]; then
         cd vim/src
+        make -f Make_ming.mak clean
+        cd ..
+        
+        hg pull
+        while [ "$?" -ne 0 ]
+        do
+            
+            hg pull 
+            
+            hg update
+        done
+        
+        hg update
+        cd ..
     fi
 else
     echo -e "srcdir:vim was not found!"
-    echo -e "get vim src from the internet!"
+    sleep 2
     getsrc
     cd vim/src
 fi
+cd vim/src
 if [ "$1" == "vim" ];then
-    make -f Make_ming.mak FEATURES=HUGE GUI=no OLE=yes STATIC_STDCPLUS=yes  LUA=/c/Lua/5.1 LUA_VER=51 PYTHON=/c/Python27 DYNAMIC_PYTHON=yes PYTHON_VER=27  PYTHON3=/c/Python32 DYNAMIC_PYTHON3=yes PYTHON3_VER=32 TCL=/c/Tcl DYNAMIC_TCL=yes TCL_VER=85 RUBY=/c/Ruby200 DYNAMIC_RUBY=yes RUBY_VER=200 RUBY_VER_LONG=2.0.0 RUBY_PLATFORM=i386-mingw32 USERNAME=tracyone\<tracyone USERDOMAIN=live.cn\>
+    make -f Make_ming.mak FEATURES=HUGE GUI=no OLE=yes STATIC_STDCPLUS=yes  LUA=/c/Lua/5.1 LUA_VER=51 PYTHON=/c/Python27 DYNAMIC_PYTHON=yes PYTHON_VER=27  PYTHON3=/c/Python32 DYNAMIC_PYTHON3=yes PYTHON3_VER=32 TCL=/c/Tcl DYNAMIC_TCL=yes TCL_VER=85 RUBY=/c/Ruby200 DYNAMIC_RUBY=yes RUBY_VER=200 RUBY_VER_LONG=2.0.0 RUBY_PLATFORM=i386-mingw32 USERNAME=tracyone\<raoxiaowen USERDOMAIN=gmail.cn\>
     if [ "$?" -ne 0 ]; then
         echo "Make sure you have installed softwares below:"
         echo "ruby200 in /c/Ruby200"
@@ -72,7 +77,7 @@ if [ "$1" == "vim" ];then
         echo "lua51 in /c/Lua/5.1"
     fi
 elif [ "$1" == "gvim" ];then
-    make -f Make_ming.mak FEATURES=HUGE OLE=yes STATIC_STDCPLUS=yes  LUA=/c/Lua/5.1 LUA_VER=51 PYTHON=/c/Python27 DYNAMIC_PYTHON=yes PYTHON_VER=27  PYTHON3=/c/Python32 DYNAMIC_PYTHON3=yes PYTHON3_VER=32 TCL=/c/Tcl DYNAMIC_TCL=yes TCL_VER=85 RUBY=/c/Ruby200 DYNAMIC_RUBY=yes RUBY_VER=200 RUBY_VER_LONG=2.0.0 RUBY_PLATFORM=i386-mingw32 USERNAME=tracyone\<tracyone USERDOMAIN=live.cn\>
+    make -f Make_ming.mak FEATURES=HUGE OLE=yes STATIC_STDCPLUS=yes  LUA=/c/Lua/5.1 LUA_VER=51 PYTHON=/c/Python27 DYNAMIC_PYTHON=yes PYTHON_VER=27  PYTHON3=/c/Python32 DYNAMIC_PYTHON3=yes PYTHON3_VER=32 TCL=/c/Tcl DYNAMIC_TCL=yes TCL_VER=85 RUBY=/c/Ruby200 DYNAMIC_RUBY=yes RUBY_VER=200 RUBY_VER_LONG=2.0.0 RUBY_PLATFORM=i386-mingw32 USERNAME=tracyone\<raoxiaowen USERDOMAIN=gmail.com\>
     if [ "$?" -ne 0 ]
     then
         echo "Make sure you have installed softwares below:"
@@ -89,37 +94,37 @@ fi
 cd ../..
 }
 
+
 function install(){
-if [ "$1" == "uninstall" ]
-then
-    ${INSTALL_DIR}/vim74/uninstal.exe
-    taskkill //f //im explorer.exe
-echo -e "clean up...this take for a while.."
-    rm -rf ${INSTALL_DIR}
-    echo -e "restart explorer.exe"
-    sleep 3
-    wmic process call create explorer.exe
-else
-    cd vim
-    mkdir -p "${INSTALL_DIR}/vim74"
-    mkdir vim74
-    echo ${INSTALL_DIR}
-    echo -e "start copy..."
-    cp -a runtime/* vim74
-    cp -a src/*.exe vim74
-    cp -a src/GvimExt/gvimext.dll vim74
-    cp -a src/xxd/xxd.exe vim74
-    cp -a vimtutor.bat vim74
-    cp -a vim74/* "${INSTALL_DIR}/vim74"
-    echo -e "copy finish..."
-    rm -rf vim74
-    "${INSTALL_DIR}/vim74/install.exe"
-    cd ..
-fi
+mkdir -p "${INSTALL_DIR}/vim74"
+
+echo -e "@echo off\n" > uninstall.bat
+echo -e "taskkill /f /im explorer.exe\n" >> uninstall.bat
+echo -e "vim74\\uninstal.exe\n" >> uninstall.bat
+echo -e "wmic process call create explorer.exe\n" >> uninstall.bat
+echo -e "cd ..\n" >> uninstall.bat
+echo -e "rmdir /s /q Vim" >> uninstall.bat
+echo -e "echo Uninstall finish!" >> uninstall.bat
+cp uninstall.bat "${INSTALL_DIR}"
+mv uninstall.bat "/c/Documents and Settings/Administrator/"
+
+cd vim
+mkdir vim74
+echo -e "start copy...\n"
+cp -a runtime/* vim74
+cp -a src/*.exe vim74
+cp -a src/GvimExt/gvimext.dll vim74
+cp -a src/xxd/xxd.exe vim74
+cp -a vimtutor.bat vim74
+cp -a vim74/* "${INSTALL_DIR}/vim74"
+echo -e "copy finish...\n"
+echo -e "start install....\n"
+rm -rf vim74
+echo "d" | "${INSTALL_DIR}/vim74/install.exe"
+cd ..
 }
 
 #start process
-date
 if [ "$#" -ne 1 ]; then
     echo -e "Error!!!lack of argument."
     echo -e "usage:$0 all|gvim|vim|clean|install|getsrc|uninstall"
@@ -131,10 +136,10 @@ if [ "$#" -ne 1 ]; then
     echo -e "getsrc:\t\tuse hg command to get vim\'s source "
     exit 0  
 else
-    #用户交互~~
+    
     read -p "Input the directory you want to install Vim[/d/Program Files/Vim]" user_input
     if [[ "${user_input}" == "" || "${user_input}" == "y" ]]; then
-        DRIVER=d
+        INSTALL_DIR="/d/Program Files/Vim"
     else
         while [[ ! -d "${user_input}" ]]; do
             echo "The ${user_input} is not exist,we will create it!"
@@ -144,18 +149,15 @@ else
                 read -p "Input another directory you want to install Vim[/d/Program Files/Vim]" user_input
             fi
         done
-        #去掉路径中的空格...
-        #INSTALL_DIR=${user_input// /\\ }
         INSTALL_DIR=${user_input}
     fi
-
     if [ "$1" == "gvim" ]; then
         build_vim gvim
     elif [ "$1" == "vim" ]; then
         build_vim vim
     elif [ "$1" == "clean" ]; then
         cd vim/src
-        rm -rf obji386/
+        rm -rf obji386/ 
         make -f Make_ming.mak clean
     elif [ "$1" == "install" ]; then
         install
@@ -166,8 +168,6 @@ else
         install
         build_vim vim
         cp -a vim/src/vim.exe "${INSTALL_DIR}/vim74/"
-    elif [ "$1" == "uninstall" ]; then
-        install uninstall
     else
         echo -e "Argument Error!!"
         echo -e "usage:$0 all|gvim|vim|clean|install|getsrc|uninstall"
