@@ -1283,7 +1283,7 @@ if(has("gui_running"))
         set gfw=YaHei_Mono_Hybird_Consolas\ 12.5
     else
         au GUIEnter * simalt~x "maximize window
-        set guifont=Monaco:h12:cANSI
+        set guifont=Consolas:h14:cANSI
         set gfw=YaHei_Mono:h12.5:cGB2312
     endif
     " If using a dark background within the editing area and syntax highlighting
