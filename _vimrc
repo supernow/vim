@@ -2,7 +2,7 @@
 "@brief      config file of vim and gvim for both windows and linux
 "@date       2012-12-30 11:01:30
 "@author     tracyone,tracyone@live.cn
-"@lastchange 2013-11-24/12:12:02
+"@lastchange 2013-12-15/21:19:05
 "@note:		Prior to use, in the case of windows vim convert this file's 
 "			format into dos,while convert it into unix format in the case 
 "			of linux vim
@@ -13,10 +13,10 @@ if has("win32") || has("win64")
     set fileencoding=cp936
     set termencoding=cp936
 else
-    set fileencoding=utf-8
-    set termencoding=utf-8
+    set fileencoding=gbk
+    set termencoding=gbk
 endif
-set fileencodings=ucs-bom,utf-8,cp936,gb1830,big5,euc-jp,euc-kr,latin1
+set fileencodings=ucs-bom,utf-8,cp936,gb1830,big5,euc-jp,euc-kr,gbk
 if v:lang=~? '^\(zh\)\|\(ja\)\|\(ko\)'
     set ambiwidth=double
 endif
@@ -31,7 +31,7 @@ if (has("win32")) || has("win64")
     set ffs=dos,unix,mac
     set path=.,d:/MinGW/include/,d:/MinGW/msys/1.0/include
     let $VIMFILES = $VIM.'/vimfiles'
-    let g:iswindows=1 "windows flags
+    let g:iswindows=1 "windows menu_flags
 elseif has("unix")
     set filetype=unix
     set ffs=unix
@@ -112,7 +112,7 @@ set report=0  "Threshold for reporting number of lines changed
 set lazyredraw  " Don't update the display while executing macros
 set helplang=en,cn  "set helplang=en
 set autoread   "autoread when a file is changed from the outside
-set nu  "show the line number for each line
+set nonu  "show the line number for each line
 set cmdheight=1  "number of lines used for the command-line
 set showmatch "when inserting a bracket, briefly jump to its match
 set printfont=Yahei_Mono:h10:cGB2312  "name of the font to be used for :hardcopy
@@ -132,8 +132,8 @@ set selection=inclusive  ""old", "inclusive" or "exclusive"; how selecting text 
 set is  "show match for partly typed search command
 "set lbr "wrap long lines at a character in 'breakat'
 set backspace=indent,eol,start  "specifies what <BS>, CTRL-W, etc. can do in Insert mode
-set whichwrap=b,h,l,<,>,[,]  "list of flags specifying which commands wrap to another line
-set mouse=a "list of flags for using the mouse,support all
+set whichwrap=b,h,l,<,>,[,]  "list of menu_flags specifying which commands wrap to another line
+set mouse=a "list of menu_flags for using the mouse,support all
 
 "unnamed" to use the * register like unnamed register
 "autoselect" to always put selected text on the clipboardset clipboard+=unnamed
@@ -144,9 +144,10 @@ set clipboard+=unnamed
 set statusline+=%<%t%m%r%h%w%{tagbar#currenttag('[%s]','')}
 set statusline+=%=[%{(&fenc!=''?&fenc:&enc)}\|%{&ff}\|%Y][%l,%v][%p%%] 
 set statusline+=[%{strftime(\"%m/%d\-\%H:%M\")}]
+set guitablabel=%N\ %t  "do not show dir in tab
 "0, 1 or 2; when to use a status line for the last window
 set laststatus=2 "always show status
-set stal=2  "always show the tabline
+set stal=1  "always show the tabline
 set sessionoptions-=folds
 set sessionoptions-=options
 
@@ -221,9 +222,9 @@ let mapleader=","
 vmap <TAB>  >gv  
 vmap <s-TAB>  <gv 
 "Ctrl-tab is not work in vim
-noremap <silent><c-TAB> :AT<cr>
-noremap <silent><right> :tabnext<cr>
-noremap <silent><left> :tabp<cr>
+nnoremap <silent><c-TAB> :AT<cr>
+nnoremap <silent><right> :tabnext<cr>
+nnoremap <silent><Left> :tabp<cr>
 nmap <m-t> :tabnew<cr>
 imap <m-t> <esc>:tabnew<cr>
 noremap <m-1> <esc>1gt
@@ -574,7 +575,7 @@ else
 endif
 if g:use_neocomplete==1
     Bundle 'Shougo/neocomplete'
-else
+elseif g:use_neocomplete==0
     Bundle 'Shougo/neocomplcache'
 endif
 Bundle 'The-NERD-Commenter'
@@ -854,7 +855,7 @@ if g:use_neocomplete==1
        let col = col('.') - 1
        return !col || getline('.')[col - 1]  =~ '\s'
      endfunction"}}}
-else
+ elseif g:use_neocomplete==0 
     let g:acp_enableAtStartup = 0
     " Use neocomplcache.
     let g:neocomplcache_enable_at_startup = 1
@@ -873,6 +874,7 @@ else
     let g:neocomplcache_manual_completion_start_length = 2
     let g:neocomplcache_min_keyword_length = 3
     let g:neocomplcache_enable_ignore_case = 1
+    let g:neocomplcache_temporary_dir = $VIMFILES . '/.neocomplete'
     "fuzzy complete
     let g:neocomplcache_enable_fuzzy_completion=1
     "Define dictionary,in editplus's official website can find many dict with
@@ -1119,7 +1121,7 @@ func! OpenClosedbgvar()
         :set syntax=cpp
     endif
 endfunc
-let g:openflag=0
+let g:openmenu_flag=0
 func! LoadProj()
     if filereadable(".proj")
         :silent! Pyclewn
@@ -1152,7 +1154,7 @@ if g:iswindows==1
 else
     let g:VEConf_systemEncoding = 'gbk'
 endif
-map <F11> :silent! VE<cr><cr>
+map <F11> :silent! VE .<cr>
 "}}}
 "{{{vimshell
 let g:vimshell_user_prompt = '":: " . "(" . fnamemodify(getcwd(), ":~") . ")"'
@@ -1248,29 +1250,32 @@ else
 endif
 let g:startify_list_order = ['files', 'bookmarks', 'sessions']
 let g:startify_change_to_dir = 1
+let g:startify_files_number = 5 
 let g:startify_change_to_vcs_root = 0
 let g:startify_custom_header = [
-            \ '--------------- ---------------------Enjoy vimming !----------------------------------------',
-            \ 'Contact me by the following method:',
-            \ '    1,Twitter:twitter.com/itracyone',
-            \ '    2,Email:tracyone@live.cn',
-            \ 'You can get the latest vimrc by following method:',
-            \ '    1,git clone https://github.com/tracyone/vim.git ',
-            \ '    2,You can execute :call Getvimrc() in vim after successfully config your vim with my vimrc',
-            \ 'You can execute :BundleInstall! in vim to update all the plugins',
-            \ 'Don not forget Press F1 for help',
-            \ '--------------- ---------------------Enjoy vimming !----------------------------------------',
+            \ '   __      ___            ',
+            \ '   \ \    / (_)           ',
+            \ '    \ \  / / _ _ __ ___   ',
+            \ '     \ \/ / | | ''_ ` _ \ ',
+            \ '      \  /  | | | | | | | ',
+            \ '       \/   |_|_| |_| |_| ',
+            \ '',
+            \ '    Help <F1> ',
+            \ '    raoxiaowen@gmail.com',
             \ '',
             \ '',
             \ ]
 noremap <F8> :SSave<cr>
 autocmd FileType startify setlocal buftype=
 "}}}
+"{{{eclim
+let g:EclimCompletionMethod = 'omnifunc'
+"}}}
 filetype plugin indent on
 syntax on
 "}}}
 "gui releate{{{
-"list of flags that specify how the GUI works
+"list of menu_flags that specify how the GUI works
 if(has("gui_running"))
     if g:iswindows==0
         au GUIEnter * call MaximizeWindow()
@@ -1287,12 +1292,23 @@ if(has("gui_running"))
     au GUIEnter * set vb t_vb=
     set t_vb=
     set guioptions-=b
-    ""set guioptions-=m "whether use menu
-    "set guioptions+=r "whether show the rigth scroll bar
+    set guioptions-=m "whether use menu
+    set guioptions-=r "whether show the rigth scroll bar
     set guioptions-=l "whether show the left scroll bar
-    ""set guioptions-=T "whether show toolbar or not
-    set guitablabel=%N\ %t  "do not show dir in tab
+    set guioptions-=T "whether show toolbar or not
     "highlight the screen line of the cursor
+    let g:menu_flag=0
+    func! MenuToggle()
+        if g:menu_flag==0
+            :set guioptions+=mT<cr>  
+            let g:menu_flag=1
+        else
+            :set guioptions-=mT<cr>  
+            let g:menu_flag=0
+        endif
+    endfunc
+    :call MenuToggle()
+    nnoremap <c-F9> :call MenuToggle()<cr>
     set cul
     "{{{toolbar
     if has("toolbar")
