@@ -308,7 +308,7 @@ nmap dm :%s/\r\(\n\)/\1/g<CR>
 "cd to current buffer's path
 nmap <silent> <c-F7> :lcd %:h<CR>
 "resize windows
-map <F5> :call Do_OneFileMake()<CR>
+map <F5> :call Do_Make()<CR>
 
 " Visual mode pressing * or # searches for the current selection
 " Super useful! From an idea by Michael Naumann
@@ -319,65 +319,10 @@ nmap <F6> :call Dosunix()<cr>
 nmap <leader>o :call Open_url()<cr>
 
 "{{{function definition
-function! Do_OneFileMake()
-    if expand("%:p:h")!=getcwd()
-        echohl WarningMsg | echo "Fail to make! This file is not in the current dir! Press <F7> to redirect to the dir of this file." | echohl None
-        return
-    endif
-    let sourcefileename=expand("%:t")
-    if (sourcefileename=="" || (&filetype!="cpp" && &filetype!="c"))
-        echohl WarningMsg | echo "Fail to make! Please select the right file!" | echohl None
-        return
-    endif
-    let deletedspacefilename=substitute(sourcefileename,' ','','g')
-    if strlen(deletedspacefilename)!=strlen(sourcefileename)
-        echohl WarningMsg | echo "Fail to make! Please delete the spaces in the filename!" | echohl None
-        return
-    endif
-    if &filetype=="c"
-        if g:iswindows==1
-            set makeprg=gcc\ -g\ -o\ %<.exe\ %
-        else
-            set makeprg=gcc\ -g\ -o\ %<\ %
-        endif
-    elseif &filetype=="cpp"
-        if g:iswindows==1
-            set makeprg=g++\ -o\ %<.exe\ %
-        else
-            set makeprg=g++\ -o\ %<\ %
-        endif
-        "elseif &filetype=="cs"
-        "set makeprg=csc\ \/nologo\ \/out:%<.exe\ %
-    endif
-    if(g:iswindows==1)
-        let outfilename=substitute(sourcefileename,'\(\.[^.]*\)' ,'.exe','g')
-        let toexename=outfilename
-    else
-        let outfilename=substitute(sourcefileename,'\(\.[^.]*\)' ,'','g')
-        let toexename=outfilename
-    endif
-    if filereadable(outfilename)
-        if(g:iswindows==1)
-            let outdeletedsuccess=delete(getcwd()."\\".outfilename)
-        else
-            let outdeletedsuccess=delete("./".outfilename)
-        endif
-        if(outdeletedsuccess!=0)
-            set makeprg=make
-            echohl WarningMsg | echo "Fail to make! I cannot delete the ".outfilename | echohl None
-            return
-        endif
-    endif
+function! Do_Make()
     execute "silent make"
     set makeprg=make
     execute "normal :"
-    if filereadable(outfilename)
-        if(g:iswindows==1)
-            execute "!".toexename
-        else
-            execute "!./".toexename
-        endif
-    endif
     execute "cw"
 endfunction
 
@@ -560,6 +505,7 @@ Bundle 'tpope/vim-fugitive'
 Bundle 'delimitMate.vim'
 Bundle 'FuzzyFinder'
 Bundle 'genutils'
+"Bundle 'youjumpiwatch/vim-neoeclim'
 Bundle 'mhinz/vim-startify'
 Bundle 'SirVer/ultisnips'
 Bundle 'YankRing.vim'
@@ -587,6 +533,7 @@ Bundle 'Shougo/unite.vim'
 Bundle 'L9'
 Bundle 'mattn/zencoding-vim'
 Bundle 'vimwiki'
+Bundle 'hsitz/VimOrganizer'
 Bundle 'adah1972/fencview'
 Bundle 'Markdown'
 if g:iswindows==0
@@ -1270,6 +1217,11 @@ autocmd FileType startify setlocal buftype=
 "}}}
 "{{{eclim
 let g:EclimCompletionMethod = 'omnifunc'
+if !exists('g:neocomplete#force_omni_input_patterns')
+    let g:neocomplete#force_omni_input_patterns = {}
+endif
+let g:neocomplete#force_omni_input_patterns.cpp =
+            \ '[^. *\t]\.\w*\|\h\w*::'
 "}}}
 filetype plugin indent on
 syntax on
