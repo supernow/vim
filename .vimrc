@@ -13,8 +13,8 @@ if has("win32") || has("win64")
     set fileencoding=cp936
     set termencoding=cp936
 else
-    set fileencoding=gbk
-    set termencoding=gbk
+    set fileencoding=utf-8
+    set termencoding=utf-8
 endif
 set fileencodings=ucs-bom,utf-8,cp936,gb1830,big5,euc-jp,euc-kr,gbk
 if v:lang=~? '^\(zh\)\|\(ja\)\|\(ko\)'
