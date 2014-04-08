@@ -2,7 +2,7 @@
 "@brief      config file of vim and gvim for both windows and linux
 "@date       2012-12-30 11:01:30
 "@author     tracyone,tracyone@live.cn
-"@lastchange 2013-12-15/21:19:05
+"@lastchange 2014-04-09/01:04:28
 "@note:		Prior to use, in the case of windows vim convert this file's 
 "			format into dos,while convert it into unix format in the case 
 "			of linux vim
@@ -1208,7 +1208,7 @@ let g:startify_custom_header = [
             \ '       \/   |_|_| |_| |_| ',
             \ '',
             \ '    Help <F1> ',
-            \ '    raoxiaowen@gmail.com',
+            \ '    tracyone@live.cn',
             \ '',
             \ '',
             \ ]
@@ -1231,8 +1231,8 @@ syntax on
 if(has("gui_running"))
     if g:iswindows==0
         au GUIEnter * call MaximizeWindow()
-        set guifont=Consolas\ 14
-        set gfw=YaHei_Mono_Hybird_Consolas\ 12.5
+        set guifont=Consolas\ 12
+        set gfw=YaHei_Mono_Hybird_Consolas\ 12
     else
         au GUIEnter * simalt~x "maximize window
         set guifont=Monaco:h12:cANSI
@@ -1398,6 +1398,7 @@ if(has("gui_running"))
     "}}}
     
     function! MaximizeWindow()
+        :win 1999 1999
         silent !wmctrl -r :ACTIVE: -b add,maximized_vert,maximized_horz
     endfunction
 endif
