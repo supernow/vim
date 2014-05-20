@@ -2,20 +2,15 @@
 "@brief      config file of vim and gvim for both windows and linux
 "@date       2012-12-30 11:01:30
 "@author     tracyone,tracyone@live.cn
-"@lastchange 2013-12-15/21:19:05
+"@lastchange 2014-04-09/01:04:28
 "@note:		Prior to use, in the case of windows vim convert this file's 
 "			format into dos,while convert it into unix format in the case 
 "			of linux vim
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "encode {{{
 set encoding=utf-8
-if has("win32") || has("win64")
-    set fileencoding=cp936
-    set termencoding=cp936
-else
-    set fileencoding=utf-8
-    set termencoding=utf-8
-endif
+set fileencoding=cp936
+set termencoding=cp936
 set fileencodings=ucs-bom,utf-8,cp936,gb1830,big5,euc-jp,euc-kr,gbk
 if v:lang=~? '^\(zh\)\|\(ja\)\|\(ko\)'
     set ambiwidth=double
@@ -507,6 +502,7 @@ Bundle 'FuzzyFinder'
 Bundle 'genutils'
 "Bundle 'youjumpiwatch/vim-neoeclim'
 Bundle 'mhinz/vim-startify'
+Bundle 'Shougo/neomru.vim'
 Bundle 'SirVer/ultisnips'
 Bundle 'YankRing.vim'
 Bundle 'tracyone/snippets'
@@ -1208,7 +1204,7 @@ let g:startify_custom_header = [
             \ '       \/   |_|_| |_| |_| ',
             \ '',
             \ '    Help <F1> ',
-            \ '    raoxiaowen@gmail.com',
+            \ '    tracyone@live.cn',
             \ '',
             \ '',
             \ ]
@@ -1231,8 +1227,8 @@ syntax on
 if(has("gui_running"))
     if g:iswindows==0
         au GUIEnter * call MaximizeWindow()
-        set guifont=Consolas\ 14
-        set gfw=YaHei_Mono_Hybird_Consolas\ 12.5
+        set guifont=Consolas\ 12
+        set gfw=YaHei_Mono_Hybird_Consolas\ 12
     else
         au GUIEnter * simalt~x "maximize window
         set guifont=Monaco:h12:cANSI
@@ -1249,7 +1245,7 @@ if(has("gui_running"))
     set guioptions-=l "whether show the left scroll bar
     set guioptions-=T "whether show toolbar or not
     "highlight the screen line of the cursor
-    let g:menu_flag=0
+    let g:menu_flag=1
     func! MenuToggle()
         if g:menu_flag==0
             :set guioptions+=mT<cr>  
@@ -1398,6 +1394,7 @@ if(has("gui_running"))
     "}}}
     
     function! MaximizeWindow()
+        :win 1999 1999
         silent !wmctrl -r :ACTIVE: -b add,maximized_vert,maximized_horz
     endfunction
 endif
