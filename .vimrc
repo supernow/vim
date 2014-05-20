@@ -10,7 +10,7 @@
 "encode {{{
 set encoding=utf-8
 set fileencoding=cp936
-set termencoding=cp936
+set termencoding=utf-8
 set fileencodings=ucs-bom,utf-8,cp936,gb1830,big5,euc-jp,euc-kr,gbk
 if v:lang=~? '^\(zh\)\|\(ja\)\|\(ko\)'
     set ambiwidth=double
@@ -1150,7 +1150,7 @@ let g:UltiSnipsSnippetDirectories=["bundle/snippets"]
 let g:UltiSnipsSnippetsDir=$VIM."/vimfiles/bundle/snippets"
 "}}}
 "{{{fencview
-let g:fencview_autodetect=0 "it is look like a conflict with c.vim 
+let g:fencview_autodetect=1 "it is look like a conflict with c.vim 
 let g:fencview_auto_patterns='*.txt,*.htm{l\=},*.c,*.cpp,*.s,*.vim'
 "}}}
 "{{{renamer
