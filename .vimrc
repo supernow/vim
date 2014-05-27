@@ -932,7 +932,7 @@ set mps+=":"
 "}}}
 "{{{nerdtree 
 let NERDTreeShowLineNumbers=0	"don't show line number
-let NERDTreeWinPos='right'	"show nerdtree in the rigth side
+let NERDTreeWinPos='left'	"show nerdtree in the rigth side
 "let NERDTreeWinSize='30'
 let NERDTreeShowBookmarks=1
 let NERDTreeChDirMode=2
@@ -1092,11 +1092,7 @@ nmap <leader>pd :call Pyclewnunmap()<cr>:Cquit<cr>:nbclose<cr>
 nmap <leader>pc :Cproject .proj<cr>
 "}}}
 "{{{VimExplorer
-if g:iswindows==1
-    let g:VEConf_systemEncoding = 'cp936'
-else
-    let g:VEConf_systemEncoding = 'gbk'
-endif
+let g:VEConf_systemEncoding = 'cp936'
 map <F11> :silent! VE .<cr>
 "}}}
 "{{{vimshell
@@ -1150,7 +1146,7 @@ let g:UltiSnipsSnippetDirectories=["bundle/snippets"]
 let g:UltiSnipsSnippetsDir=$VIM."/vimfiles/bundle/snippets"
 "}}}
 "{{{fencview
-let g:fencview_autodetect=0 "it is look like a conflict with c.vim 
+let g:fencview_autodetect=1 "
 let g:fencview_auto_patterns='*.txt,*.htm{l\=},*.c,*.cpp,*.s,*.vim'
 "}}}
 "{{{renamer
