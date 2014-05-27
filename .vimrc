@@ -581,7 +581,7 @@ let g:user_zen_expandabbr_key='<C-j>'
 "}}}
 "{{{tagbar
 nmap <silent><F9> :TagbarToggle<CR>
-let g:tagbar_left=1
+let g:tagbar_left=0
 let g:tagbar_width=30
 let g:tagbar_sort=0
 let g:tagbar_autofocus = 1
@@ -1150,7 +1150,7 @@ let g:UltiSnipsSnippetDirectories=["bundle/snippets"]
 let g:UltiSnipsSnippetsDir=$VIM."/vimfiles/bundle/snippets"
 "}}}
 "{{{fencview
-let g:fencview_autodetect=1 "it is look like a conflict with c.vim 
+let g:fencview_autodetect=0 "it is look like a conflict with c.vim 
 let g:fencview_auto_patterns='*.txt,*.htm{l\=},*.c,*.cpp,*.s,*.vim'
 "}}}
 "{{{renamer
