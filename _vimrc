@@ -2,20 +2,15 @@
 "@brief      config file of vim and gvim for both windows and linux
 "@date       2012-12-30 11:01:30
 "@author     tracyone,tracyone@live.cn
-"@lastchange 2014-03-12/23:37:04
+"@lastchange 2014-04-09/01:04:28
 "@note:		Prior to use, in the case of windows vim convert this file's 
 "			format into dos,while convert it into unix format in the case 
 "			of linux vim
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "encode {{{
 set encoding=utf-8
-if has("win32") || has("win64")
-    set fileencoding=cp936
-    set termencoding=cp936
-else
-    set fileencoding=utf-8
-    set termencoding=utf-8
-endif
+set fileencoding=cp936
+set termencoding=utf-8
 set fileencodings=ucs-bom,utf-8,cp936,gb1830,big5,euc-jp,euc-kr,gbk
 if v:lang=~? '^\(zh\)\|\(ja\)\|\(ko\)'
     set ambiwidth=double
@@ -308,7 +303,7 @@ nmap dm :%s/\r\(\n\)/\1/g<CR>
 "cd to current buffer's path
 nmap <silent> <c-F7> :lcd %:h<CR>
 "resize windows
-map <F5> :call Do_OneFileMake()<CR>
+map <F5> :call Do_Make()<CR>
 
 " Visual mode pressing * or # searches for the current selection
 " Super useful! From an idea by Michael Naumann
@@ -319,65 +314,10 @@ nmap <F6> :call Dosunix()<cr>
 nmap <leader>o :call Open_url()<cr>
 
 "{{{function definition
-function! Do_OneFileMake()
-    if expand("%:p:h")!=getcwd()
-        echohl WarningMsg | echo "Fail to make! This file is not in the current dir! Press <F7> to redirect to the dir of this file." | echohl None
-        return
-    endif
-    let sourcefileename=expand("%:t")
-    if (sourcefileename=="" || (&filetype!="cpp" && &filetype!="c"))
-        echohl WarningMsg | echo "Fail to make! Please select the right file!" | echohl None
-        return
-    endif
-    let deletedspacefilename=substitute(sourcefileename,' ','','g')
-    if strlen(deletedspacefilename)!=strlen(sourcefileename)
-        echohl WarningMsg | echo "Fail to make! Please delete the spaces in the filename!" | echohl None
-        return
-    endif
-    if &filetype=="c"
-        if g:iswindows==1
-            set makeprg=gcc\ -g\ -o\ %<.exe\ %
-        else
-            set makeprg=gcc\ -g\ -o\ %<\ %
-        endif
-    elseif &filetype=="cpp"
-        if g:iswindows==1
-            set makeprg=g++\ -o\ %<.exe\ %
-        else
-            set makeprg=g++\ -o\ %<\ %
-        endif
-        "elseif &filetype=="cs"
-        "set makeprg=csc\ \/nologo\ \/out:%<.exe\ %
-    endif
-    if(g:iswindows==1)
-        let outfilename=substitute(sourcefileename,'\(\.[^.]*\)' ,'.exe','g')
-        let toexename=outfilename
-    else
-        let outfilename=substitute(sourcefileename,'\(\.[^.]*\)' ,'','g')
-        let toexename=outfilename
-    endif
-    if filereadable(outfilename)
-        if(g:iswindows==1)
-            let outdeletedsuccess=delete(getcwd()."\\".outfilename)
-        else
-            let outdeletedsuccess=delete("./".outfilename)
-        endif
-        if(outdeletedsuccess!=0)
-            set makeprg=make
-            echohl WarningMsg | echo "Fail to make! I cannot delete the ".outfilename | echohl None
-            return
-        endif
-    endif
+function! Do_Make()
     execute "silent make"
     set makeprg=make
     execute "normal :"
-    if filereadable(outfilename)
-        if(g:iswindows==1)
-            execute "!".toexename
-        else
-            execute "!./".toexename
-        endif
-    endif
     execute "cw"
 endfunction
 
@@ -560,6 +500,7 @@ Bundle 'tpope/vim-fugitive'
 Bundle 'delimitMate.vim'
 Bundle 'FuzzyFinder'
 Bundle 'genutils'
+"Bundle 'youjumpiwatch/vim-neoeclim'
 Bundle 'mhinz/vim-startify'
 Bundle 'Shougo/neomru.vim'
 Bundle 'SirVer/ultisnips'
@@ -588,6 +529,7 @@ Bundle 'Shougo/unite.vim'
 Bundle 'L9'
 Bundle 'mattn/zencoding-vim'
 Bundle 'vimwiki'
+Bundle 'hsitz/VimOrganizer'
 Bundle 'adah1972/fencview'
 Bundle 'Markdown'
 if g:iswindows==0
@@ -639,7 +581,7 @@ let g:user_zen_expandabbr_key='<C-j>'
 "}}}
 "{{{tagbar
 nmap <silent><F9> :TagbarToggle<CR>
-let g:tagbar_left=1
+let g:tagbar_left=0
 let g:tagbar_width=30
 let g:tagbar_sort=0
 let g:tagbar_autofocus = 1
@@ -990,7 +932,7 @@ set mps+=":"
 "}}}
 "{{{nerdtree 
 let NERDTreeShowLineNumbers=0	"don't show line number
-let NERDTreeWinPos='right'	"show nerdtree in the rigth side
+let NERDTreeWinPos='left'	"show nerdtree in the rigth side
 "let NERDTreeWinSize='30'
 let NERDTreeShowBookmarks=1
 let NERDTreeChDirMode=2
@@ -1150,11 +1092,7 @@ nmap <leader>pd :call Pyclewnunmap()<cr>:Cquit<cr>:nbclose<cr>
 nmap <leader>pc :Cproject .proj<cr>
 "}}}
 "{{{VimExplorer
-if g:iswindows==1
-    let g:VEConf_systemEncoding = 'cp936'
-else
-    let g:VEConf_systemEncoding = 'gbk'
-endif
+let g:VEConf_systemEncoding = 'cp936'
 map <F11> :silent! VE .<cr>
 "}}}
 "{{{vimshell
@@ -1262,7 +1200,7 @@ let g:startify_custom_header = [
             \ '       \/   |_|_| |_| |_| ',
             \ '',
             \ '    Help <F1> ',
-            \ '    raoxiaowen@gmail.com',
+            \ '    tracyone@live.cn',
             \ '',
             \ '',
             \ ]
@@ -1271,6 +1209,11 @@ autocmd FileType startify setlocal buftype=
 "}}}
 "{{{eclim
 let g:EclimCompletionMethod = 'omnifunc'
+if !exists('g:neocomplete#force_omni_input_patterns')
+    let g:neocomplete#force_omni_input_patterns = {}
+endif
+let g:neocomplete#force_omni_input_patterns.cpp =
+            \ '[^. *\t]\.\w*\|\h\w*::'
 "}}}
 filetype plugin indent on
 syntax on
@@ -1281,10 +1224,10 @@ if(has("gui_running"))
     if g:iswindows==0
         au GUIEnter * call MaximizeWindow()
         set guifont=Consolas\ 12
-        set gfw=YaHei_Mono_Hybird_Consolas\ 12.5
+        set gfw=YaHei_Mono_Hybird_Consolas\ 12
     else
         au GUIEnter * simalt~x "maximize window
-        set guifont=Consolas:h12:cANSI
+        set guifont=Monaco:h12:cANSI
         set gfw=YaHei_Mono:h12.5:cGB2312
     endif
     " If using a dark background within the editing area and syntax highlighting
@@ -1298,7 +1241,7 @@ if(has("gui_running"))
     set guioptions-=l "whether show the left scroll bar
     set guioptions-=T "whether show toolbar or not
     "highlight the screen line of the cursor
-    let g:menu_flag=0
+    let g:menu_flag=1
     func! MenuToggle()
         if g:menu_flag==0
             :set guioptions+=mT<cr>  
@@ -1309,7 +1252,7 @@ if(has("gui_running"))
         endif
     endfunc
     :call MenuToggle()
-    nnoremap <c-F6> :call MenuToggle()<cr>
+    nnoremap <c-F9> :call MenuToggle()<cr>
     set cul
     "{{{toolbar
     if has("toolbar")
@@ -1447,6 +1390,7 @@ if(has("gui_running"))
     "}}}
     
     function! MaximizeWindow()
+        :win 1999 1999
         silent !wmctrl -r :ACTIVE: -b add,maximized_vert,maximized_horz
     endfunction
 endif

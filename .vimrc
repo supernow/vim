@@ -1146,7 +1146,7 @@ let g:UltiSnipsSnippetDirectories=["bundle/snippets"]
 let g:UltiSnipsSnippetsDir=$VIM."/vimfiles/bundle/snippets"
 "}}}
 "{{{fencview
-let g:fencview_autodetect=1 "
+let g:fencview_autodetect=0 "it is look like a conflict with c.vim 
 let g:fencview_auto_patterns='*.txt,*.htm{l\=},*.c,*.cpp,*.s,*.vim'
 "}}}
 "{{{renamer
