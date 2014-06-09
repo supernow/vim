@@ -153,6 +153,7 @@ au BufRead,BufNewFile *.bld set filetype=javascript
 "automatic recognition xdc file as javascript
 au BufRead,BufNewFile *.xdc set filetype=javascript
 au BufRead,BufNewFile *.mk set filetype=make
+au BufRead,BufNewFile *.make set filetype=make
 au BufRead,BufNewFile *.veo set filetype=verilog
 au BufRead,BufNewFile * let $CurBufferDir=expand('%:p:h')
 au FileType verilog set tabstop=3
@@ -315,6 +316,7 @@ nmap <leader>o :call Open_url()<cr>
 
 "{{{function definition
 function! Do_Make()
+    :wa
     execute "silent make"
     set makeprg=make
     execute "normal :"
@@ -1016,7 +1018,7 @@ let g:vimwiki_use_calendar=1 "use calendar plugin
 "'goto_prev_month'           Jumps to the previous month.        '<Left>'
 "'goto_next_year'            Jumps to the next month.            '<Up>'
 "'goto_prev_year'            Jumps to the previous month.        '<Down>'
-map <F10> :Calendar<cr>
+"map <F10> :Calendar<cr>
 "}}}
 "{{{ctrlp
 " Set Ctrl-P to show match at top of list instead of at bottom, which is so
@@ -1146,8 +1148,9 @@ let g:UltiSnipsSnippetDirectories=["bundle/snippets"]
 let g:UltiSnipsSnippetsDir=$VIM."/vimfiles/bundle/snippets"
 "}}}
 "{{{fencview
-let g:fencview_autodetect=0 "it is look like a conflict with c.vim 
+let g:fencview_autodetect=0 
 let g:fencview_auto_patterns='*.txt,*.htm{l\=},*.c,*.cpp,*.s,*.vim'
+noremap <F10> :FencManualEncoding cp936<cr>
 "}}}
 "{{{renamer
 "rename multi file name
