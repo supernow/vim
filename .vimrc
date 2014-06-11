@@ -156,6 +156,7 @@ au BufRead,BufNewFile *.mk set filetype=make
 au BufRead,BufNewFile *.make set filetype=make
 au BufRead,BufNewFile *.veo set filetype=verilog
 au BufRead,BufNewFile * let $CurBufferDir=expand('%:p:h')
+au BufRead,BufNewFile *.{md,mdown,mkd,mkdn,markdown,mdwn} map <Leader>p :call system("google-chrome " .  shellescape(expand('%')) . " &")<cr>
 au FileType verilog set tabstop=3
 au FileType verilog set shiftwidth=3
 au FileType verilog set softtabstop=3
@@ -530,10 +531,9 @@ Bundle 'majutsushi/tagbar'
 Bundle 'Shougo/unite.vim'
 Bundle 'L9'
 Bundle 'mattn/zencoding-vim'
-Bundle 'vimwiki'
+Bundle 'vimwiki/vimwiki'
 Bundle 'hsitz/VimOrganizer'
 Bundle 'adah1972/fencview'
-Bundle 'Markdown'
 if g:iswindows==0
     Bundle 'LaTeX-Suite-aka-Vim-LaTeX'
 endif
@@ -541,7 +541,6 @@ Bundle 'DrawIt'
 Bundle 'mbbill/VimExplorer'
 Bundle 'renamer.vim'
 Bundle 'tracyone/CCtree'
-Bundle 'hallison/vim-markdown'
 Bundle 'tracyone/mark.vim'
 Bundle 'tracyone/MyVimHelp'
 Bundle 'scrooloose/syntastic'
@@ -553,6 +552,8 @@ if g:iswindows == 1
 else
     Bundle 'tracyone/pyclewn_linux' 
 endif
+Bundle 'plasticboy/vim-markdown'
+Bundle 'greyblake/vim-preview'
 "}}}
 "{{{tohtml
 let html_use_css=1
@@ -1005,8 +1006,8 @@ else
                 \ 'path_html': $VIMFILES .'/vimwiki/html/',
                 \ 'html_header': $VIMFILES .'/vimwiki/template/header.tpl',}] 
 endif
-
 let g:vimwiki_use_calendar=1 "use calendar plugin 
+
 "}}}
 "{{{calendar
 "'close'                     Closes calendar window.             'q'
