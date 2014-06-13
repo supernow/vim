@@ -552,7 +552,7 @@ if g:iswindows == 1
 else
     Bundle 'tracyone/pyclewn_linux' 
 endif
-Bundle 'plasticboy/vim-markdown'
+Bundle 'hallison/vim-markdown'
 Bundle 'greyblake/vim-preview'
 "}}}
 "{{{tohtml
