@@ -532,6 +532,7 @@ Bundle 'Shougo/unite.vim'
 Bundle 'L9'
 Bundle 'mattn/emmet-vim'
 Bundle 'vimwiki/vimwiki'
+Bundle 'VimRepress'
 Bundle 'hsitz/VimOrganizer'
 Bundle 'adah1972/fencview'
 if g:iswindows==0
@@ -994,20 +995,6 @@ let g:CCTreeKeyDepthPlus = '<C-\>='
 let g:CCTreeKeyDepthMinus = '<C-\>-'
 "let g:CCTreeUseUTF8Symbols = 1
 "map <F7> :CCTreeLoadXRefDBFromDisk $CCTREE_DB<cr> 
-"}}}
-"{{{vimwiki
-let g:vimwiki_use_mouse = 1
-if g:iswindows==1
-    let g:vimwiki_list = [{'path': 'c:/vimwiki/',
-                \ 'path_html': 'c:/vimwiki/html/',
-                \ 'html_header': 'c:/vimwiki/template/header.tpl',}] 
-else
-    let g:vimwiki_list = [{'path': $VIMFILES .'/vimwiki/',
-                \ 'path_html': $VIMFILES .'/vimwiki/html/',
-                \ 'html_header': $VIMFILES .'/vimwiki/template/header.tpl',}] 
-endif
-let g:vimwiki_use_calendar=1 "use calendar plugin 
-
 "}}}
 "{{{calendar
 "'close'                     Closes calendar window.             'q'
