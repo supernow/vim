@@ -30,7 +30,7 @@
 
 	![VimExplorer](https://cloud.githubusercontent.com/assets/4246425/3328302/1a53973a-f7bb-11e3-9159-5698f91b4bd8.png)
 
-5.[TagBar](https://github.com/majutsushi/tagbar.git)，这个大家很熟悉了，就是浏览源代码的tags.这个插件比[vim.org](www.vim.org)上下载量最高的taglist要好用和准确。
+5. [TagBar](https://github.com/majutsushi/tagbar.git)，这个大家很熟悉了，就是浏览源代码的tags.这个插件比[vim.org](www.vim.org)上下载量最高的taglist要好用和准确。
 
 	![tagbar](https://cloud.githubusercontent.com/assets/4246425/3328527/8bbe2bcc-f7bd-11e3-9f8e-fcba3f34cb17.png)
 
