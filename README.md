@@ -44,7 +44,9 @@
 
 8. [vimshell](https://github.com/Shougo/vimshell.vim)，这是目前为止比较好的在vim中嵌入shell的解决方案。
 
+	![1406221403447686](https://cloud.githubusercontent.com/assets/4246425/3351706/bf344db0-fa1a-11e3-888e-98f0b88e6be9.gif)
 
+9. 下面介绍的是在vim下集成gdb调试，使用的是
 
 # build_mingw
 
