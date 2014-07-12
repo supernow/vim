@@ -83,7 +83,7 @@ function! MyFoldText()
     return sub . info
 endfunction
 set foldtext=MyFoldText()
-nnoremap <silent><tab> @=(foldlevel('.')?'za':"\<tab>")<CR>
+nnoremap <silent><Space> @=(foldlevel('.')?'za':"\<Space>")<CR>
 "}}}
 "list candidate word in statusline
 set wildmenu
@@ -541,7 +541,7 @@ endif
 Bundle 'DrawIt'
 Bundle 'mbbill/VimExplorer'
 Bundle 'renamer.vim'
-Bundle 'tracyone/CCtree'
+Bundle  'hari-rangarajan/CCTree'
 Bundle 'tracyone/mark.vim'
 Bundle 'tracyone/MyVimHelp'
 Bundle 'scrooloose/syntastic'
@@ -650,7 +650,7 @@ nmap <C-\>f :cs find f
 nmap <C-\>i :cs find i 
 nmap <C-\>d :cs find d 
 nnoremap <leader>u :call Do_CsTag()<cr>
-nmap <leader>a :cs add cscope.out<cr>:CCTreeLoadDB cscope.out<cr>
+nmap <leader>a :cs add cscope.out<cr>:CCTreeLoadXRefDBFromDisk ccglue.out<cr>
 "kill the connection of current dir 
 nmap <leader>k :cs kill cscope.out<cr> 
 function! Do_CsTag()
@@ -711,12 +711,11 @@ function! Do_CsTag()
             silent! execute "!dir /s/b *.c,*.cpp,*.h,*.java,*.cs,*.s,*.asm > cscope.files"
         endif
         silent! execute "!cscope -Rbkq -i cscope.files"
-        "silent! execute "!ccglue -S cscope.out -o ccglue.out" "don not know how to use
         execute "normal :"
         if filereadable("cscope.out")
             execute "cs add cscope.out"
-            execute "CCTreeLoadDB cscope.out"
-            "execute "CCTreeLoadXRefDBFromDisk ccglue.out"
+            silent! execute "!ccglue -S cscope.out -o ccglue.out"
+            execute "CCTreeLoadXRefDB ccglue.out"
         else
             echohl WarningMsg | echo "No cscope.out" | echohl None
         endif
@@ -900,7 +899,7 @@ autocmd FileType ruby setlocal omnifunc=rubycomplete#Complete
 "{{{unite.vim 
 
 nnoremap    [unite]   <Nop>
-nmap   <SPACE> [unite]
+nmap   \ [unite]
 
 nnoremap <silent> [unite]c  :<C-u>UniteWithCurrentDir -buffer-name=files buffer file_mru bookmark file<CR>
 nnoremap <silent> [unite]b  :Unite buffer -input=!split<CR>
@@ -993,6 +992,9 @@ let g:CCTreeKeyToggleWindow = '<C-\>w'
 let g:CCTreeKeyCompressTree = 'zs' " Compress call-tree
 let g:CCTreeKeyDepthPlus = '<C-\>='
 let g:CCTreeKeyDepthMinus = '<C-\>-'
+let CCTreeJoinProgCmd = 'PROG_JOIN JOIN_OPT IN_FILES > OUT_FILE'
+let  g:CCTreeJoinProg = 'cat' 
+let  g:CCTreeJoinProgOpts = ""
 "let g:CCTreeUseUTF8Symbols = 1
 "map <F7> :CCTreeLoadXRefDBFromDisk $CCTREE_DB<cr> 
 "}}}
