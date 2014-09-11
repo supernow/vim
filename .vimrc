@@ -9,7 +9,7 @@
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "encode {{{
 set encoding=utf-8
-set fileencoding=cp936
+set fileencoding=utf-8
 set termencoding=utf-8
 set fileencodings=ucs-bom,utf-8,cp936,gb1830,big5,euc-jp,euc-kr,gbk
 if v:lang=~? '^\(zh\)\|\(ja\)\|\(ko\)'
@@ -606,9 +606,6 @@ endif
 if $CSCOPE_DB3 != ""
     exec "silent! cs add $CSCOPE_DB3"
 endif
-if filereadable('ccglue.out') "this guy is more efficiency 
-    exec "silent! CCTreeLoadXRefDBFromDisk ccglue.out"
-endif
 if has("cscope")
     " use both cscope and ctag for 'ctrl-]', ':ta', and 'vim -t'
     set cscopetag
@@ -650,7 +647,7 @@ nmap <C-\>f :cs find f
 nmap <C-\>i :cs find i 
 nmap <C-\>d :cs find d 
 nnoremap <leader>u :call Do_CsTag()<cr>
-nmap <leader>a :cs add cscope.out<cr>:CCTreeLoadXRefDBFromDisk ccglue.out<cr>
+nmap <leader>a :cs add cscope.out<cr>
 "kill the connection of current dir 
 nmap <leader>k :cs kill cscope.out<cr> 
 function! Do_CsTag()
@@ -700,10 +697,10 @@ function! Do_CsTag()
             return
         endif
     endif
-    if(executable('ctags'))
-        silent! execute "!ctags -R --c-types=+p --fields=+S *"
-        silent! execute "!ctags -R --c++-kinds=+p --fields=+iaS --extra=+q ."
-    endif
+    "if(executable('ctags'))
+        "silent! execute "!ctags -R --c-types=+p --fields=+S *"
+        "silent! execute "!ctags -R --c++-kinds=+p --fields=+iaS --extra=+q ."
+    "endif
     if(executable('cscope') && has("cscope") )
         if(g:iswindows!=1)
             silent! execute "!find $(pwd) -name \"*.[chsS]\" > ./cscope.files"
@@ -714,8 +711,6 @@ function! Do_CsTag()
         execute "normal :"
         if filereadable("cscope.out")
             execute "cs add cscope.out"
-            silent! execute "!ccglue -S cscope.out -o ccglue.out"
-            execute "CCTreeLoadXRefDB ccglue.out"
         else
             echohl WarningMsg | echo "No cscope.out" | echohl None
         endif
@@ -1159,8 +1154,8 @@ syntax on
 if(has("gui_running"))
     if g:iswindows==0
         au GUIEnter * call MaximizeWindow()
-        set guifont=Consolas\ 12
-        set gfw=YaHei_Mono_Hybird_Consolas\ 12
+        set guifont=Monaco\ 12
+        set gfw=YaHei_Mono_Hybird_Consolas\ 12.5
     else
         au GUIEnter * simalt~x "maximize window
         set guifont=Monaco:h12:cANSI
